@@ -18,4 +18,10 @@ const styles = StyleSheet.create({
   },
 });
 
+setting.navigationOptions = (navigationData) => {
+  return {
+    headerShown: false,
+  };
+};
+
 export default setting;

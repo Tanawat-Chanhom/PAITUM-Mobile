@@ -19,6 +19,7 @@ import Map from "../screens/map";
 import Coupon from "../screens/coupon";
 import Profile from "../screens/profile";
 import Create_Post from "../screens/createPost";
+import Setting from "../screens/setting";
 
 // const FiltersNavigator = createStackNavigator({
 //   Filters: {
@@ -43,19 +44,18 @@ import Create_Post from "../screens/createPost";
 //   }
 // );
 
-// const MealsNavigator = createStackNavigator(
-//   {
-//     S1: CategoriesScreen,
-//     S2: CategoryMealsScreen,
-//     S3: MealDetailScreen,
-//   },
-//   {
-//     defaultNavigationOptions: {
-//       headerStyle: { backgroundColor: "#4a148c" },
-//       headerTintColor: "white",
-//     },
-//   }
-// );
+const TestStack = createStackNavigator(
+  {
+    Profile: Profile,
+    Setting: Setting,
+  },
+  {
+    defaultNavigationOptions: {
+      headerStyle: { backgroundColor: "#4a148c" },
+      headerTintColor: "white",
+    },
+  }
+);
 
 const TabNavigator = createBottomTabNavigator(
   {
@@ -111,7 +111,7 @@ const TabNavigator = createBottomTabNavigator(
       },
     },
     Profile: {
-      screen: Profile,
+      screen: TestStack,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (

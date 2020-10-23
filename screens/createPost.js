@@ -6,12 +6,8 @@ const createPost = (props) => {
     <View style={styles.screen}>
       <Text> Create Post </Text>
       <Button
-        onPress={() =>
-          props.navigation.navigate("Profile", {
-            names: ["Brent", "Satya", "Michaś"],
-          })
-        }
-        title="Go to Brent's profile"
+        onPress={() => props.navigation.navigate("Home")}
+        title="Go to Home"
       />
     </View>
   );
