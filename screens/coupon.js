@@ -2,18 +2,16 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import Header from "../components/Header";
 
-export default class coupon extends Component {
-  render() {
-    return (
-      <>
-        <Header></Header>
-        <View style={styles.screen}>
-          <Text> My Coupon </Text>
-        </View>
-      </>
-    );
-  }
-}
+const coupon = (props) => {
+  return (
+    <>
+      <Header></Header>
+      <View style={styles.screen}>
+        <Text> My Coupon </Text>
+      </View>
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -22,3 +20,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default coupon;

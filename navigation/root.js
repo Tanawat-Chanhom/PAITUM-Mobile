@@ -137,7 +137,6 @@ const TabNavigator = createBottomTabNavigator(
       tabStyle: {
         backgroundColor: "#E9EEC9",
       },
-      animationEnabled: true,
     },
   }
 );

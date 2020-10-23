@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet } from "react-native";
 
-export default class promotion extends Component {
-  render() {
-    return (
-      <View style={styles.screen}>
-        <Text> Promotion </Text>
-      </View>
-    );
-  }
-}
+const promotion = (props) => {
+  return (
+    <View style={styles.screen}>
+      <Text> Promotion </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -18,3 +16,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default promotion;

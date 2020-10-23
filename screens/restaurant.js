@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet } from "react-native";
+import restaurantCoupon from "./restaurantCoupon";
 
-export default class restaurant extends Component {
-  render() {
-    return (
-      <View style={styles.screen}>
-        <Text> Restaurant </Text>
-      </View>
-    );
-  }
-}
+const restaurant = (props) => {
+  return (
+    <View style={styles.screen}>
+      <Text> Restaurant </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -18,3 +17,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default restaurant;

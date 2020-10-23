@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet } from "react-native";
 
-export default class settingAccount extends Component {
-  render() {
-    return (
-      <View style={styles.screen}>
-        <Text> Setting Account </Text>
-      </View>
-    );
-  }
-}
+const settingAccount = (props) => {
+  return (
+    <View style={styles.screen}>
+      <Text> Setting Account </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   screen: {
@@ -18,3 +16,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default settingAccount;
