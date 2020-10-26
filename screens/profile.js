@@ -9,6 +9,10 @@ const profile = (props) => {
         onPress={() => props.navigation.navigate("Setting")}
         title="Go to Setting"
       />
+      <Button
+        onPress={() => props.navigation.navigate("RestaurantStack")}
+        title={"Restaurant"}
+      ></Button>
     </View>
   );
 };

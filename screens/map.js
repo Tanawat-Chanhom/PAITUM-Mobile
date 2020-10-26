@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Button } from "react-native";
 import Header from "../components/Header";
 
 const map = (props) => {
@@ -8,6 +8,10 @@ const map = (props) => {
       <Header></Header>
       <View style={styles.screen}>
         <Text> Map </Text>
+        <Button
+          onPress={() => props.navigation.navigate("RestaurantStack")}
+          title={"Restaurant"}
+        ></Button>
       </View>
     </>
   );

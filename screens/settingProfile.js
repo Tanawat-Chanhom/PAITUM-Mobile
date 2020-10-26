@@ -17,4 +17,10 @@ const styles = StyleSheet.create({
   },
 });
 
+// settingProfile.navigationOptions = (navigationData) => {
+//   return {
+//     headerShown: false,
+//   };
+// };
+
 export default settingProfile;

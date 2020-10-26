@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Button } from "react-native";
 import Header from "../components/Header";
 
 const home = (props) => {
@@ -8,6 +8,10 @@ const home = (props) => {
       <Header></Header>
       <View style={styles.screen}>
         <Text> Home </Text>
+        <Button
+          onPress={() => props.navigation.navigate("RestaurantStack")}
+          title={"Restaurant"}
+        ></Button>
       </View>
     </>
   );

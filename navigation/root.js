@@ -18,8 +18,13 @@ import Home from "../screens/home";
 import Map from "../screens/map";
 import Coupon from "../screens/coupon";
 import Profile from "../screens/profile";
-import Create_Post from "../screens/createPost";
+import CreatePost from "../screens/createPost";
 import Setting from "../screens/setting";
+import SettingProfile from "../screens/settingProfile";
+import SettingAccount from "../screens/settingAccount";
+import Restaurant from "../screens/restaurant";
+import Promation from "../screens/promotion";
+import RestaurantCoupon from "../screens/restaurantCoupon";
 
 // const FiltersNavigator = createStackNavigator({
 //   Filters: {
@@ -27,32 +32,81 @@ import Setting from "../screens/setting";
 //   },
 // });
 
-// const FavNavigator = createStackNavigator(
-//   {
-//     Favorites: {
-//       screen: FavoritesScreen,
-//     },
-//     MealDetail: {
-//       screen: MealDetailScreen,
-//     },
-//   },
-//   {
-//     defaultNavigationOptions: {
-//       headerStyle: { backgroundColor: "#4a148c" },
-//       headerTintColor: "white",
-//     },
-//   }
-// );
-
-const TestStack = createStackNavigator(
+const RestaurantStack = createStackNavigator(
   {
-    Profile: Profile,
-    Setting: Setting,
+    Restaurant: {
+      screen: Restaurant,
+    },
+    CreatePost: {
+      screen: CreatePost,
+    },
+    Promation: {
+      screen: Promation,
+    },
+    RestaurantCoupon: {
+      screen: RestaurantCoupon,
+    },
   },
   {
     defaultNavigationOptions: {
-      headerStyle: { backgroundColor: "#4a148c" },
-      headerTintColor: "white",
+      headerShown: false,
+    },
+  }
+);
+
+const ProfileStack = createStackNavigator(
+  {
+    Profile: {
+      screen: Profile,
+    },
+    Setting: {
+      screen: Setting,
+    },
+    SettingProfile: {
+      screen: SettingProfile,
+    },
+    SettingAccount: {
+      screen: SettingAccount,
+    },
+    RestaurantStack: {
+      screen: RestaurantStack,
+    },
+  },
+  {
+    defaultNavigationOptions: {
+      headerShown: false,
+    },
+  }
+);
+
+const HomeStack = createStackNavigator(
+  {
+    Home: {
+      screen: Home,
+    },
+    RestaurantStack: {
+      screen: RestaurantStack,
+    },
+  },
+  {
+    defaultNavigationOptions: {
+      headerShown: false,
+    },
+  }
+);
+
+const MapStack = createStackNavigator(
+  {
+    Map: {
+      screen: Map,
+    },
+    RestaurantStack: {
+      screen: RestaurantStack,
+    },
+  },
+  {
+    defaultNavigationOptions: {
+      headerShown: false,
     },
   }
 );
@@ -60,7 +114,7 @@ const TestStack = createStackNavigator(
 const TabNavigator = createBottomTabNavigator(
   {
     Home: {
-      screen: Home,
+      screen: HomeStack,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
@@ -74,7 +128,7 @@ const TabNavigator = createBottomTabNavigator(
       },
     },
     Map: {
-      screen: Map,
+      screen: MapStack,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
@@ -88,7 +142,7 @@ const TabNavigator = createBottomTabNavigator(
       },
     },
     CreatePost: {
-      screen: Create_Post,
+      screen: CreatePost,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
@@ -111,7 +165,7 @@ const TabNavigator = createBottomTabNavigator(
       },
     },
     Profile: {
-      screen: TestStack,
+      screen: ProfileStack,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (
@@ -140,5 +194,17 @@ const TabNavigator = createBottomTabNavigator(
     },
   }
 );
+
+// const MainStack = createStackNavigator(
+//   {
+//     TabNavigator: TabNavigator,
+//     RestaurantStack: RestaurantStack,
+//   },
+//   {
+//     defaultNavigationOptions: {
+//       headerShown: false,
+//     },
+//   }
+// );
 
 export default createAppContainer(TabNavigator);

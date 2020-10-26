@@ -17,4 +17,10 @@ const styles = StyleSheet.create({
   },
 });
 
+// settingAccount.navigationOptions = (navigationData) => {
+//   return {
+//     headerShown: false,
+//   };
+// };
+
 export default settingAccount;
