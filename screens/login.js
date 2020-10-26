@@ -1,10 +1,18 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Button } from "react-native";
 
 const login = (props) => {
   return (
     <View style={styles.screen}>
       <Text> Login </Text>
+      <Button
+        onPress={() => props.navigation.navigate("MainApp")}
+        title={"Login"}
+      ></Button>
+      <Button
+        onPress={() => props.navigation.navigate("Register")}
+        title={"Register"}
+      ></Button>
     </View>
   );
 };

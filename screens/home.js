@@ -12,6 +12,10 @@ const home = (props) => {
           onPress={() => props.navigation.navigate("RestaurantStack")}
           title={"Restaurant"}
         ></Button>
+        <Button
+          onPress={() => props.navigation.navigate("LoginStack")}
+          title={"login"}
+        ></Button>
       </View>
     </>
   );

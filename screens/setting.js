@@ -14,6 +14,10 @@ const setting = (props) => {
         onPress={() => props.navigation.navigate("SettingAccount")}
         title={"Setting Account"}
       ></Button>
+      <Button
+        onPress={() => props.navigation.navigate("Login")}
+        title={"login out"}
+      ></Button>
     </View>
   );
 };

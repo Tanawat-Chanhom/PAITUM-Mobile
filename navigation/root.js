@@ -3,7 +3,6 @@ import React from "react";
 import { Image } from "react-native";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import { createDrawerNavigator } from "react-navigation-drawer";
 import { createAppContainer } from "react-navigation";
 import {
   Ionicons,
@@ -25,12 +24,8 @@ import SettingAccount from "../screens/settingAccount";
 import Restaurant from "../screens/restaurant";
 import Promation from "../screens/promotion";
 import RestaurantCoupon from "../screens/restaurantCoupon";
-
-// const FiltersNavigator = createStackNavigator({
-//   Filters: {
-//     screen: FiltersScreen,
-//   },
-// });
+import Login from "../screens/login";
+import Register from "../screens/register";
 
 const RestaurantStack = createStackNavigator(
   {
@@ -195,16 +190,28 @@ const TabNavigator = createBottomTabNavigator(
   }
 );
 
-// const MainStack = createStackNavigator(
-//   {
-//     TabNavigator: TabNavigator,
-//     RestaurantStack: RestaurantStack,
-//   },
-//   {
-//     defaultNavigationOptions: {
-//       headerShown: false,
-//     },
-//   }
-// );
+const LoginStack = createStackNavigator(
+  {
+    Login: Login,
+    Register: Register,
+  },
+  {
+    defaultNavigationOptions: {
+      headerShown: false,
+    },
+  }
+);
 
-export default createAppContainer(TabNavigator);
+const RootNavigation = createBottomTabNavigator(
+  {
+    LoginStack: LoginStack,
+    MainApp: TabNavigator,
+  },
+  {
+    defaultNavigationOptions: {
+      tabBarVisible: false,
+    },
+  }
+);
+
+export default createAppContainer(RootNavigation);
