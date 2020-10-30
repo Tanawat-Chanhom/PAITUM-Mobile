@@ -3,11 +3,18 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Naviagator from "./navigation/root";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+import indexReducer from "./store/reducer/index";
 
 export default function App() {
+  const store = createStore(indexReducer);
+
   return (
     <View style={styles.container}>
-      <Naviagator></Naviagator>
+      <Provider store={store}>
+        <Naviagator></Naviagator>
+      </Provider>
     </View>
   );
 }
