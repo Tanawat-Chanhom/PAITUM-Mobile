@@ -9,25 +9,25 @@ const login = (props) => {
     <View style={styles.screen}>
       <View style={styles.container}>
         <Image source={require("../assets/login_logo.png")}></Image>
-        <View style={styles.text_input_container}>
-          <View style={styles.text_input_container}>
+        <View style={styles.textInputContainer}>
+          <View style={styles.textInputContainer}>
             <Text style={styles.text}>USERNAME</Text>
             <TextInput
-              style={styles.text_input}
+              style={styles.textInput}
               value={username}
               onChangeText={(x) => setUsername(x)}
             ></TextInput>
           </View>
-          <View style={styles.text_input_container}>
+          <View style={styles.textInputContainer}>
             <Text style={styles.text}>PASSWORD</Text>
             <TextInput
               secureTextEntry={true}
-              style={styles.text_input}
+              style={styles.textInput}
               value={password}
               onChangeText={(x) => setPassword(x)}
             ></TextInput>
           </View>
-          <Text style={styles.forgot_text}>Forgot Password ?</Text>
+          <Text style={styles.forgotText}>Forgot Password ?</Text>
         </View>
         <View style={styles.login_button_container}>
           <Button
@@ -38,7 +38,7 @@ const login = (props) => {
         </View>
       </View>
       <Text
-        style={styles.register_text}
+        style={styles.registerText}
         onPress={() => props.navigation.navigate("Register")}
       >
         Sing In
@@ -52,10 +52,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   container: {
     height: "90%",
-    width: "80%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "space-around",
   },
@@ -69,26 +71,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
   },
-  text_input: {
+  textInput: {
     height: 30,
     width: "100%",
     color: "#A9C3BC",
     fontWeight: "bold",
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderColor: "#707070",
     marginTop: 5,
   },
-  text_input_container: {
+  textInputContainer: {
     width: "100%",
     padding: 10,
   },
-  register_text: {
+  registerText: {
     bottom: 0,
     position: "absolute",
     margin: 10,
     color: "#E29821",
   },
-  forgot_text: {
+  forgotText: {
     width: "100%",
     textAlign: "right",
     fontSize: 12,
