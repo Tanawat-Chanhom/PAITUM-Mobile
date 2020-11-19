@@ -12,7 +12,11 @@ export default class backPage extends Component {
     return (
       <View>
         <TouchableWithoutFeedback
-          onPress={() => this.props.navigation.navigation.navigate("Login")}
+          onPress={() =>
+            this.props.navigation.navigation.navigate(
+              this.props.path || "Login"
+            )
+          }
         >
           <View style={styles.container}>
             <Image

@@ -26,6 +26,7 @@ import Promation from "../screens/promotion";
 import RestaurantCoupon from "../screens/restaurantCoupon";
 import Login from "../screens/login";
 import Register from "../screens/register";
+import Register2 from "../screens/register2";
 
 const RestaurantStack = createStackNavigator(
   {
@@ -190,10 +191,22 @@ const TabNavigator = createBottomTabNavigator(
   }
 );
 
+const registerStack = createStackNavigator(
+  {
+    stateOne: Register,
+    stateTwo: Register2,
+  },
+  {
+    defaultNavigationOptions: {
+      headerShown: false,
+    },
+  }
+);
+
 const LoginStack = createStackNavigator(
   {
     Login: Login,
-    Register: Register,
+    Register: registerStack,
   },
   {
     defaultNavigationOptions: {

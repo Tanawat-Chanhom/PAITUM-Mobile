@@ -12,12 +12,19 @@ import {
 } from "react-native";
 import Model from "../components/Model";
 import BackPage from "../components/BackPage";
+import Alert from "../components/MyAlert";
 
 export default function Register(props) {
   const [stateGenderModel, setStateGenderModel] = useState(false);
   const [stateDateModel, setStateDateModel] = useState(false);
-  const [gender, setGender] = useState("Select gender");
+  const [gender, setGender] = useState("men");
   const [chosenDate, setChosenDate] = useState(new Date());
+  const [data, setData] = useState({
+    username: "",
+    password: "",
+    eMail: "",
+    name: "",
+  });
 
   const isShowGender = (state) => {
     state === true ? setStateGenderModel(true) : setStateGenderModel(false);
@@ -73,23 +80,34 @@ export default function Register(props) {
         component={dateSelecterComponent}
         cencel={isShowDate}
       ></Model>
-      <BackPage navigation={props}></BackPage>
+      <Alert value={"test"}></Alert>
+      <BackPage navigation={props} path={"Login"}></BackPage>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
-          {/* <Image source={require("../assets/test.png")}></Image> */}
           <View style={styles.textInputContainer}>
             <Text style={styles.text}>Username</Text>
-            <TextInput style={styles.textInput} value={"test"}></TextInput>
+            <TextInput
+              style={styles.textInput}
+              value={data.username}
+              placeholder="uesrname"
+              onChangeText={(x) => {
+                setData({ ...data, username: x });
+              }}
+            ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
             <Text style={styles.text}>Password</Text>
             <TextInput
               secureTextEntry={true}
               style={styles.textInput}
-              value={"test"}
+              placeholder="password"
+              value={data.password}
+              onChangeText={(x) => {
+                setData({ ...data, password: x });
+              }}
             ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
@@ -97,16 +115,30 @@ export default function Register(props) {
             <TextInput
               secureTextEntry={true}
               style={styles.textInput}
-              value={"test"}
+              placeholder="password"
             ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
             <Text style={styles.text}>E-Mail</Text>
-            <TextInput style={styles.textInput} value={"test"}></TextInput>
+            <TextInput
+              style={styles.textInput}
+              placeholder="e-mail"
+              value={data.eMail}
+              onChangeText={(x) => {
+                setData({ ...data, eMail: x });
+              }}
+            ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
             <Text style={styles.text}>Name</Text>
-            <TextInput style={styles.textInput} value={"test"}></TextInput>
+            <TextInput
+              style={styles.textInput}
+              value={data.name}
+              placeholder="name"
+              onChangeText={(x) => {
+                setData({ ...data, name: x });
+              }}
+            ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
             <Text style={styles.text}>Gender</Text>
@@ -134,11 +166,26 @@ export default function Register(props) {
               </Text>
             </View>
           </View>
-          <View style={styles.nextButton}>
-            <Button title={"NEXT"} color="white"></Button>
-          </View>
         </ScrollView>
       </SafeAreaView>
+      <View style={styles.nextButton}>
+        <Button
+          title={"NEXT"}
+          color="white"
+          onPress={() => {
+            console.log(gender);
+            let body = {
+              username: data.username,
+              password: data.password,
+              eMail: data.eMail,
+              name: data.name,
+              gender: gender,
+              birthday: chosenDate,
+            };
+            props.navigation.navigate("stateTwo", { data: body });
+          }}
+        ></Button>
+      </View>
     </View>
   );
 }
@@ -204,8 +251,12 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     backgroundColor: "#E29821",
+    position: "absolute",
     alignSelf: "stretch",
+    width: "100%",
     borderRadius: 50,
-    marginTop: 50,
+    alignSelf: "center",
+    margin: 34,
+    bottom: 0,
   },
 });
