@@ -24,7 +24,10 @@ export default function Register(props) {
     password: "",
     eMail: "",
     name: "",
+    confirm: "",
   });
+  const [alert, setAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const isShowGender = (state) => {
     state === true ? setStateGenderModel(true) : setStateGenderModel(false);
@@ -80,7 +83,13 @@ export default function Register(props) {
         component={dateSelecterComponent}
         cencel={isShowDate}
       ></Model>
-      <Alert value={"test"}></Alert>
+      <Alert
+        open={alert}
+        value={errorMessage}
+        close={() => {
+          setAlert(false);
+        }}
+      ></Alert>
       <BackPage navigation={props} path={"Login"}></BackPage>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
@@ -116,6 +125,10 @@ export default function Register(props) {
               secureTextEntry={true}
               style={styles.textInput}
               placeholder="password"
+              value={data.confirm}
+              onChangeText={(x) => {
+                setData({ ...data, confirm: x });
+              }}
             ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
@@ -173,16 +186,30 @@ export default function Register(props) {
           title={"NEXT"}
           color="white"
           onPress={() => {
-            console.log(gender);
             let body = {
               username: data.username,
               password: data.password,
+              confirm: data.confirm,
               eMail: data.eMail,
               name: data.name,
               gender: gender,
               birthday: chosenDate,
             };
-            props.navigation.navigate("stateTwo", { data: body });
+            let pass = 0;
+            Object.keys(body).map((key) => {
+              if (body[key] === "") {
+                pass++;
+              }
+            });
+            if (pass > 0) {
+              setAlert(true);
+              setErrorMessage("Please enter your information.");
+            } else if (body.password !== body.confirm) {
+              setAlert(true);
+              setErrorMessage("Password and Confirm Password is incorrect.");
+            } else {
+              props.navigation.navigate("stateTwo", { data: body });
+            }
           }}
         ></Button>
       </View>

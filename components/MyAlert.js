@@ -1,24 +1,29 @@
 import React, { useState, Component } from "react";
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  View,
-  PanResponder,
-  Animated,
-} from "react-native";
+import { StyleSheet, Text, View, PanResponder, Animated } from "react-native";
 
 export default class MyAlert extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      open: props.open,
+      fadeAnim: new Animated.Value(-200),
+    };
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.open === true) {
+      this.in();
+    } else {
+      this.out();
+    }
   }
 
   panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
     onPanResponderMove: (evt, gestureState) => {
-      if (gestureState.dy < 0) {
+      if (gestureState.dy < -20) {
         this.out();
+        this.props.close();
       } else {
         this.state.fadeAnim.setValue((gestureState.dy + 100) / 4);
       }
@@ -29,10 +34,6 @@ export default class MyAlert extends Component {
       }
     },
   });
-
-  state = {
-    fadeAnim: new Animated.Value(-200),
-  };
 
   in = () => {
     Animated.spring(this.state.fadeAnim, {
@@ -46,7 +47,7 @@ export default class MyAlert extends Component {
 
   out = () => {
     Animated.spring(this.state.fadeAnim, {
-      toValue: -200,
+      toValue: -80,
       useNativeDriver: false,
     }).start();
   };
