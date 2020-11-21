@@ -1,14 +1,42 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet, Button, Image, TextInput } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import Alert from "../components/MyAlert";
+
+import { setToken } from "../store/action/authenAction";
 
 const login = (props) => {
-  const [username, setUsername] = useState("nobiaccess");
-  const [password, setPassword] = useState("12345678");
+  const token = useSelector((state) => {
+    return state.authenReducer.token;
+  });
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  
+  if (token !== null) {
+    props.navigation.navigate("MainApp");
+  }
+
+  function Login() {
+    if (username === "1" && password === "1") {
+      dispatch(setToken("1234567890"));
+    } else {
+      setAlert(true);
+      setErrorMessage("Uesrname or Password is incorrect.");
+    }
+  }
 
   return (
     <View style={styles.screen}>
+      <Alert
+        open={alert}
+        value={errorMessage}
+        close={() => {
+          setAlert(false);
+        }}
+      ></Alert>
       <View style={styles.container}>
         <Image source={require("../assets/login_logo.png")}></Image>
         <View style={styles.textInputContainer}>
@@ -17,6 +45,7 @@ const login = (props) => {
             <TextInput
               style={styles.textInput}
               value={username}
+              placeholder="username"
               onChangeText={(x) => setUsername(x)}
             ></TextInput>
           </View>
@@ -26,6 +55,7 @@ const login = (props) => {
               secureTextEntry={true}
               style={styles.textInput}
               value={password}
+              placeholder="password"
               onChangeText={(x) => setPassword(x)}
             ></TextInput>
           </View>
@@ -34,7 +64,7 @@ const login = (props) => {
         <View style={styles.login_button_container}>
           <Button
             color="#FFFFFF"
-            onPress={() => props.navigation.navigate("MainApp")}
+            onPress={() => Login()}
             title={"Login"}
           ></Button>
         </View>

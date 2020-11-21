@@ -1,8 +1,17 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import settingAccount from "./settingAccount";
+import { useSelector, useDispatch } from "react-redux";
+import { logout as Logout } from "../store/action/authenAction";
 
 const setting = (props) => {
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    dispatch(Logout());
+    props.navigation.navigate("Login");
+  };
+
   return (
     <View style={styles.screen}>
       <Text> Setting </Text>
@@ -15,7 +24,9 @@ const setting = (props) => {
         title={"Setting Account"}
       ></Button>
       <Button
-        onPress={() => props.navigation.navigate("Login")}
+        onPress={() => {
+          logout();
+        }}
         title={"login out"}
       ></Button>
     </View>

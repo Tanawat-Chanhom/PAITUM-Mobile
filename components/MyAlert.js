@@ -47,7 +47,7 @@ export default class MyAlert extends Component {
 
   out = () => {
     Animated.spring(this.state.fadeAnim, {
-      toValue: -80,
+      toValue: -100,
       useNativeDriver: false,
     }).start();
   };

@@ -1,16 +1,15 @@
-export const LOGIN = "LOGIN";
-export const ALERT = "ALERT";
+export const SET_TOKEN = "SET_TOKEN";
+export const LOGOUT = "LOGOUT";
 
-export const loginSuccess = (token) => {
+export const setToken = (token) => {
   return {
-    type: LOGIN,
+    type: SET_TOKEN,
     token: token,
   };
 };
 
-export const alert = (state) => {
+export const logout = () => {
   return {
-    type: ALERT,
-    state: false,
+    type: LOGOUT,
   };
 };
