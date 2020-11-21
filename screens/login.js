@@ -16,7 +16,7 @@ const login = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   if (token !== null) {
-    props.navigation.navigate("MainApp");
+    props.navigation.navigate("Profile");
   }
 
   function Login() {

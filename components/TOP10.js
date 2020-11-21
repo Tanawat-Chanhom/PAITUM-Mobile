@@ -107,6 +107,7 @@ export default class TOP10 extends Component {
             onPress={() => {
               console.log("test");
             }}
+            style={{ display: "none" }}
           ></Button>
         </View>
         <View style={styles.content}>
@@ -117,8 +118,8 @@ export default class TOP10 extends Component {
               horizontal={true}
               style={styles.scrollView}
             >
-              {this.state.top10.map((data) => {
-                return <Card data={data}></Card>;
+              {this.state.top10.map((data, index) => {
+                return <Card data={data} key={index}></Card>;
               })}
             </ScrollView>
           </SafeAreaView>
