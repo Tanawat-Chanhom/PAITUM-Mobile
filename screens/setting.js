@@ -1,12 +1,5 @@
-import React, { Component, useState } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Switch,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import React, { Component } from "react";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import settingAccount from "./settingAccount";
 import { useSelector, useDispatch } from "react-redux";
 import { logout as Logout } from "../store/action/authenAction";
@@ -62,7 +55,6 @@ const styles = StyleSheet.create({
   },
   screen: {
     flex: 2,
-    justifyContent: "center",
     alignItems: "center",
   },
   backContainer: {
@@ -74,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "80%",
     height: "8%",
-    marginVertical: 15,
+    marginVertical: 5,
     backgroundColor: "#ebe9e6",
     borderRadius: 10,
     padding: 5,
