@@ -61,7 +61,7 @@ const settingProfile = (props) => {
       birthday: birthday,
       email: email,
     };
-    props.navigation.navigate("Home");
+    props.navigation.navigate("Profile");
   };
 
   return (
@@ -146,6 +146,7 @@ const settingProfile = (props) => {
             color="#FFFFFF"
             title={"SAVE"}
             style={styles.loginButton}
+            onPress={() => submit()}
             fontSize={14}
           ></Button>
         </View>
