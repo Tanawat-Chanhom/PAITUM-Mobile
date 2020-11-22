@@ -234,7 +234,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   settingContainer: {
-    borderWidth: 1,
     width: 40,
     height: 40,
     margin: 25,
