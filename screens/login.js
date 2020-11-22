@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Button, Image, TextInput } from "react-native";
+import { Text, View, StyleSheet, Image, TextInput } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import Alert from "../components/MyAlert";
+import Button from "../components/Button";
 
 import { setToken } from "../store/action/authenAction";
 
@@ -65,7 +66,9 @@ const login = (props) => {
           <Button
             color="#FFFFFF"
             onPress={() => Login()}
-            title={"Login"}
+            title={"LOGIN"}
+            style={styles.loginButton}
+            fontSize={14}
           ></Button>
         </View>
       </View>
@@ -127,6 +130,9 @@ const styles = StyleSheet.create({
     textAlign: "right",
     fontSize: 12,
     color: "#8CE5CD",
+  },
+  loginButton: {
+    padding: 10,
   },
 });
 
