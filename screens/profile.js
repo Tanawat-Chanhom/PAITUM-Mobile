@@ -238,6 +238,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     margin: 25,
+    marginTop: 15 + Constants.statusBarHeight,
     right: "0%",
     borderRadius: 4,
     position: "absolute",

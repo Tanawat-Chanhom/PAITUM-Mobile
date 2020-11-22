@@ -1,7 +1,7 @@
 import { SET_TOKEN, LOGOUT } from "../action/authenAction";
 
 const initialState = {
-  token: null,
+  token: "1233",
 };
 
 export default authenReducer = (state = initialState, action) => {
