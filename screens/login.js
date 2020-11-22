@@ -17,7 +17,7 @@ const login = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   if (token !== null) {
-    props.navigation.navigate("Profile");
+    props.navigation.navigate("Map");
   }
 
   function Login() {
@@ -76,7 +76,7 @@ const login = (props) => {
         style={styles.registerText}
         onPress={() => props.navigation.navigate("Register")}
       >
-        Sing In
+        Sing Up
       </Text>
     </View>
   );
