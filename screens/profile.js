@@ -122,7 +122,7 @@ const profile = (props) => {
                         ? (userData.following / 1000).toFixed(1) + "K"
                         : userData.following}
                     </Text>
-                    <Text style={{ color: "#E29821" }}>Followers</Text>
+                    <Text style={{ color: "#E29821" }}>Following</Text>
                   </View>
                 </View>
                 <View style={styles.profileFooter}>
