@@ -17,12 +17,12 @@ const login = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   if (token !== null) {
-    props.navigation.navigate("Map");
+    props.navigation.navigate("MyCoupon");
   }
 
   function Login() {
     if (username === "1" && password === "1") {
-      dispatch(setToken("1234567890"));
+      dispatch(setToken("1233"));
     } else {
       setAlert(true);
       setErrorMessage("Uesrname or Password is incorrect.");

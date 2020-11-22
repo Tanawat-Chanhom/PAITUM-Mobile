@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 
 export default function Button({
   fontSize,
@@ -12,16 +12,24 @@ export default function Button({
 }) {
   return (
     <TouchableOpacity onPress={onPress} style={style || styles.container}>
-      <Text
-        style={{
-          color: color,
-          fontWeight: "bold",
-          textAlign: "center",
-          fontSize: fontSize,
-        }}
-      >
-        {title}
-      </Text>
+      {icon !== undefined ? (
+        <Image
+          source={icon}
+          style={{ width: iconSize.width, height: iconSize.height }}
+        ></Image>
+      ) : (
+        // <>{icon}</>
+        <Text
+          style={{
+            color: color,
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: fontSize,
+          }}
+        >
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 }
