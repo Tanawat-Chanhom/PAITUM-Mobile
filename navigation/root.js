@@ -27,6 +27,7 @@ import RestaurantCoupon from "../screens/restaurantCoupon";
 import Login from "../screens/login";
 import Register from "../screens/register";
 import Register2 from "../screens/register2";
+import ResetPassword from "../screens/resetPassword";
 
 const RestaurantStack = createStackNavigator(
   {
@@ -63,6 +64,9 @@ const ProfileStack = createStackNavigator(
     },
     SettingAccount: {
       screen: SettingAccount,
+    },
+    ResetPassword: {
+      screen: ResetPassword,
     },
     RestaurantStack: {
       screen: RestaurantStack,

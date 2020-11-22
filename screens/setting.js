@@ -1,15 +1,13 @@
-import React, { Component, useState } from "react";
-import { Text, View, StyleSheet, Button, Switch } from "react-native";
+import React, { Component } from "react";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import settingAccount from "./settingAccount";
 import { useSelector, useDispatch } from "react-redux";
 import { logout as Logout } from "../store/action/authenAction";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
+import BackPage from "../components/BackPage";
 
 const setting = (props) => {
   const dispatch = useDispatch();
-  const [isNotifications, setNotifications] = useState(true);
-
-  const toggleSwitch = () => setNotifications(previousState => !previousState);
 
   const logout = () => {
     dispatch(Logout());
@@ -17,43 +15,50 @@ const setting = (props) => {
   };
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.settingContainer}>
-        <Button
+    <View style={styles.Container}>
+      <View style={styles.backContainer}>
+        <BackPage navigation={props} path={"Profile"}></BackPage>
+      </View>
+      <View style={styles.screen}>
+        <TouchableOpacity
+          style={styles.settingContainer}
           onPress={() => props.navigation.navigate("SettingProfile")}
-          title={"Profile"}
-        ></Button>
-        <AntDesign name="arrowright" size={24} color="black" />
-      </View>
-      <View style={styles.settingContainer}>
-        <Button
+        >
+          <Text>Profile</Text>
+          <AntDesign name="arrowright" size={24} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.settingContainer}
           onPress={() => props.navigation.navigate("SettingAccount")}
-          title={"Account"}
-        ></Button>
-        <AntDesign name="arrowright" size={24} color="black" />
-      </View>
-      <View style={styles.settingContainer}>
-        <Text>Notifications</Text>
-        <Switch trackColor={{ false: "#767577", true: "#16de1a" }} thumbColor={isNotifications ? "#ffffff" : "#f4f3f4"} value={isNotifications} onValueChange={toggleSwitch}/>
-      </View>
-      <View style={styles.settingContainer}>
-        <Button
+        >
+          <Text>Account</Text>
+          <AntDesign name="arrowright" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.settingContainer}
           onPress={() => {
             logout();
           }}
-          title={"Logout"}
-        ></Button>
-        <AntDesign name="arrowright" size={24} color="#c98f22" />
+        >
+          <Text style={{ color: "#c98f22" }}>Logout</Text>
+          <AntDesign name="arrowright" size={24} color="#c98f22" />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  Container: {
     flex: 1,
-    justifyContent: "center",
+  },
+  screen: {
+    flex: 2,
     alignItems: "center",
+  },
+  backContainer: {
+    padding: 10,
   },
   settingContainer: {
     flexDirection: "row",
@@ -61,11 +66,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "80%",
     height: "8%",
-    marginVertical: 15,
+    marginVertical: 5,
     backgroundColor: "#ebe9e6",
     borderRadius: 10,
-    padding: 5
-  }
+    padding: 5,
+  },
 });
 
 // setting.navigationOptions = (navigationData) => {
