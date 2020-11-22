@@ -92,7 +92,6 @@ const profile = (props) => {
             <View style={styles.settingContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  console.log("test");
                   props.navigation.navigate("Setting");
                 }}
               >
@@ -137,9 +136,14 @@ const profile = (props) => {
                     NOBIACCESS
                   </Text>
                   <Text
-                    style={{ width: "80%", color: "#A9C3BC", fontSize: 13 }}
+                    style={{
+                      width: "80%",
+                      color: "#A9C3BC",
+                      fontSize: 13,
+                      textAlign: "center",
+                    }}
                   >
-                    DesignnerDesignnerDesignnerDesignnerDesignnerDesignnerDesignnerDesignnerDesignnerDesignnerDesignner
+                    Web-Designner
                   </Text>
                   {userData.userId !== token ? (
                     <Button
@@ -183,6 +187,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     paddingRight: 10,
+    marginBottom: 10,
   },
   header: {
     // borderWidth: 1,

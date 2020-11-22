@@ -68,7 +68,7 @@ const home = (props) => {
             showsHorizontalScrollIndicator={false}
             style={styles.scrollView}
           >
-            <TOP10></TOP10>
+            <TOP10 navigation={props.navigation}></TOP10>
             {posts.map((data, index) => {
               return (
                 <Post

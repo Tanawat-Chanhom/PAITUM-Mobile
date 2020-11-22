@@ -18,7 +18,6 @@ export default function Button({
           style={{ width: iconSize.width, height: iconSize.height }}
         ></Image>
       ) : (
-        // <>{icon}</>
         <Text
           style={{
             color: color,

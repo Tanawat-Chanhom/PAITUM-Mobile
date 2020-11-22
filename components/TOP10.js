@@ -15,7 +15,9 @@ class Card extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          console.log(this.props.data.restaurantName);
+          this.props.navigation.navigate("RestaurantStack", {
+            id: this.props.data.id,
+          });
         }}
       >
         <View style={stylesCard.container}>
@@ -38,7 +40,6 @@ const stylesCard = StyleSheet.create({
   container: {
     width: 107,
     height: 144,
-    // borderWidth: 1,
     marginRight: 10,
     borderRadius: 10,
     overflow: "hidden",
@@ -70,26 +71,31 @@ export default class TOP10 extends Component {
           img:
             "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
           restaurantName: "80/20 Thailand",
+          id: 1,
         },
         {
           img:
             "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
           restaurantName: "80/20 Thailand",
+          id: 2,
         },
         {
           img:
             "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
           restaurantName: "80/20 Thailand",
+          id: 3,
         },
         {
           img:
             "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
           restaurantName: "80/20 Thailand",
+          id: 4,
         },
         {
           img:
             "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
           restaurantName: "80/20 Thailand",
+          id: 5,
         },
       ],
     };
@@ -119,7 +125,13 @@ export default class TOP10 extends Component {
               style={styles.scrollView}
             >
               {this.state.top10.map((data, index) => {
-                return <Card data={data} key={index}></Card>;
+                return (
+                  <Card
+                    data={data}
+                    key={index}
+                    navigation={this.props.navigation}
+                  ></Card>
+                );
               })}
             </ScrollView>
           </SafeAreaView>
