@@ -48,21 +48,6 @@ const map = (props) => {
     },
   ]);
 
-  const [achievements, setAchievements] = useState([
-    {
-      title: "NewBie",
-      coin: 50,
-      icon: "https://i.ibb.co/k3yPBXv/newbie-3x.png",
-      description: "Follow 5 restaurant and reviewer",
-    },
-    {
-      title: "Pop Star",
-      coin: 500,
-      icon: "https://i.ibb.co/f0sLxnJ/popstar-3x.png",
-      description: "300,000 Follower",
-    },
-  ]);
-
   return (
     <>
       <Header></Header>
@@ -149,14 +134,6 @@ const map = (props) => {
                 );
               })}
             </View>
-            <View style={styles.achieveContainer}>
-              <Text style={styles.achieveTitle}>Achievement</Text>
-              <View style={styles.contentContainer}>
-                {achievements.map((data, index) => {
-                  return <Achievement data={data} key={index}></Achievement>;
-                })}
-              </View>
-            </View>
           </ScrollView>
         </SafeAreaView>
       </View>
@@ -209,17 +186,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-  },
-  achieveContainer: {
-    marginBottom: 40,
-  },
-  achieveTitle: {
-    color: "#E29821",
-    textAlign: "center",
-    fontSize: 30,
-    paddingTop: 40,
-    marginBottom: 10,
-    fontWeight: "600",
+    marginBottom: 35,
   },
 });
 

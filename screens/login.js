@@ -17,7 +17,7 @@ const login = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   if (token !== null) {
-    props.navigation.navigate("CreatePost");
+    props.navigation.navigate("Achievement");
   }
 
   function Login() {

@@ -28,6 +28,7 @@ import Login from "../screens/login";
 import Register from "../screens/register";
 import Register2 from "../screens/register2";
 import ResetPassword from "../screens/resetPassword";
+import Achievement from "../screens/achievement";
 
 const RestaurantStack = createStackNavigator(
   {
@@ -141,8 +142,8 @@ const TabNavigator = createBottomTabNavigator(
         },
       },
     },
-    CreatePost: {
-      screen: CreatePost,
+    Achievement: {
+      screen: Achievement,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (

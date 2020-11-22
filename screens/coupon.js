@@ -91,6 +91,9 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     position: "absolute",
   },
+  content: {
+    marginBottom: 10,
+  },
 });
 
 export default coupon;
