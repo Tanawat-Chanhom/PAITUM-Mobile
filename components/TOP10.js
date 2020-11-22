@@ -15,7 +15,7 @@ class Card extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.navigation.navigate("RestaurantStack", {
+          this.props.navigation.navigate("Restaurant", {
             id: this.props.data.id,
           });
         }}

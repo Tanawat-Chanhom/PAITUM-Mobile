@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import restaurantCoupon from "./restaurantCoupon";
 
-const restaurant = (props) => {
+const restaurant = ({ route, navigation }) => {
+  let id = navigation.getParam("id");
+  console.log(id);
   return (
     <View style={styles.screen}>
       <Text> Restaurant </Text>
