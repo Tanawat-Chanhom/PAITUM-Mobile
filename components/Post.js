@@ -6,10 +6,13 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  SafeAreaView,
+  ScrollView,
+  TextInput,
 } from "react-native";
 import Button from "./Button";
 import Carousel from "react-native-snap-carousel";
-import { useSelector } from "react-redux";
+import Comment from "./Comment";
 
 export default class Post extends Component {
   constructor(props) {
@@ -18,8 +21,11 @@ export default class Post extends Component {
       contentLayout: {},
       numberOfLines: 3,
       modelIsShow: false,
+      isShowComments: false,
       liked: props.data.detail.liked,
       userId: props.userId,
+      comments: props.data.detail.comments,
+      message: "",
     };
   }
 
@@ -75,6 +81,94 @@ export default class Post extends Component {
                 onPress={() => {
                   this.setState({
                     modelIsShow: false,
+                  });
+                }}
+              ></Button>
+            </View>
+          </Modal>
+        </View>
+        <View styl={styles.madelContainer}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.isShowComments}
+          >
+            <View style={styles.elementContainer}>
+              <View
+                style={[
+                  styles.modalView,
+                  {
+                    height: "80%",
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                  },
+                ]}
+              >
+                <SafeAreaView style={{ height: "100%" }}>
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.scrollView}
+                  >
+                    <View style={styles.commentBar}>
+                      <TextInput
+                        placeholder="Type Something"
+                        style={styles.commentInput}
+                        value={this.state.message}
+                        onChangeText={(text) => {
+                          this.setState({
+                            message: text,
+                          });
+                        }}
+                      ></TextInput>
+                      <View style={styles.commentIcon}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (this.state.message === "") {
+                              return null;
+                            }
+                            let updataArray = this.state.comments;
+                            updataArray.unshift({
+                              uid: "1234",
+                              avatar:
+                                "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                              message: this.state.message,
+                            });
+                            this.setState({
+                              message: "",
+                              comments: updataArray,
+                            });
+                          }}
+                        >
+                          <Image
+                            source={require("../assets/send.png")}
+                            style={{ width: 26, height: 26 }}
+                          ></Image>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    {this.state.comments.map((data) => {
+                      return <Comment data={data}></Comment>;
+                    })}
+                  </ScrollView>
+                </SafeAreaView>
+              </View>
+              <Button
+                title="Close"
+                style={styles.cancelButton}
+                color="#fff"
+                fontSize={16}
+                onPress={() => {
+                  this.setState({
+                    isShowComments: false,
                   });
                 }}
               ></Button>
@@ -184,11 +278,18 @@ export default class Post extends Component {
           ></Button>
           <Button
             title={
-              this.props.data.detail.comments >= 1000
-                ? (this.props.data.detail.comments / 1000).toFixed(1) + "K Com."
-                : this.props.data.detail.comments + " Com."
+              this.state.comments.length >= 1000
+                ? (this.state.comments.length / 1000).toFixed(1) + "K Com."
+                : this.state.comments.length + " Com."
             }
             style={styles.footerButton}
+            onPress={() => {
+              if (this.state.isShowComments === true) {
+                this.setState({ isShowComments: false });
+              } else {
+                this.setState({ isShowComments: true });
+              }
+            }}
           ></Button>
         </View>
       </View>
@@ -224,9 +325,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
   },
-  content: {
-    // borderWidth: 1,
-  },
+  content: {},
   postImages: {
     width: 300,
     height: 300,
@@ -302,6 +401,31 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
     margin: 10,
+  },
+  commentInput: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 40,
+    backgroundColor: "#F1F1F1",
+    borderRadius: 100,
+    flex: 1,
+    marginRight: 5,
+  },
+  commentBar: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginTop: 10,
+  },
+  commentIcon: {
+    width: 40,
+    aspectRatio: 1,
+    borderRadius: 100,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
