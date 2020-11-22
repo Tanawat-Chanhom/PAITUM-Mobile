@@ -99,7 +99,7 @@ const profile = (props) => {
           )}
           <View style={styles.screen}>
             <View style={styles.header}>
-              <View style={styles.imageCoverContainer}></View>
+              <View style={styles.imageCoverContainer} />
               <View style={styles.profileDetail}>
                 <View style={styles.profileHeader}>
                   <View style={styles.followContainer}>
