@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 export default class RestaurantCord extends Component {
   constructor() {
@@ -30,7 +30,14 @@ export default class RestaurantCord extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() => {
+          this.props.navigation.navigate("RestaurantStack", {
+            id: this.props.data.id,
+          });
+        }}
+      >
         <View style={styles.imageCover}>
           <Image
             source={{ uri: this.props.data.coverImg }}
@@ -55,7 +62,7 @@ export default class RestaurantCord extends Component {
             style={styles.avatar}
           ></Image>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

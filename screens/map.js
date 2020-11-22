@@ -14,6 +14,10 @@ import RestaurantCord from "../components/RestaurantCord";
 import Achievement from "../components/Achievement";
 
 const map = (props) => {
+  const [distance, setDistance] = useState(5);
+  const [findType, setFindType] = useState("Near Me");
+  const [search, setSearch] = useState("");
+
   const [restaurants, setRestaurants] = useState([
     {
       coverImg:
@@ -75,58 +79,84 @@ const map = (props) => {
                   style={styles.searchIcon}
                   source={require("../assets/search.png")}
                 ></Image>
-                <TextInput placeholder="Search" style={{ flex: 1 }}></TextInput>
+                <TextInput
+                  placeholder="Search"
+                  style={{ flex: 1 }}
+                  onChangeText={(text) => {
+                    setSearch(text);
+                  }}
+                  value={search}
+                ></TextInput>
               </View>
               <View style={styles.optionBar}>
                 <Button
                   title={"Near Me"}
                   fontSize={20}
+                  color={findType === "Near Me" ? "#E29821" : "#111"}
                   style={[styles.optionButton, { marginLeft: 0 }]}
+                  onPress={() => {
+                    setFindType("Near Me");
+                  }}
                 ></Button>
                 <Button
                   title={"Recommend"}
                   fontSize={20}
+                  color={findType === "Recommend" ? "#E29821" : "#111"}
                   style={[styles.optionButton, { marginRight: 0 }]}
+                  onPress={() => {
+                    setFindType("Recommend");
+                  }}
                 ></Button>
               </View>
               <View style={styles.optionBar}>
                 <Button
                   title={"5 Km."}
                   fontSize={20}
+                  color={distance === 5 ? "#E29821" : "#111"}
                   style={[styles.optionButton, { marginLeft: 0 }]}
+                  onPress={() => {
+                    setDistance(5);
+                  }}
                 ></Button>
                 <Button
                   title={"10 Km."}
                   fontSize={20}
+                  color={distance === 10 ? "#E29821" : "#111"}
                   style={styles.optionButton}
+                  onPress={() => {
+                    setDistance(10);
+                  }}
                 ></Button>
                 <Button
                   title={"20 Km."}
                   fontSize={20}
+                  color={distance === 20 ? "#E29821" : "#111"}
                   style={[styles.optionButton, { marginRight: 0 }]}
+                  onPress={() => {
+                    setDistance(20);
+                  }}
                 ></Button>
               </View>
             </View>
             <View style={styles.contentContainer}>
               {restaurants.map((data) => {
                 return (
-                  <RestaurantCord data={data} key={data.id}></RestaurantCord>
+                  <RestaurantCord
+                    data={data}
+                    key={data.id}
+                    navigation={props.navigation}
+                  ></RestaurantCord>
                 );
               })}
             </View>
-            <View achieveContainer>
+            <View style={styles.achieveContainer}>
               <Text style={styles.achieveTitle}>Achievement</Text>
               <View style={styles.contentContainer}>
-                {achievements.map((data) => {
-                  return <Achievement data={data}></Achievement>;
+                {achievements.map((data, index) => {
+                  return <Achievement data={data} key={index}></Achievement>;
                 })}
               </View>
             </View>
-            <Text> Map </Text>
-            <Button
-              onPress={() => props.navigation.navigate("RestaurantStack")}
-              title={"Restaurant"}
-            ></Button>
           </ScrollView>
         </SafeAreaView>
       </View>
@@ -142,7 +172,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   scrollView: {
-    borderWidth: 1,
     paddingTop: 20,
     height: "100%",
   },
@@ -182,7 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   achieveContainer: {
-    borderWidth: 1,
+    marginBottom: 40,
   },
   achieveTitle: {
     color: "#E29821",
