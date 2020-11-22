@@ -53,16 +53,6 @@ export default class Coupon extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        {this.state.isShow === true ? (
-          <View style={styles.qrContainer}>
-            <Image
-              source={{ uri: this.props.data.qr }}
-              style={styles.qrImage}
-            ></Image>
-          </View>
-        ) : (
-          <></>
-        )}
         <View style={styles.footer}>
           <View>
             <Text style={{ color: "#9C9797", fontSize: 13 }}>Expires</Text>
@@ -140,19 +130,5 @@ const styles = StyleSheet.create({
     marginRight: 13,
     backgroundColor: "#FFF",
     borderRadius: 300,
-  },
-  qrContainer: {
-    width: "100%",
-    aspectRatio: 1,
-    marginTop: 15,
-    borderRadius: 10,
-    backgroundColor: "#FFF",
-    overflow: "hidden",
-    padding: 10,
-  },
-  qrImage: {
-    width: "100%",
-    aspectRatio: 1,
-    borderRadius: 10,
   },
 });
