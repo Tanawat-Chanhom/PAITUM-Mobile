@@ -23,7 +23,7 @@ export default class Achievement extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: "50%",
+    width: "47%",
     maxWidth: 170,
     // height: 190,
     borderRadius: 10,
