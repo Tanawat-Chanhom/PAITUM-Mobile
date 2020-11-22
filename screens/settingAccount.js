@@ -19,7 +19,10 @@ const settingAccount = (props) => {
         <BackPage navigation={props} path={"Setting"}></BackPage>
       </View>
       <View style={styles.screen}>
-        <TouchableOpacity style={styles.settingContainer}>
+        <TouchableOpacity
+          style={styles.settingContainer}
+          onPress={() => props.navigation.navigate("ResetPassword")}
+        >
           <Text>Reset Password</Text>
           <AntDesign name="arrowright" size={24} color="black" />
         </TouchableOpacity>
