@@ -1,14 +1,27 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
+import BackPage from "../components/BackPage";
 
 const createPost = (props) => {
   return (
     <View style={styles.screen}>
-      <Text> Create Post </Text>
-      <Button
-        onPress={() => props.navigation.navigate("Home")}
-        title="Go to Home"
-      />
+      <BackPage navigation={props} path={"Home"} />
+      <SafeAreaView style={styles.safeAreaView}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          style={styles.scrollView}
+        >
+          <Text> Create Post </Text>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };
@@ -16,8 +29,11 @@ const createPost = (props) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  scrollView: {
+    height: "100%",
   },
 });
 

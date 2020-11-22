@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import restaurantCoupon from "./restaurantCoupon";
 
-const restaurant = ({ route, navigation }) => {
-  let id = navigation.getParam("id");
+const restaurant = (props) => {
+  let id = props.navigation.getParam("id");
   console.log(id);
   return (
     <View style={styles.screen}>
-      <Text> Restaurant </Text>
+      <Text> Restaurant {id}</Text>
       <Button
         onPress={() => props.navigation.navigate("CreatePost")}
         title={"Create Post"}
