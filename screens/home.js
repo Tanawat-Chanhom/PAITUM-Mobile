@@ -37,7 +37,20 @@ const home = (props) => {
           "Ratiorg got statues of different sizes as a present from CodeMaster for his birthday, each statue having an non-negative integer size. Since he likes to make things",
         view: 1000,
         like: 10000,
-        comments: 3000,
+        comments: [
+          {
+            uid: "1234",
+            avatar:
+              "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+            message: "TEST",
+          },
+          {
+            uid: "1234",
+            avatar:
+              "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+            message: "TEST",
+          },
+        ],
         liked: true,
       },
     },
@@ -61,7 +74,20 @@ const home = (props) => {
           "Ratiorg got statues of different sizes as a present from CodeMaster for his birthday, each statue having an non-negative integer size. Since he likes to make things",
         view: 1000,
         like: 10000,
-        comments: 3000,
+        comments: [
+          {
+            uid: "1234",
+            avatar:
+              "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+            message: "TEST",
+          },
+          {
+            uid: "1234",
+            avatar:
+              "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+            message: "TEST",
+          },
+        ],
         liked: false,
       },
     },
