@@ -9,15 +9,17 @@ import {
 } from "react-native";
 import Button from "./Button";
 import Carousel from "react-native-snap-carousel";
+import { useSelector } from "react-redux";
 
 export default class Post extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       contentLayout: {},
       numberOfLines: 3,
       modelIsShow: false,
-      liked: false,
+      liked: props.data.detail.liked,
+      userId: props.userId,
     };
   }
 
@@ -54,6 +56,16 @@ export default class Post extends Component {
                     });
                   }}
                 ></Button>
+                {this.state.userId === this.props.data.user.uid ? (
+                  <Button
+                    title={"Delet Post"}
+                    style={styles.deleteButton}
+                    color="#FFF"
+                    fontSize={16}
+                  ></Button>
+                ) : (
+                  <></>
+                )}
               </View>
               <Button
                 title="Cancel"
@@ -142,9 +154,20 @@ export default class Post extends Component {
           </View>
         </View>
         <View style={styles.footer}>
-          <Button title={"1000 View"} style={styles.footerButton}></Button>
           <Button
-            title={"12K Like"}
+            title={
+              this.props.data.detail.view >= 1000
+                ? (this.props.data.detail.view / 1000).toFixed(1) + "K View"
+                : this.props.data.detail.view + " View"
+            }
+            style={styles.footerButton}
+          ></Button>
+          <Button
+            title={
+              this.props.data.detail.like >= 1000
+                ? (this.props.data.detail.like / 1000).toFixed(1) + "K Like"
+                : this.props.data.detail.like + " Like"
+            }
             style={[
               styles.footerButton,
               {
@@ -159,7 +182,14 @@ export default class Post extends Component {
               }
             }}
           ></Button>
-          <Button title={"3K Com."} style={styles.footerButton}></Button>
+          <Button
+            title={
+              this.props.data.detail.comments >= 1000
+                ? (this.props.data.detail.comments / 1000).toFixed(1) + "K Com."
+                : this.props.data.detail.comments + " Com."
+            }
+            style={styles.footerButton}
+          ></Button>
         </View>
       </View>
     );
@@ -264,7 +294,13 @@ const styles = StyleSheet.create({
   viewRestaurant: {
     backgroundColor: "#F1F1F1",
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 15,
+    margin: 10,
+  },
+  deleteButton: {
+    backgroundColor: "#E16A6A",
+    padding: 20,
+    borderRadius: 15,
     margin: 10,
   },
 });

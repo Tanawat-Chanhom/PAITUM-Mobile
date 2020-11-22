@@ -11,6 +11,8 @@ const coupon = (props) => {
       description:
         "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
       exp: "10 - 12 - 2021",
+      qr:
+        "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
     },
     {
       image:
@@ -18,6 +20,8 @@ const coupon = (props) => {
       description:
         "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
       exp: "10 - 12 - 2021",
+      qr:
+        "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
     },
     {
       image:
@@ -25,6 +29,8 @@ const coupon = (props) => {
       description:
         "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
       exp: "10 - 12 - 2021",
+      qr:
+        "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
     },
   ]);
   return (

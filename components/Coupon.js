@@ -8,6 +8,8 @@ export default class Coupon extends Component {
     super();
     this.state = {
       numberOfLines: 3,
+      isShow: false,
+      isDelete: false,
     };
   }
 
@@ -19,6 +21,9 @@ export default class Coupon extends Component {
   );
 
   render() {
+    if (this.state.isDelete === true) {
+      return <></>;
+    }
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -48,6 +53,16 @@ export default class Coupon extends Component {
             </Text>
           </TouchableOpacity>
         </View>
+        {this.state.isShow === true ? (
+          <View style={styles.qrContainer}>
+            <Image
+              source={{ uri: this.props.data.qr }}
+              style={styles.qrImage}
+            ></Image>
+          </View>
+        ) : (
+          <></>
+        )}
         <View style={styles.footer}>
           <View>
             <Text style={{ color: "#9C9797", fontSize: 13 }}>Expires</Text>
@@ -62,12 +77,22 @@ export default class Coupon extends Component {
               style={styles.coinIcon}
               color="#E29821"
               fontSize={20}
+              onPress={() => {
+                this.setState({
+                  isDelete: true,
+                });
+              }}
             ></Button>
             <Button
               title={"USE"}
               style={styles.useButton}
               color="#E29821"
               fontSize={20}
+              onPress={() => {
+                this.state.isShow === true
+                  ? this.setState({ isShow: false })
+                  : this.setState({ isShow: true });
+              }}
             ></Button>
           </View>
         </View>
@@ -120,5 +145,19 @@ const styles = StyleSheet.create({
     marginRight: 13,
     backgroundColor: "#FFF",
     borderRadius: 300,
+  },
+  qrContainer: {
+    width: "100%",
+    aspectRatio: 1,
+    marginTop: 15,
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    overflow: "hidden",
+    padding: 10,
+  },
+  qrImage: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: 10,
   },
 });

@@ -10,8 +10,12 @@ import {
 import Header from "../components/Header";
 import TOP10 from "../components/TOP10";
 import Post from "../components/Post";
+import { useSelector } from "react-redux";
 
 const home = (props) => {
+  const token = useSelector((state) => {
+    return state.authenReducer.token;
+  });
   const posts = [
     {
       postId: "1",
@@ -34,6 +38,7 @@ const home = (props) => {
         view: 1000,
         like: 10000,
         comments: 3000,
+        liked: true,
       },
     },
     {
@@ -57,6 +62,7 @@ const home = (props) => {
         view: 1000,
         like: 10000,
         comments: 3000,
+        liked: false,
       },
     },
   ];
@@ -76,6 +82,7 @@ const home = (props) => {
                 <Post
                   data={data}
                   key={index}
+                  userId={token}
                   navigation={props.navigation}
                 ></Post>
               );

@@ -20,8 +20,8 @@ const profile = (props) => {
   const [userData, setUserData] = useState({
     userId: "1233",
     name: "NOBIACCESS",
-    followers: 1000,
-    following: 500,
+    followers: 999,
+    following: 5862,
     caption: "Web-Designner",
     avatar:
       "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
@@ -33,7 +33,7 @@ const profile = (props) => {
         user: {
           name: "Tanwat Chanhom1",
           createAt: "3 mins ago",
-          uid: 2,
+          uid: "1233",
           avatar:
             "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
         },
@@ -49,6 +49,7 @@ const profile = (props) => {
           view: 1000,
           like: 10000,
           comments: 3000,
+          liked: true,
         },
       },
       {
@@ -56,7 +57,7 @@ const profile = (props) => {
         user: {
           name: "Tanwat Chanhom1",
           createAt: "3 mins ago",
-          uid: 2,
+          uid: "1233",
           avatar:
             "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
         },
@@ -72,6 +73,7 @@ const profile = (props) => {
           view: 1000,
           like: 10000,
           comments: 3000,
+          liked: true,
         },
       },
     ],
@@ -112,7 +114,11 @@ const profile = (props) => {
               <View style={styles.profileDetail}>
                 <View style={styles.profileHeader}>
                   <View style={styles.followContainer}>
-                    <Text style={{ color: "#E29821" }}>100K</Text>
+                    <Text style={{ color: "#E29821" }}>
+                      {userData.followers >= 1000
+                        ? (userData.followers / 1000).toFixed(1) + "K"
+                        : userData.followers}
+                    </Text>
                     <Text style={{ color: "#E29821" }}>Followers</Text>
                   </View>
                   <View style={styles.avatarContainer}>
@@ -122,7 +128,11 @@ const profile = (props) => {
                     ></Image>
                   </View>
                   <View style={styles.followContainer}>
-                    <Text style={{ color: "#E29821" }}>100K</Text>
+                    <Text style={{ color: "#E29821" }}>
+                      {userData.following >= 1000
+                        ? (userData.following / 1000).toFixed(1) + "K"
+                        : userData.following}
+                    </Text>
                     <Text style={{ color: "#E29821" }}>Followers</Text>
                   </View>
                 </View>
@@ -164,6 +174,7 @@ const profile = (props) => {
                 return (
                   <Post
                     data={data}
+                    userId={token}
                     navigation={props.navigation}
                     key={index}
                   ></Post>
