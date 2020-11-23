@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     backgroundColor: "#F1F1F1",
-    zIndex: 999,
+    zIndex: 9999,
     width: "100%",
   },
   alertText: {

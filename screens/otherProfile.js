@@ -19,16 +19,43 @@ const profile = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
-  console.log(props.navigation);
   useEffect(() => {
     let otherUserId = props.navigation.getParam("id");
     if (otherUserId !== undefined) {
       axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
         setUserData(res.data.user);
       });
+      axios
+        .get(SERVER + "/restaurant/all")
+        .then((res) => {
+          if (res.data.restaurants.length !== 0) {
+            let restaurants = res.data.restaurants;
+            let myPosts = [];
+            restaurants.map((data) => {
+              data.review.map((reviewData, index) => {
+                if (reviewData.user.id === otherUserId) {
+                  myPosts.push(reviewData);
+                }
+              });
+            });
+            setPosts(myPosts);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [props]);
-  const [userData, setUserData] = useState(token);
+  const [userData, setUserData] = useState({
+    coverImage:
+      "https://img3.goodfon.com/wallpaper/nbig/8/f9/android-l-material-design-3707.jpg",
+    follower: 0,
+    following: 0,
+    avatar:
+      "https://cahsi.utep.edu/wp-content/uploads/kisspng-computer-icons-user-clip-art-user-5abf13db5624e4.1771742215224718993529.png",
+    posts: [],
+  });
+  const [posts, setPosts] = useState([]);
   return (
     <>
       <SafeAreaView style={styles.safeAreaView}>
@@ -120,7 +147,7 @@ const profile = (props) => {
               </View>
             </View>
             <View>
-              {userData.posts.map((data, index) => {
+              {posts.map((data, index) => {
                 return (
                   <Post
                     data={data}

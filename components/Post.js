@@ -62,7 +62,7 @@ export default class Post extends Component {
                     });
                   }}
                 ></Button>
-                {this.state.userId === this.props.data.user.uid ? (
+                {/* {this.state.userId === this.props.data.user.id ? (
                   <Button
                     title={"Delet Post"}
                     style={styles.deleteButton}
@@ -71,7 +71,7 @@ export default class Post extends Component {
                   ></Button>
                 ) : (
                   <></>
-                )}
+                )} */}
               </View>
               <Button
                 title="Cancel"

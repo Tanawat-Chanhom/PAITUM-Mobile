@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -11,47 +11,77 @@ import {
 import Header from "../components/Header";
 import Button from "../components/Button";
 import RestaurantCord from "../components/RestaurantCord";
-import Achievement from "../components/Achievement";
+import axios from "axios";
+import { SERVER } from "../util/server.json";
+import Alert from "../components/MyAlert";
 
 const map = (props) => {
   const [distance, setDistance] = useState(5);
   const [findType, setFindType] = useState("Near Me");
   const [search, setSearch] = useState("");
 
-  const [restaurants, setRestaurants] = useState([
-    {
-      coverImg:
-        "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-      restaurantName: "AL MUSTAFA1",
-      avatar:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      star: 3,
-      id: 1,
-    },
-    {
-      coverImg:
-        "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-      restaurantName: "AL MUSTAFA2",
-      avatar:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      star: 5,
-      id: 2,
-    },
-    {
-      coverImg:
-        "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-      restaurantName: "AL MUSTAFA3",
-      avatar:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      star: 1,
-      id: 3,
-    },
-  ]);
+  useEffect(() => {
+    let body = {
+      latitude: 0,
+      longitude: 0,
+      radius: distance,
+    };
+    navigator.geolocation.getCurrentPosition((position) => {
+      body.latitude = position.coords.latitude;
+      body.longitude = position.coords.longitude;
+      console.log(body);
+      if (findType === "Recommend") {
+        setDistance(0);
+        axios
+          .get(SERVER + "/restaurant/all")
+          .then((res) => {
+            if (res.data.restaurants.length !== 0) {
+              setRestaurants(res.data.restaurants);
+            } else {
+              setRestaurants([]);
+              setAlert(true);
+              setErrorMessage("Not Found");
+            }
+          })
+          .catch((err) => {
+            setAlert(true);
+            setErrorMessage("Server error.");
+          });
+      } else {
+        axios
+          .post(SERVER + "/restaurant/near", body)
+          .then((res) => {
+            if (res.data.restaurants.length !== 0) {
+              setRestaurants(res.data.restaurants);
+            } else {
+              setRestaurants([]);
+              setAlert(true);
+              setErrorMessage("Not Found");
+            }
+          })
+          .catch((err) => {
+            setAlert(true);
+            setErrorMessage("Server error.");
+          });
+      }
+    });
+  }, [distance, findType, search]);
+
+  const [restaurants, setRestaurants] = useState([]);
+  const [alert, setAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   return (
     <>
       <Header></Header>
       <View style={styles.screen}>
+        <Alert
+          open={alert}
+          value={errorMessage}
+          close={() => {
+            setAlert(false);
+          }}
+        ></Alert>
         <SafeAreaView style={styles.safeAreaView}>
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -59,7 +89,7 @@ const map = (props) => {
             style={styles.scrollView}
           >
             <View style={styles.searchContainer}>
-              <View style={styles.searchBar}>
+              {/* <View style={styles.searchBar}>
                 <Image
                   style={styles.searchIcon}
                   source={require("../assets/search.png")}
@@ -72,7 +102,7 @@ const map = (props) => {
                   }}
                   value={search}
                 ></TextInput>
-              </View>
+              </View> */}
               <View style={styles.optionBar}>
                 <Button
                   title={"Near Me"}

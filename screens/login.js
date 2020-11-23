@@ -30,7 +30,6 @@ const login = (props) => {
     axios
       .post(SERVER + "/user/login", body)
       .then((res) => {
-        console.log(res.data);
         if (res.data.status === 200) {
           dispatch(setToken(res.data.user));
         } else {
@@ -39,7 +38,6 @@ const login = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
         setAlert(true);
         setErrorMessage(err.message || "Server error.");
       });

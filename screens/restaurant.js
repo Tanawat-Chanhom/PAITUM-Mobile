@@ -1,80 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
   StyleSheet,
-  Button,
   SafeAreaView,
   ScrollView,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import Backpage from "../components/BackPage";
-import restaurantCoupon from "./restaurantCoupon";
+import Constants from "expo-constants";
+import Button from "../components/Button";
+import Post from "../components/Post";
+import { SERVER } from "../util/server.json";
+import axios from "axios";
 
 const restaurant = (props) => {
   const [data, setData] = useState({
-    restaurantName: "AL MUSTAFA",
-    avatar:
-      "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-    coverImage:
-      "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-    star: 5,
-    coin: 10000,
-    following: 100000,
-    promotions: [],
-    coupon: [],
-    About:
-      "Ratiorg got statues of different sizes as a present from CodeMaster for his birthday, each statue having an non-negative integer size. Since he likes to make things",
-    posts: [
-      {
-        postId: "1",
-        user: {
-          name: "Tanwat Chanhom1",
-          createAt: "3 mins ago",
-          uid: 2,
-          avatar:
-            "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-        },
-        detail: {
-          restaurantId: 2,
-          image: [
-            "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-            "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-            "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-          ],
-          discription:
-            "Ratiorg got statues of different sizes as a present from CodeMaster for his birthday, each statue having an non-negative integer size. Since he likes to make things",
-          view: 1000,
-          like: 10000,
-          comments: [
-            {
-              uid: "1234",
-              avatar:
-                "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-              message: "TEST",
-            },
-            {
-              uid: "1234",
-              avatar:
-                "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-              message: "TEST",
-            },
-          ],
-          liked: true,
-        },
-      },
-    ],
+    follower: [],
+    review: [],
   });
+  const [Star, setStar] = useState([]);
+
+  genStar = () => {
+    let newArray = [];
+    for (let index = 0; index < data.star; index++) {
+      newArray.push(
+        <Image
+          source={require("../assets/star.png")}
+          style={styles.starIcon}
+        ></Image>
+      );
+    }
+    setStar(newArray);
+  };
 
   let id = props.navigation.getParam("id");
-  console.log(id);
+
+  useEffect(() => {
+    axios
+      .get(SERVER + "/restaurant/all")
+      .then((res) => {
+        if (res.data.restaurants.length !== 0) {
+          let restaurants = res.data.restaurants;
+          let index = restaurants.findIndex((x) => x.id === id);
+          setData(restaurants[index]);
+          genStar();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
+
   return (
-    <View style={styles.screen}>
+    <>
       <Backpage
         navigation={props}
         path={"Home"}
         isFlow={true}
-        magin={20}
+        magin={10}
       ></Backpage>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
@@ -82,12 +67,77 @@ const restaurant = (props) => {
           showsHorizontalScrollIndicator={false}
           style={styles.scrollView}
         >
+          <Image
+            source={{ uri: data.coverImg }}
+            style={styles.imageCover}
+          ></Image>
           <View style={styles.screen}>
-            <Image
-              source={{ uri: data.coverImage }}
-              style={styles.imageCover}
-            ></Image>
             <View style={styles.imageCoverContainer} />
+            <View style={[styles.coverImage, styles.profileContainer]}>
+              <Image
+                source={{ uri: data.avatar }}
+                style={styles.avatar}
+              ></Image>
+              <Text style={styles.restaurantTitle}>{data.restaurantName}</Text>
+              <View style={styles.starContainer}>
+                {Star.map((data) => {
+                  return data;
+                })}
+              </View>
+            </View>
+            <View style={styles.actionContainer}>
+              <TouchableOpacity>
+                <Image
+                  source={require("../assets/followButton.png")}
+                  style={styles.actionButton}
+                ></Image>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate("CreatePost")}
+              >
+                <Image
+                  source={require("../assets/createPost.png")}
+                  style={styles.actionButton}
+                ></Image>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.content}>
+              <View style={styles.flexRow}>
+                <View>
+                  <Text style={styles.statusText}>Coin</Text>
+                  <Text style={styles.statusText}>{data.coin}</Text>
+                </View>
+                <View>
+                  <Text style={styles.statusText}>Follower</Text>
+                  <Text style={styles.statusText}>{data.follower.length}</Text>
+                </View>
+              </View>
+              <View style={styles.flexRow}>
+                <Button
+                  title={"Promotion"}
+                  fontSize={20}
+                  style={styles.navigateButton}
+                  onPress={() => props.navigation.navigate("Promation")}
+                ></Button>
+                <Button
+                  title={"Coupon"}
+                  fontSize={20}
+                  style={styles.navigateButton}
+                  onPress={() => props.navigation.navigate("RestaurantCoupon")}
+                ></Button>
+              </View>
+              <View>
+                <Text style={styles.aboutText}>About</Text>
+                <Text style={styles.descriptionText}>{data.about}</Text>
+              </View>
+              <View style={styles.postsContainer}>
+                {data.review.map((data) => {
+                  return (
+                    <Post data={data} navigation={props.navigation}></Post>
+                  );
+                })}
+              </View>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -111,7 +161,7 @@ const restaurant = (props) => {
         onPress={() => props.navigation.navigate("Restaurant")}
         title={"Restaurant"}
       ></Button>
-    </View>
+    </>
   );
 };
 
@@ -120,18 +170,100 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     paddingRight: 10,
+    // backgroundColor: "#fff",
+  },
+  safeAreaView: {
+    marginTop: -Constants.statusBarHeight,
+    backgroundColor: "#fff",
+  },
+  scrollView: {
+    height: "100%",
+    backgroundColor: "#fff",
   },
   scrollView: {
     height: "100%",
   },
   imageCoverContainer: {
     width: "100%",
-    height: 250,
+    height: 50,
   },
   imageCover: {
     position: "absolute",
     width: "100%",
     height: 250,
+  },
+  profileContainer: {
+    height: 200,
+    display: "flex",
+    alignItems: "center",
+  },
+  restaurantTitle: {
+    fontSize: 25,
+    color: "#fff",
+    fontWeight: "700",
+  },
+  avatar: {
+    width: 110,
+    height: 110,
+    borderRadius: 100,
+  },
+  starContainer: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  starIcon: {
+    width: 20,
+    height: 20,
+    marginLeft: 2,
+    marginRight: 2,
+  },
+  actionContainer: {
+    height: 23,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  actionButton: {
+    transform: [{ translateY: -23 }],
+    marginLeft: 10,
+    marginRight: 10,
+    width: 45,
+    height: 45,
+  },
+  content: {},
+  flexRow: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 10,
+    marginBottom: 10,
+    justifyContent: "space-around",
+  },
+  statusText: {
+    textAlign: "center",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#E29821",
+  },
+  navigateButton: {
+    backgroundColor: "#f1f1f1",
+    padding: 10,
+    borderRadius: 10,
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  aboutText: {
+    fontSize: 25,
+    color: "#E29821",
+    fontWeight: "700",
+  },
+  descriptionText: {
+    fontSize: 15,
+    color: "#403D56",
+    fontWeight: "700",
+  },
+  postsContainer: {
+    marginTop: 20,
   },
 });
 

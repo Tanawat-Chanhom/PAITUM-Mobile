@@ -19,16 +19,31 @@ const profile = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
-  console.log(token);
   useEffect(() => {
-    let otherUserId = props.navigation.getParam("id");
-    if (otherUserId !== undefined) {
-      axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
-        setUserData(res.data.user);
+    axios
+      .get(SERVER + "/restaurant/all")
+      .then((res) => {
+        if (res.data.restaurants.length !== 0) {
+          let restaurants = res.data.restaurants;
+          let myPosts = [];
+          restaurants.map((data) => {
+            data.review.map((reviewData, index) => {
+              console.log(reviewData.user.id);
+              if (reviewData.user.id === token.id) {
+                myPosts.push(reviewData);
+              }
+            });
+          });
+          setPosts(myPosts);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }
-  }, [props]);
+  }, []);
   const [userData, setUserData] = useState(token);
+  const [posts, setPosts] = useState([]);
+  console.log(posts);
   // Object {
   //   "avatar": "http://www.wa11papers.com/assets/previews/nature-person-sunset-man-sunrise-silhouette-adventure-wallpaper-5343-preview-1a99876c.jpg",
   //   "coin": 0,
@@ -133,7 +148,7 @@ const profile = (props) => {
               </View>
             </View>
             <View>
-              {userData.posts.map((data, index) => {
+              {posts.map((data, index) => {
                 return (
                   <Post
                     data={data}

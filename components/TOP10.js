@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Button from "./Button";
+import axios from "axios";
+import { SERVER } from "../util/server.json";
 
 class Card extends Component {
   render() {
@@ -22,7 +24,7 @@ class Card extends Component {
       >
         <View style={stylesCard.container}>
           <Image
-            source={{ uri: this.props.data.img }}
+            source={{ uri: this.props.data.avatar }}
             style={stylesCard.image}
           />
           <View style={stylesCard.footer}>
@@ -48,13 +50,13 @@ const stylesCard = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    backgroundColor: "#FFFFFFA1",
+    backgroundColor: "#111111",
   },
   text: {
     margin: 5,
     textAlign: "center",
     fontWeight: "bold",
-    color: "#413C58",
+    color: "#FFF",
   },
   image: {
     width: "100%",
@@ -66,39 +68,23 @@ export default class TOP10 extends Component {
   constructor() {
     super();
     this.state = {
-      top10: [
-        {
-          img:
-            "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
-          restaurantName: "80/20 Thailand",
-          id: 1,
-        },
-        {
-          img:
-            "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
-          restaurantName: "80/20 Thailand",
-          id: 2,
-        },
-        {
-          img:
-            "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
-          restaurantName: "80/20 Thailand",
-          id: 3,
-        },
-        {
-          img:
-            "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
-          restaurantName: "80/20 Thailand",
-          id: 4,
-        },
-        {
-          img:
-            "https://cdn.asiatatler.com/asiatatler/i/th/2019/05/23151409-2l4a8224_article_930x600.jpg",
-          restaurantName: "80/20 Thailand",
-          id: 5,
-        },
-      ],
+      top10: [],
     };
+  }
+
+  componentDidMount() {
+    axios
+      .get(SERVER + "/restaurant/all")
+      .then((res) => {
+        if (res.data.restaurants.length !== 0) {
+          this.setState({
+            top10: res.data.restaurants,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   render() {
@@ -142,9 +128,7 @@ export default class TOP10 extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // borderWidth: 1,
-  },
+  container: {},
   header: {
     display: "flex",
     flexDirection: "row",
@@ -153,7 +137,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   content: {
-    // borderWidth: 1,
     display: "flex",
     flexDirection: "row",
   },
