@@ -28,7 +28,7 @@ export default class Coupon extends Component {
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Image
-            source={{ uri: this.props.data.image }}
+            source={{ uri: this.props.data.avatar }}
             style={styles.icon}
           ></Image>
           <TouchableOpacity
@@ -78,6 +78,7 @@ export default class Coupon extends Component {
               color="#E29821"
               fontSize={20}
               onPress={() => {
+                this.props.delete(this.props.data.coin);
                 this.setState({
                   isDelete: true,
                 });

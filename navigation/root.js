@@ -29,6 +29,7 @@ import Register from "../screens/register";
 import Register2 from "../screens/register2";
 import ResetPassword from "../screens/resetPassword";
 import Achievement from "../screens/achievement";
+import OtherProfile from "../screens/otherProfile";
 
 const RestaurantStack = createStackNavigator(
   {
@@ -43,6 +44,9 @@ const RestaurantStack = createStackNavigator(
     },
     RestaurantCoupon: {
       screen: RestaurantCoupon,
+    },
+    OtherProfile: {
+      screen: OtherProfile,
     },
   },
   {
@@ -87,6 +91,9 @@ const HomeStack = createStackNavigator(
     },
     RestaurantStack: {
       screen: RestaurantStack,
+    },
+    OtherProfile: {
+      screen: OtherProfile,
     },
   },
   {
@@ -167,6 +174,7 @@ const TabNavigator = createBottomTabNavigator(
     },
     ProfileStack: {
       screen: ProfileStack,
+
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
           return (

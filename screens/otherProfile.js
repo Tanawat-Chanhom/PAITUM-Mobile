@@ -19,7 +19,7 @@ const profile = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
-  console.log(token);
+  console.log(props.navigation);
   useEffect(() => {
     let otherUserId = props.navigation.getParam("id");
     if (otherUserId !== undefined) {
@@ -29,19 +29,6 @@ const profile = (props) => {
     }
   }, [props]);
   const [userData, setUserData] = useState(token);
-  // Object {
-  //   "avatar": "http://www.wa11papers.com/assets/previews/nature-person-sunset-man-sunrise-silhouette-adventure-wallpaper-5343-preview-1a99876c.jpg",
-  //   "coin": 0,
-  //   "coupon": Array [],
-  //   "coverImage": "https://www.shutterstock.com/blog/wp-content/uploads/sites/5/2017/08/nature-design.jpg",
-  //   "follower": Array [],
-  //   "following": Array [],
-  //   "followingRestaurant": Array [],
-  //   "id": "OfPQktW6mzGZ58B60lYD",
-  //   "password": "2",
-  //   "posts": Array [],
-  //   "username": "2",
-  // }
   return (
     <>
       <SafeAreaView style={styles.safeAreaView}>

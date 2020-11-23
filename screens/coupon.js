@@ -1,38 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import Header from "../components/Header";
 import Coupon from "../components/Coupon";
+import { useSelector, useDispatch } from "react-redux";
+import { setCoin as setUserCoin } from "../store/action/authenAction";
 
 const coupon = (props) => {
-  const [coupon, setCoupon] = useState([
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-      qr:
-        "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
-    },
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-      qr:
-        "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
-    },
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-      qr:
-        "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
-    },
-  ]);
+  const token = useSelector((state) => {
+    return state.authenReducer.token;
+  });
+  const dispatch = useDispatch();
+  useEffect(() => {
+    setUserData(token);
+  }, [token]);
+  const [userData, setUserData] = useState({
+    coupon: [],
+  });
+  const [Coin, setCoin] = useState(token.coin);
   return (
     <>
       <Header></Header>
@@ -59,13 +43,22 @@ const coupon = (props) => {
               <Text
                 style={{ fontSize: 35, fontWeight: "600", color: "#403D56" }}
               >
-                215
+                {Coin}
               </Text>
               <Text style={{ color: "#403D56" }}>Total coin</Text>
             </View>
             <View style={styles.content}>
-              {coupon.map((data, index) => {
-                return <Coupon data={data} key={index}></Coupon>;
+              {userData.coupon.map((data, index) => {
+                return (
+                  <Coupon
+                    data={data}
+                    key={index}
+                    delete={(coin) => {
+                      dispatch(setUserCoin(coin));
+                      setCoin(Number(Coin) + Number(coin));
+                    }}
+                  ></Coupon>
+                );
               })}
             </View>
           </ScrollView>
@@ -83,6 +76,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     display: "flex",
     flexDirection: "column",
+  },
+  scrollView: {
+    height: "100%",
   },
   haeder: {
     width: "100%",
