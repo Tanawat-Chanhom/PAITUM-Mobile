@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -12,62 +12,36 @@ import Constants from "expo-constants";
 import Button from "../components/Button";
 import Post from "../components/Post";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { SERVER } from "../util/server.json";
 
 const profile = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
-  const [userData, setUserData] = useState({
-    userId: "1233",
-    name: "NOBIACCESS",
-    followers: 999,
-    following: 5862,
-    caption: "Web-Designner",
-    avatar:
-      "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-    coverImage:
-      "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-    posts: [
-      {
-        postId: "1",
-        user: {
-          name: "Tanwat Chanhom1",
-          createAt: "3 mins ago",
-          uid: "1233",
-          avatar:
-            "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-        },
-        detail: {
-          restaurantId: 2,
-          image: [
-            "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-            "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-            "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-          ],
-          discription:
-            "Ratiorg got statues of different sizes as a present from CodeMaster for his birthday, each statue having an non-negative integer size. Since he likes to make things",
-          view: 1000,
-          like: 10000,
-          liked: true,
-          comments: [
-            {
-              uid: "1234",
-              avatar:
-                "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-              message: "TEST",
-            },
-            {
-              uid: "1234",
-              avatar:
-                "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-              message: "TEST",
-            },
-          ],
-        },
-      },
-    ],
-  });
-
+  useEffect(() => {
+    let otherUserId = props.navigation.getParam("id");
+    console.log(otherUserId);
+    if (otherUserId !== undefined) {
+      axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
+        console.log(res);
+        setUserData(res.data.user);
+      });
+    }
+  }, [props.navigation.getParam("id")]);
+  const [userData, setUserData] = useState(token);
+  //   "caption": "Web-Designner",
+  //   "coin": 0,
+  //   "coupon": Array [],
+  //   "coverImage": "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
+  //   "follower": Array [],
+  //   "following": Array [],
+  //   "followingRestaurant": Array [],
+  //   "id": "4Ul28D3In8RUstW5wPr8",
+  //   "password": "1",
+  //   "posts": Array [],
+  //   "username": "1",
+  // }
   return (
     <>
       <SafeAreaView style={styles.safeAreaView}>
@@ -81,7 +55,7 @@ const profile = (props) => {
             style={styles.imageCover}
           ></Image>
 
-          {userData.userId === token ? (
+          {userData.id === token.id ? (
             <View style={styles.settingContainer}>
               <TouchableOpacity
                 onPress={() => {
@@ -104,9 +78,9 @@ const profile = (props) => {
                 <View style={styles.profileHeader}>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
-                      {userData.followers >= 1000
-                        ? (userData.followers / 1000).toFixed(1) + "K"
-                        : userData.followers}
+                      {userData.follower.length >= 1000
+                        ? (userData.follower.length / 1000).toFixed(1) + "K"
+                        : userData.follower.length}
                     </Text>
                     <Text style={{ color: "#E29821" }}>Followers</Text>
                   </View>
@@ -118,9 +92,9 @@ const profile = (props) => {
                   </View>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
-                      {userData.following >= 1000
-                        ? (userData.following / 1000).toFixed(1) + "K"
-                        : userData.following}
+                      {userData.following.length >= 1000
+                        ? (userData.following.length / 1000).toFixed(1) + "K"
+                        : userData.following.length}
                     </Text>
                     <Text style={{ color: "#E29821" }}>Following</Text>
                   </View>
@@ -146,7 +120,7 @@ const profile = (props) => {
                   >
                     Web-Designner
                   </Text>
-                  {userData.userId !== token ? (
+                  {userData.id !== token.id ? (
                     <Button
                       title="FOLLOW"
                       style={styles.followButton}

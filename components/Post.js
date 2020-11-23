@@ -155,8 +155,8 @@ export default class Post extends Component {
                         </TouchableOpacity>
                       </View>
                     </View>
-                    {this.state.comments.map((data) => {
-                      return <Comment data={data}></Comment>;
+                    {this.state.comments.map((data, index) => {
+                      return <Comment data={data} key={index}></Comment>;
                     })}
                   </ScrollView>
                 </SafeAreaView>
@@ -179,7 +179,9 @@ export default class Post extends Component {
           <View style={styles.profile}>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.navigate("Profile");
+                this.props.navigation.navigate("Profile", {
+                  id: this.props.data.user.id,
+                });
               }}
             >
               <Image

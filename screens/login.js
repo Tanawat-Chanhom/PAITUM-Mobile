@@ -3,6 +3,8 @@ import { Text, View, StyleSheet, Image, TextInput } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
+import { SERVER } from "../util/server.json";
+import axios from "axios";
 
 import { setToken } from "../store/action/authenAction";
 
@@ -21,12 +23,26 @@ const login = (props) => {
   }
 
   function Login() {
-    if (username === "1" && password === "1") {
-      dispatch(setToken("1233"));
-    } else {
-      setAlert(true);
-      setErrorMessage("Uesrname or Password is incorrect.");
-    }
+    let body = {
+      username: username,
+      password: password,
+    };
+    axios
+      .post(SERVER + "/user/login", body)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.status === 200) {
+          dispatch(setToken(res.data.user));
+        } else {
+          setAlert(true);
+          setErrorMessage(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setAlert(true);
+        setErrorMessage(err.message || "Server error.");
+      });
   }
 
   return (

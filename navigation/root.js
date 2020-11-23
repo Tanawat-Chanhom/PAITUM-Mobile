@@ -165,7 +165,7 @@ const TabNavigator = createBottomTabNavigator(
         },
       },
     },
-    Profile: {
+    ProfileStack: {
       screen: ProfileStack,
       navigationOptions: {
         tabBarIcon: (tabInfo) => {
