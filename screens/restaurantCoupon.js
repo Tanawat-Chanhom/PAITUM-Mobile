@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import BackPage from "../components/BackPage";
 import ReCoupon from "../components/ReCoupon";
 import Alert from "../components/MyAlert";
@@ -18,12 +25,20 @@ const restaurantCoupon = (props) => {
   let coupon = props.navigation.getParam("coupon");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setCoupons(coupon);
     setCoin(token.coin);
   }, [coupon, token, rerender]);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRerender(rerender + 1);
+      setRefreshing(false);
+    }, 1500);
+  };
   return (
     <View style={styles.screen}>
       <Alert
@@ -38,6 +53,9 @@ const restaurantCoupon = (props) => {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           <View style={{ height: 20 }}>
             <BackPage navigation={props} path={"Restaurant"}></BackPage>
@@ -77,6 +95,7 @@ const restaurantCoupon = (props) => {
                     if (couponCoin === false) {
                       setAlert(true);
                       setErrorMessage("Out Of Coin!");
+                      setRerender(rerender + 1);
                     }
                   }}
                 ></ReCoupon>
@@ -97,6 +116,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     display: "flex",
     flexDirection: "column",
+  },
+  scrollView: {
+    height: "100%",
   },
   haeder: {
     width: "100%",

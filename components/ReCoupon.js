@@ -72,10 +72,12 @@ export default class Coupon extends Component {
               onPress={() => {
                 let coin = this.props.userCoin;
                 if (coin >= this.props.data.coin) {
-                  this.props.delete(this.props.data.coin, this.props.data);
-                  this.setState({
-                    isDelete: true,
-                  });
+                  if (this.props.data !== undefined) {
+                    this.props.delete(this.props.data.coin, this.props.data);
+                    this.setState({
+                      isDelete: true,
+                    });
+                  }
                 } else {
                   this.props.delete(false);
                 }
