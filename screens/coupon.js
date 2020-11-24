@@ -6,17 +6,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCoin as setUserCoin } from "../store/action/authenAction";
 
 const coupon = (props) => {
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
-  });
   const dispatch = useDispatch();
-  useEffect(() => {
-    setUserData(token);
-  }, [token]);
+  const token = useSelector((state) => state.authenReducer.token);
   const [userData, setUserData] = useState({
     coupon: [],
   });
-  const [Coin, setCoin] = useState(token.coin);
+  const [coin, setCoin] = useState(0);
+  const [rerender, setRerender] = useState(0);
+
+  useEffect(() => {
+    setUserData(token);
+    setCoin(token.coin);
+  }, [token, rerender]);
+
   return (
     <>
       <Header></Header>
@@ -43,7 +45,7 @@ const coupon = (props) => {
               <Text
                 style={{ fontSize: 35, fontWeight: "600", color: "#403D56" }}
               >
-                {Coin}
+                {coin}
               </Text>
               <Text style={{ color: "#403D56" }}>Total coin</Text>
             </View>
@@ -53,9 +55,10 @@ const coupon = (props) => {
                   <Coupon
                     data={data}
                     key={index}
-                    delete={(coin) => {
-                      dispatch(setUserCoin(coin));
-                      setCoin(Number(Coin) + Number(coin));
+                    delete={(couponCoin) => {
+                      let newCoin = Number(coin) + Number(couponCoin);
+                      dispatch(setUserCoin(newCoin));
+                      setRerender(rerender + 1);
                     }}
                   ></Coupon>
                 );

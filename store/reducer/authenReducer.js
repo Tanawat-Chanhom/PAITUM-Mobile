@@ -13,7 +13,9 @@ export default authenReducer = (state = initialState, action) => {
       return { ...state, token: null };
     case SET_COIN:
       let coin = action.coin;
-      return { ...state, coin: coin };
+      let newState = state;
+      newState.token.coin = coin;
+      return newState;
     default:
       return state;
   }
