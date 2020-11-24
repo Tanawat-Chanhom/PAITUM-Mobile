@@ -1,4 +1,9 @@
-import { SET_TOKEN, LOGOUT, SET_COIN } from "../action/authenAction";
+import {
+  SET_TOKEN,
+  LOGOUT,
+  SET_COIN,
+  SET_COUPON,
+} from "../action/authenAction";
 
 const initialState = {
   token: null,
@@ -16,6 +21,11 @@ export default authenReducer = (state = initialState, action) => {
       let newState = state;
       newState.token.coin = coin;
       return newState;
+    case SET_COUPON:
+      let coupon = action.coupon;
+      let newCoupon = state;
+      newCoupon.token.coupon = coupon;
+      return newCoupon;
     default:
       return state;
   }

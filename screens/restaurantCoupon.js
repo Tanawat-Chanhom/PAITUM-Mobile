@@ -63,7 +63,6 @@ const restaurantCoupon = (props) => {
                     if (Coin >= couponCoin) {
                       let newCoin = Number(Coin) - Number(couponCoin);
                       dispatch(setUserCoin(newCoin));
-                      console.log(token.coupon);
                       setRerender(rerender + 1);
                     } else {
                       console.log("Out of coin!");
