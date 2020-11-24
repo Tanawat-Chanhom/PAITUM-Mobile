@@ -6,13 +6,6 @@ import { AntDesign } from "@expo/vector-icons";
 import BackPage from "../components/BackPage";
 
 const settingAccount = (props) => {
-  const dispatch = useDispatch();
-
-  const logout = () => {
-    dispatch(Logout());
-    props.navigation.navigate("Login");
-  };
-
   return (
     <View style={styles.Container}>
       <View style={styles.backContainer}>
@@ -30,7 +23,7 @@ const settingAccount = (props) => {
         <TouchableOpacity
           style={styles.settingContainer}
           onPress={() => {
-            logout();
+            props.navigation.navigate("Login");
           }}
         >
           <Text style={{ color: "#c98f22" }}>Delete Account</Text>

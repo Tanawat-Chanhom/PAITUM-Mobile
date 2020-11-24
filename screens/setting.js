@@ -7,13 +7,6 @@ import { AntDesign } from "@expo/vector-icons";
 import BackPage from "../components/BackPage";
 
 const setting = (props) => {
-  const dispatch = useDispatch();
-
-  const logout = () => {
-    dispatch(Logout());
-    props.navigation.navigate("Login");
-  };
-
   return (
     <View style={styles.Container}>
       <View style={styles.backContainer}>
@@ -38,7 +31,7 @@ const setting = (props) => {
         <TouchableOpacity
           style={styles.settingContainer}
           onPress={() => {
-            logout();
+            props.navigation.navigate("Login");
           }}
         >
           <Text style={{ color: "#c98f22" }}>Logout</Text>

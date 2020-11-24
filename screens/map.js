@@ -29,7 +29,6 @@ const map = (props) => {
     navigator.geolocation.getCurrentPosition((position) => {
       body.latitude = position.coords.latitude;
       body.longitude = position.coords.longitude;
-      console.log(body);
       if (findType === "Recommend") {
         setDistance(0);
         axios

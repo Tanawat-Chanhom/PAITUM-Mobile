@@ -15,8 +15,12 @@ import Post from "../components/Post";
 import { SERVER } from "../util/server.json";
 import axios from "axios";
 import Alert from "../components/MyAlert";
+import { useSelector } from "react-redux";
 
 const restaurant = (props) => {
+  const token = useSelector((state) => {
+    return state.authenReducer.token;
+  });
   const [data, setData] = useState({
     follower: [],
     review: [],
@@ -89,7 +93,6 @@ const restaurant = (props) => {
         close={() => {
           setAlert(false);
         }}
-        isFlow={true}
         margin={10}
       ></Alert>
       <SafeAreaView style={styles.safeAreaView}>
@@ -183,7 +186,12 @@ const restaurant = (props) => {
               <View style={styles.postsContainer}>
                 {data.review.map((data) => {
                   return (
-                    <Post data={data} navigation={props.navigation}></Post>
+                    <Post
+                      data={data}
+                      userId={token}
+                      navigation={props.navigation}
+                      profileNavigate={true}
+                    ></Post>
                   );
                 })}
               </View>

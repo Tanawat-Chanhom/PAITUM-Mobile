@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: "#F1F1F1",
     zIndex: 9999,
-    width: "100%",
     alignSelf: "center",
   },
   alertText: {

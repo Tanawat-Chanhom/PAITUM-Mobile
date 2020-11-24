@@ -96,6 +96,7 @@ const home = (props) => {
                   key={index}
                   userId={token}
                   navigation={props.navigation}
+                  profileNavigate={true}
                 ></Post>
               );
             })}

@@ -23,7 +23,7 @@ export default class Post extends Component {
       modelIsShow: false,
       isShowComments: false,
       liked: props.data.detail.liked,
-      userId: props.userId,
+      userId: props.userId.id,
       comments: props.data.detail.comments,
       message: "",
     };
@@ -62,7 +62,7 @@ export default class Post extends Component {
                     });
                   }}
                 ></Button>
-                {/* {this.state.userId === this.props.data.user.id ? (
+                {this.state.userId === this.props.data.user.id ? (
                   <Button
                     title={"Delet Post"}
                     style={styles.deleteButton}
@@ -71,7 +71,7 @@ export default class Post extends Component {
                   ></Button>
                 ) : (
                   <></>
-                )} */}
+                )}
               </View>
               <Button
                 title="Cancel"
@@ -179,9 +179,11 @@ export default class Post extends Component {
           <View style={styles.profile}>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.navigate("OtherProfile", {
-                  id: this.props.data.user.id,
-                });
+                if (this.props.profileNavigate === true) {
+                  this.props.navigation.navigate("OtherProfile", {
+                    id: this.props.data.user.id,
+                  });
+                }
               }}
             >
               <Image

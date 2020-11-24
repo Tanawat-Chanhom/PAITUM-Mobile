@@ -15,12 +15,8 @@ const login = (props) => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState("1");
   const [password, setPassword] = useState("1");
-  const [alert, setAlert] = useState(true);
+  const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  if (token !== null) {
-    props.navigation.navigate("Home");
-  }
 
   function Login() {
     let body = {
@@ -32,6 +28,7 @@ const login = (props) => {
       .then((res) => {
         if (res.data.status === 200) {
           dispatch(setToken(res.data.user));
+          props.navigation.navigate("Home");
         } else {
           setAlert(true);
           setErrorMessage(res.data.message);
