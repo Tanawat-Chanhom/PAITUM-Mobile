@@ -45,7 +45,6 @@ export default class Coupon extends Component {
               numberOfLines={this.state.numberOfLines}
             >
               {this.props.data.description}
-              {this.props.data.name}
             </Text>
           </TouchableOpacity>
         </View>
