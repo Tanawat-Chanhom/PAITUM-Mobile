@@ -1,32 +1,26 @@
-import React, { Component, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import BackPage from "../components/BackPage";
 import ReCoupon from "../components/ReCoupon";
+import { SERVER } from "../util/server.json";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { setCoin as setUserCoin } from "../store/action/authenAction";
 
 const restaurantCoupon = (props) => {
-  const [promotions, setPromotions] = useState([
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-    },
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-    },
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-    },
-  ]);
+  const token = useSelector((state) => {
+    return state.authenReducer.token;
+  });
+  const dispatch = useDispatch();
+  const [Coin, setCoin] = useState(token.coin);
+  const [Coupons, setCoupons] = useState([]);
+  const [rerender, setRerender] = useState(0);
+  let coupon = props.navigation.getParam("coupon");
+
+  useEffect(() => {
+    setCoupons(coupon);
+    setCoin(token.coin);
+  }, [coupon, token, rerender]);
 
   return (
     <View style={styles.screen}>
@@ -53,13 +47,23 @@ const restaurantCoupon = (props) => {
               opacity={0.24}
             ></View>
             <Text style={{ fontSize: 35, fontWeight: "600", color: "#403D56" }}>
-              215
+              {Coin}
             </Text>
             <Text style={{ color: "#403D56" }}>Total coin</Text>
           </View>
           <View style={styles.content}>
-            {promotions.map((data, index) => {
-              return <ReCoupon data={data} key={index}></ReCoupon>;
+            {Coupons.map((data, index) => {
+              return (
+                <ReCoupon
+                  data={data}
+                  key={index}
+                  delete={(couponCoin) => {
+                    let newCoin = Number(Coin) - Number(couponCoin);
+                    dispatch(setUserCoin(newCoin));
+                    setRerender(rerender + 1);
+                  }}
+                ></ReCoupon>
+              );
             })}
           </View>
         </ScrollView>

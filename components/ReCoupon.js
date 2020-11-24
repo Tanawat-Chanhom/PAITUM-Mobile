@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Button from "../components/Button";
-const CoinIcon = require("../assets/coin.png");
 
 export default class Coupon extends Component {
   constructor() {
@@ -13,13 +12,6 @@ export default class Coupon extends Component {
     };
   }
 
-  coinIcon = () => (
-    <Image
-      source={require("../assets/coin.png")}
-      style={{ width: 25.54, height: 20.13 }}
-    ></Image>
-  );
-
   render() {
     if (this.state.isDelete === true) {
       return <></>;
@@ -28,7 +20,7 @@ export default class Coupon extends Component {
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Image
-            source={{ uri: this.props.data.image }}
+            source={{ uri: this.props.data.avatar }}
             style={styles.icon}
           ></Image>
           <TouchableOpacity
@@ -43,13 +35,17 @@ export default class Coupon extends Component {
                 });
               }
             }}
-            style={{ flex: 1 }}
+            style={{ flex: 2 }}
           >
+            <Text style={{ marginLeft: 10, fontSize: 25 }}>
+              {this.props.data.name}
+            </Text>
             <Text
               style={styles.description}
               numberOfLines={this.state.numberOfLines}
             >
               {this.props.data.description}
+              {this.props.data.name}
             </Text>
           </TouchableOpacity>
         </View>
@@ -66,14 +62,15 @@ export default class Coupon extends Component {
               style={styles.coinIcon}
               color="#f5ce42"
               fontSize={20}
-              title={"399"}
+              title={this.props.data.coin}
             ></Button>
             <Button
               title={"USE"}
-              style={styles.useButton}
+              style={styles.coinIcon}
               color="#E29821"
               fontSize={20}
               onPress={() => {
+                this.props.delete(this.props.data.coin);
                 this.setState({
                   isDelete: true,
                 });
