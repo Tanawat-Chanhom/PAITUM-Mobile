@@ -170,7 +170,10 @@ const restaurant = (props) => {
                   title={"Promotion"}
                   fontSize={20}
                   style={styles.navigateButton}
-                  onPress={() => props.navigation.navigate("Promation")}
+                  onPress={() => {
+                    console.log(data.promotion);
+                    if(data.promotion) return props.navigation.navigate("Promation", {promotion:data.promotion})
+                  }}
                 ></Button>
                 <Button
                   title={"Coupon"}

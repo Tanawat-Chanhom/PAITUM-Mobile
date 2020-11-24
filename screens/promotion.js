@@ -1,7 +1,9 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import BackPage from "../components/BackPage";
 import Promotion from "../components/Promotion";
+import axios from "axios";
+import {SERVER} from "../util/server";
 
 const promotion = (props) => {
   const [promotions, setPromotions] = useState([
@@ -27,6 +29,13 @@ const promotion = (props) => {
       exp: "10 - 12 - 2021",
     },
   ]);
+
+
+  let promotion = props.navigation.getParam("promotion");
+
+  useEffect(() => {
+    setPromotions(promotion)
+  }, [promotion]);
 
   return (
     <View style={styles.screen}>
