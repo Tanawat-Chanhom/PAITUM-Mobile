@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Text,
   View,
@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import Constants from "expo-constants";
 import Button from "../components/Button";
@@ -14,16 +15,21 @@ import Post from "../components/Post";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { SERVER } from "../util/server.json";
+import Alert from "../components/MyAlert";
 
 const profile = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
+
   useEffect(() => {
     let otherUserId = props.navigation.getParam("id");
     if (otherUserId !== undefined) {
       axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
         setUserData(res.data.user);
+        res.data.user.follower.map((id) => {
+          id === token.id ? setIsFollow(true) : setIsFollow(false);
+        });
       });
       axios
         .get(SERVER + "/restaurant/all")
@@ -56,13 +62,85 @@ const profile = (props) => {
     posts: [],
   });
   const [posts, setPosts] = useState([]);
+  const [alert, setAlert] = useState(false);
+  const [isFollow, setIsFollow] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const follow = () => {
+    let otherUserId = props.navigation.getParam("id");
+    let body = {
+      main: token.id,
+      sub: otherUserId,
+    };
+    axios
+      .put(SERVER + "/user/follow", body)
+      .then((res) => {
+        setAlert(true);
+        if (isFollow === true) {
+          setErrorMessage("Unfollowing " + userData.name);
+          setIsFollow(false);
+        } else {
+          setErrorMessage("Following " + userData.name);
+          setIsFollow(true);
+        }
+      })
+      .catch((err) => {
+        setAlert(true);
+        setErrorMessage(err.message || "Server error.");
+      });
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    let otherUserId = props.navigation.getParam("id");
+    if (otherUserId !== undefined) {
+      axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
+        setUserData(res.data.user);
+        res.data.user.follower.map((id) => {
+          id === token.id ? setIsFollow(true) : setIsFollow(false);
+        });
+      });
+      axios
+        .get(SERVER + "/restaurant/all")
+        .then((res) => {
+          if (res.data.restaurants.length !== 0) {
+            let restaurants = res.data.restaurants;
+            let myPosts = [];
+            restaurants.map((data) => {
+              data.review.map((reviewData, index) => {
+                if (reviewData.user.id === otherUserId) {
+                  myPosts.push(reviewData);
+                }
+              });
+            });
+            setPosts(myPosts);
+            setRefreshing(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   return (
     <>
+      <Alert
+        open={alert}
+        value={errorMessage}
+        close={() => {
+          setAlert(false);
+        }}
+      ></Alert>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           <Image
             source={{ uri: userData.coverImage }}
@@ -136,9 +214,10 @@ const profile = (props) => {
                   </Text>
                   {userData.id !== token.id ? (
                     <Button
-                      title="FOLLOW"
+                      title={isFollow === true ? "UNFOLLOW" : "FOLLOW"}
                       style={styles.followButton}
                       color="#fff"
+                      onPress={() => follow()}
                     ></Button>
                   ) : (
                     <></>
