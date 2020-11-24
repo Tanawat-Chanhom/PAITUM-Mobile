@@ -6,11 +6,13 @@ import { SERVER } from "../util/server.json";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setCoin as setUserCoin } from "../store/action/authenAction";
+import { setCoupon as setUserCoupon } from "../store/action/authenAction";
 
 const restaurantCoupon = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
+  console.log(token.coupon);
   const dispatch = useDispatch();
   const [Coin, setCoin] = useState(token.coin);
   const [Coupons, setCoupons] = useState([]);
@@ -58,9 +60,14 @@ const restaurantCoupon = (props) => {
                   data={data}
                   key={index}
                   delete={(couponCoin) => {
-                    let newCoin = Number(Coin) - Number(couponCoin);
-                    dispatch(setUserCoin(newCoin));
-                    setRerender(rerender + 1);
+                    if (Coin >= couponCoin) {
+                      let newCoin = Number(Coin) - Number(couponCoin);
+                      dispatch(setUserCoin(newCoin));
+                      console.log(token.coupon);
+                      setRerender(rerender + 1);
+                    } else {
+                      console.log("Out of coin!");
+                    }
                   }}
                 ></ReCoupon>
               );
