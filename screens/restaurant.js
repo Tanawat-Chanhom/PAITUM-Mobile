@@ -39,6 +39,7 @@ const restaurant = (props) => {
     for (let index = 0; index < data.star; index++) {
       newArray.push(
         <Image
+          key={index}
           source={require("../assets/star.png")}
           style={styles.starIcon}
         ></Image>
