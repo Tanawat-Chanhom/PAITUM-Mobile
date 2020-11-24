@@ -28,6 +28,10 @@ const restaurantCoupon = (props) => {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
+    if (coupon.length === 0) {
+      setAlert(true);
+      setErrorMessage("Not have coupon at this time!");
+    }
     setCoupons(coupon);
     setCoin(token.coin);
   }, [coupon, token, rerender]);

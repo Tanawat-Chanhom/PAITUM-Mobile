@@ -13,8 +13,8 @@ const login = (props) => {
     return state.authenReducer.token;
   });
   const dispatch = useDispatch();
-  const [username, setUsername] = useState("1");
-  const [password, setPassword] = useState("1");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 

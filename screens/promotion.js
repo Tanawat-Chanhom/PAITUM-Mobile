@@ -14,7 +14,7 @@ const promotion = (props) => {
   useEffect(() => {
     if (promotion.length === 0) {
       setAlert(true);
-      setErrorMessage("Not have promotion.");
+      setErrorMessage("Not have promotion at this time!");
     }
     setPromotions(promotion);
   }, [promotion]);
