@@ -8,11 +8,12 @@ import {
   SafeAreaView,
   ScrollView,
   TextInput,
+  Image,
 } from "react-native";
 import Button from "./Button";
 import Carousel from "react-native-snap-carousel";
 import Comment from "./Comment";
-import { Image } from "react-native-elements";
+import { Image as Loader } from "react-native-elements";
 import { ActivityIndicator } from "react-native";
 
 export default class Post extends Component {
@@ -34,11 +35,11 @@ export default class Post extends Component {
   renderImage = ({ item, index }) => {
     return (
       <View style={styles.slide}>
-        <Image
+        <Loader
           style={styles.postImages}
           PlaceholderContent={<ActivityIndicator />}
           source={{ uri: item }}
-        ></Image>
+        ></Loader>
       </View>
     );
   };
@@ -192,11 +193,11 @@ export default class Post extends Component {
                 }
               }}
             >
-              <Image
+              <Loader
                 style={styles.avatar}
                 source={{ uri: this.props.data.user.avatar }}
                 PlaceholderContent={<ActivityIndicator />}
-              ></Image>
+              ></Loader>
             </TouchableOpacity>
             <View style={styles.profileDetail}>
               <Text
