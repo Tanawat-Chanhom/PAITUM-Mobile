@@ -71,7 +71,7 @@ const login = (props) => {
               onChangeText={(x) => setPassword(x)}
             ></TextInput>
           </View>
-          <Text style={styles.forgotText}>Forgot Password ?</Text>
+          {/* <Text style={styles.forgotText}>Forgot Password ?</Text> */}
         </View>
         <View style={styles.login_button_container}>
           <Button
