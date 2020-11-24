@@ -52,7 +52,7 @@ export default function register2(props) {
     let body = { ...data, caption: caption, avatar: image };
     // props.navigation.navigate("Home");
     axios
-      .post(SERVER + "/register", body)
+      .post(SERVER + "/user/register", body)
       .then((res) => {
         console.log(res);
         if (res.data.status === 200) {
