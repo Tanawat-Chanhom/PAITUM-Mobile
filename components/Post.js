@@ -26,6 +26,7 @@ export default class Post extends Component {
       userId: props.userId.id,
       comments: props.data.detail.comments,
       message: "",
+      like: props.data.detail.like,
     };
   }
 
@@ -262,9 +263,9 @@ export default class Post extends Component {
           ></Button>
           <Button
             title={
-              this.props.data.detail.like >= 1000
-                ? (this.props.data.detail.like / 1000).toFixed(1) + "K Like"
-                : this.props.data.detail.like + " Like"
+              this.state.like >= 1000
+                ? (this.state.like / 1000).toFixed(1) + "K Like"
+                : this.state.like + " Like"
             }
             style={[
               styles.footerButton,
@@ -274,9 +275,9 @@ export default class Post extends Component {
             ]}
             onPress={() => {
               if (this.state.liked === true) {
-                this.setState({ liked: false });
+                this.setState({ liked: false, like: this.state.like - 1 });
               } else {
-                this.setState({ liked: true });
+                this.setState({ liked: true, like: this.state.like + 1 });
               }
             }}
           ></Button>

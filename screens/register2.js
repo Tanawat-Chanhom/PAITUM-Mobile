@@ -49,14 +49,28 @@ export default function register2(props) {
   };
 
   const submit = () => {
-    let body = { ...data, caption: caption, avatar: image };
-    // props.navigation.navigate("Home");
+    let body = {
+      avatar:
+        "https://cdn1.iconfinder.com/data/icons/user-pictures/100/boy-512.png",
+      caption: caption,
+      coin: 0,
+      coupon: [],
+      coverImage:
+        "https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/blue-and-turquoise-minimalist-mountain-landscape-matthias-hauser.jpg",
+      follower: [],
+      following: [],
+      followingRestaurant: [],
+      name: data.name,
+      password: data.password,
+      post: [],
+      username: data.username,
+    };
+
     axios
       .post(SERVER + "/user/register", body)
       .then((res) => {
-        console.log(res);
         if (res.data.status === 200) {
-          props.navigation.popToTop()
+          props.navigation.navigate("Login");
         } else {
           setAlert(true);
           setErrorMessage(res.data.message);

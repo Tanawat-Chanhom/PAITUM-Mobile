@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import Model from "../components/Model";
 import BackPage from "../components/BackPage";
+import { SERVER } from "../util/server.json";
+import axios from "axios";
 import Alert from "../components/MyAlert";
 
 export default function Register(props) {
