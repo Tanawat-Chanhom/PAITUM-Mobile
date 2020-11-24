@@ -24,7 +24,7 @@ export default authenReducer = (state = initialState, action) => {
     case SET_COUPON:
       let coupon = action.coupon;
       let newCoupon = state;
-      newCoupon.token.coupon = coupon;
+      newCoupon.token.coupon.push(coupon);
       return newCoupon;
     default:
       return state;

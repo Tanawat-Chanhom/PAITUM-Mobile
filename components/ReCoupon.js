@@ -70,10 +70,15 @@ export default class Coupon extends Component {
               color="#E29821"
               fontSize={20}
               onPress={() => {
-                this.props.delete(this.props.data.coin);
-                this.setState({
-                  isDelete: true,
-                });
+                let coin = this.props.userCoin;
+                if (coin >= this.props.data.coin) {
+                  this.props.delete(this.props.data.coin, this.props.data);
+                  this.setState({
+                    isDelete: true,
+                  });
+                } else {
+                  this.props.delete(false);
+                }
               }}
             ></Button>
           </View>

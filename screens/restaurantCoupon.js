@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import BackPage from "../components/BackPage";
 import ReCoupon from "../components/ReCoupon";
-import { SERVER } from "../util/server.json";
-import axios from "axios";
+import Alert from "../components/MyAlert";
 import { useSelector, useDispatch } from "react-redux";
 import { setCoin as setUserCoin } from "../store/action/authenAction";
 import { setCoupon as setUserCoupon } from "../store/action/authenAction";
@@ -17,6 +16,8 @@ const restaurantCoupon = (props) => {
   const [Coupons, setCoupons] = useState([]);
   const [rerender, setRerender] = useState(0);
   let coupon = props.navigation.getParam("coupon");
+  const [alert, setAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     setCoupons(coupon);
@@ -25,6 +26,13 @@ const restaurantCoupon = (props) => {
 
   return (
     <View style={styles.screen}>
+      <Alert
+        open={alert}
+        value={errorMessage}
+        close={() => {
+          setAlert(false);
+        }}
+      ></Alert>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -58,13 +66,17 @@ const restaurantCoupon = (props) => {
                 <ReCoupon
                   data={data}
                   key={index}
-                  delete={(couponCoin) => {
+                  userCoin={Coin}
+                  delete={(couponCoin, object) => {
                     if (Coin >= couponCoin) {
                       let newCoin = Number(Coin) - Number(couponCoin);
                       dispatch(setUserCoin(newCoin));
+                      dispatch(setUserCoupon(object));
                       setRerender(rerender + 1);
-                    } else {
-                      console.log("Out of coin!");
+                    }
+                    if (couponCoin === false) {
+                      setAlert(true);
+                      setErrorMessage("Out Of Coin!");
                     }
                   }}
                 ></ReCoupon>
