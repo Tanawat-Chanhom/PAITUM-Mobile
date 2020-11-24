@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import Header from "../components/Header";
 import Coupon from "../components/Coupon";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,11 +20,20 @@ const coupon = (props) => {
   });
   const [coin, setCoin] = useState(0);
   const [rerender, setRerender] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setUserData(token);
     setCoin(token.coin);
   }, [token, rerender]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRerender(rerender + 1);
+      setRefreshing(false);
+    }, 1500);
+  };
 
   return (
     <>
@@ -28,6 +44,9 @@ const coupon = (props) => {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             style={styles.scrollView}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
             <View style={styles.haeder}>
               <View
