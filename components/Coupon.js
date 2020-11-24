@@ -45,6 +45,9 @@ export default class Coupon extends Component {
             }}
             style={{ flex: 1 }}
           >
+            <Text style={{ marginLeft: 10, fontSize: 25 }}>
+              {this.props.data.name}
+            </Text>
             <Text
               style={styles.description}
               numberOfLines={this.state.numberOfLines}
