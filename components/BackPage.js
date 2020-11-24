@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
+import Constants from "expo-constants";
 
 export default class backPage extends Component {
   render() {
@@ -14,6 +15,8 @@ export default class backPage extends Component {
         style={{
           position: this.props.isFlow === true ? "absolute" : "relative",
           zIndex: 99,
+          margin: this.props.magin,
+          marginTop: Constants.statusBarHeight,
         }}
       >
         <TouchableWithoutFeedback

@@ -1,5 +1,6 @@
 import React, { useState, Component } from "react";
 import { StyleSheet, Text, View, PanResponder, Animated } from "react-native";
+import Constants from "expo-constants";
 
 export default class MyAlert extends Component {
   constructor(props) {
@@ -61,6 +62,8 @@ export default class MyAlert extends Component {
             transform: [{ translateY: this.state.fadeAnim }],
             backgroundColor:
               this.props.backgroundColor || styles.modalView.backgroundColor,
+            marginLeft: this.props.margin,
+            marginRight: this.props.margin,
           },
         ]}
         {...this.panResponder.panHandlers}
@@ -83,9 +86,8 @@ export default class MyAlert extends Component {
 const styles = StyleSheet.create({
   modalView: {
     position: "absolute",
-    margin: 20,
     padding: 15,
-    marginTop: 5,
+    marginTop: Constants.statusBarHeight,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -98,6 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F1F1F1",
     zIndex: 9999,
     width: "100%",
+    alignSelf: "center",
   },
   alertText: {
     fontSize: 20,

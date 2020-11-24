@@ -73,15 +73,17 @@ const map = (props) => {
 
   return (
     <>
+      <Alert
+        open={alert}
+        value={errorMessage}
+        close={() => {
+          setAlert(false);
+        }}
+        isFlow={true}
+        margin={10}
+      ></Alert>
       <Header></Header>
       <View style={styles.screen}>
-        <Alert
-          open={alert}
-          value={errorMessage}
-          close={() => {
-            setAlert(false);
-          }}
-        ></Alert>
         <SafeAreaView style={styles.safeAreaView}>
           <ScrollView
             showsVerticalScrollIndicator={false}

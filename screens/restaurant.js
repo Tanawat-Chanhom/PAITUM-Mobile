@@ -14,6 +14,7 @@ import Button from "../components/Button";
 import Post from "../components/Post";
 import { SERVER } from "../util/server.json";
 import axios from "axios";
+import Alert from "../components/MyAlert";
 
 const restaurant = (props) => {
   const [data, setData] = useState({
@@ -21,6 +22,8 @@ const restaurant = (props) => {
     review: [],
   });
   const [Star, setStar] = useState([]);
+  const [alert, setAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   genStar = () => {
     let newArray = [];
@@ -53,6 +56,25 @@ const restaurant = (props) => {
       });
   }, [id]);
 
+  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
   return (
     <>
       <Backpage
@@ -61,6 +83,15 @@ const restaurant = (props) => {
         isFlow={true}
         magin={10}
       ></Backpage>
+      <Alert
+        open={alert}
+        value={errorMessage}
+        close={() => {
+          setAlert(false);
+        }}
+        isFlow={true}
+        margin={10}
+      ></Alert>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -93,7 +124,26 @@ const restaurant = (props) => {
                 ></Image>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => props.navigation.navigate("CreatePost")}
+                onPress={() => {
+                  navigator.geolocation.getCurrentPosition((position) => {
+                    let lat1 = position.coords.latitude;
+                    let long1 = position.coords.longitude;
+                    let d = getDistanceFromLatLonInKm(
+                      lat1,
+                      long1,
+                      data.latitude,
+                      data.longitude
+                    );
+                    if (d < 1) {
+                      props.navigation.navigate("CreatePost", {
+                        data: data,
+                      });
+                    } else {
+                      setAlert(true);
+                      setErrorMessage("Too far away restaurant.");
+                    }
+                  });
+                }}
               >
                 <Image
                   source={require("../assets/createPost.png")}
@@ -141,26 +191,6 @@ const restaurant = (props) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <Button
-        onPress={() => props.navigation.navigate("CreatePost")}
-        title={"Create Post"}
-      ></Button>
-      <Button
-        onPress={() => props.navigation.navigate("Promation")}
-        title={"Promation"}
-      ></Button>
-      <Button
-        onPress={() => props.navigation.navigate("RestaurantCoupon")}
-        title={"Restaurant Coupon"}
-      ></Button>
-      <Button
-        onPress={() => props.navigation.navigate("Profile")}
-        title={"Profile"}
-      ></Button>
-      <Button
-        onPress={() => props.navigation.navigate("Restaurant")}
-        title={"Restaurant"}
-      ></Button>
     </>
   );
 };

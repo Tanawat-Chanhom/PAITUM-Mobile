@@ -15,7 +15,7 @@ const login = (props) => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState("1");
   const [password, setPassword] = useState("1");
-  const [alert, setAlert] = useState(false);
+  const [alert, setAlert] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   if (token !== null) {
