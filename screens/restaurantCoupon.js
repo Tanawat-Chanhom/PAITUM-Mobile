@@ -12,7 +12,6 @@ const restaurantCoupon = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
-  console.log(token.coupon);
   const dispatch = useDispatch();
   const [Coin, setCoin] = useState(token.coin);
   const [Coupons, setCoupons] = useState([]);
