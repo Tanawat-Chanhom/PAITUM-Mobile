@@ -92,11 +92,11 @@ const profile = (props) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <Loader
+          <Image
             source={{ uri: userData.coverImage }}
             style={styles.imageCover}
             PlaceholderContent={<ActivityIndicator />}
-          ></Loader>
+          ></Image>
 
           <View style={styles.settingContainer}>
             <TouchableOpacity
@@ -125,11 +125,11 @@ const profile = (props) => {
                     <Text style={{ color: "#E29821" }}>Followers</Text>
                   </View>
                   <View style={styles.avatarContainer}>
-                    <Loader
+                    <Image
                       style={styles.avatar}
                       source={{ uri: userData.avatar }}
                       PlaceholderContent={<ActivityIndicator />}
-                    ></Loader>
+                    ></Image>
                   </View>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
