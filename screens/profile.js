@@ -28,7 +28,6 @@ const profile = (props) => {
           let myPosts = [];
           restaurants.map((data) => {
             data.review.map((reviewData, index) => {
-              console.log(reviewData.user.id);
               if (reviewData.user.id === token.id) {
                 myPosts.push(reviewData);
               }
@@ -43,20 +42,6 @@ const profile = (props) => {
   }, []);
   const [userData, setUserData] = useState(token);
   const [posts, setPosts] = useState([]);
-  console.log(posts);
-  // Object {
-  //   "avatar": "http://www.wa11papers.com/assets/previews/nature-person-sunset-man-sunrise-silhouette-adventure-wallpaper-5343-preview-1a99876c.jpg",
-  //   "coin": 0,
-  //   "coupon": Array [],
-  //   "coverImage": "https://www.shutterstock.com/blog/wp-content/uploads/sites/5/2017/08/nature-design.jpg",
-  //   "follower": Array [],
-  //   "following": Array [],
-  //   "followingRestaurant": Array [],
-  //   "id": "OfPQktW6mzGZ58B60lYD",
-  //   "password": "2",
-  //   "posts": Array [],
-  //   "username": "2",
-  // }
   return (
     <>
       <SafeAreaView style={styles.safeAreaView}>
@@ -155,6 +140,7 @@ const profile = (props) => {
                     userId={token}
                     navigation={props.navigation}
                     key={index}
+                    profileNavigate={false}
                   ></Post>
                 );
               })}

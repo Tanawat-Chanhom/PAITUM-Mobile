@@ -89,7 +89,6 @@ const restaurant = (props) => {
         close={() => {
           setAlert(false);
         }}
-        isFlow={true}
         margin={10}
       ></Alert>
       <SafeAreaView style={styles.safeAreaView}>
@@ -183,7 +182,11 @@ const restaurant = (props) => {
               <View style={styles.postsContainer}>
                 {data.review.map((data) => {
                   return (
-                    <Post data={data} navigation={props.navigation}></Post>
+                    <Post
+                      data={data}
+                      navigation={props.navigation}
+                      profileNavigate={true}
+                    ></Post>
                   );
                 })}
               </View>
