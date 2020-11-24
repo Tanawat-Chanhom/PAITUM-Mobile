@@ -12,6 +12,7 @@ import BackPage from "../components/BackPage";
 import * as ImagePicker from "expo-image-picker";
 import Alert from "../components/MyAlert";
 import axios from "axios";
+import { SERVER } from "../util/server.json";
 
 export default function register2(props) {
   const data = props.navigation.getParam("data");
@@ -49,22 +50,23 @@ export default function register2(props) {
 
   const submit = () => {
     let body = { ...data, caption: caption, avatar: image };
-    props.navigation.navigate("Home");
-    // axios
-    //   .post("", body)
-    //   .then((res) => {
-    //     console.log(res);
-    //     if (res.data.status === 200) {
-    //     } else {
-    //       setAlert(true);
-    //       setErrorMessage(res.data.message);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setAlert(true);
-    //     setErrorMessage(err.message);
-    //   });
+    // props.navigation.navigate("Home");
+    axios
+      .post(SERVER + "/register", body)
+      .then((res) => {
+        console.log(res);
+        if (res.data.status === 200) {
+          props.navigation.popToTop()
+        } else {
+          setAlert(true);
+          setErrorMessage(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setAlert(true);
+        setErrorMessage(err.message);
+      });
   };
 
   return (
