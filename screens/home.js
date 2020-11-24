@@ -19,7 +19,7 @@ const home = (props) => {
   });
 
   const [posts, setPosts] = useState([]);
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     axios

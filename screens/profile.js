@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import Constants from "expo-constants";
 import Button from "../components/Button";
@@ -14,12 +15,17 @@ import Post from "../components/Post";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { SERVER } from "../util/server.json";
+import { Image as Loader } from "react-native-elements";
+import { ActivityIndicator } from "react-native";
 
 const profile = (props) => {
   const token = useSelector((state) => {
     return state.authenReducer.token;
   });
   useEffect(() => {
+    axios.get(SERVER + "/user/profile/" + token.id).then((res) => {
+      setUserData(res.data.user);
+    });
     axios
       .get(SERVER + "/restaurant/all")
       .then((res) => {
@@ -40,8 +46,41 @@ const profile = (props) => {
         console.log(err);
       });
   }, []);
-  const [userData, setUserData] = useState(token);
+
+  const [userData, setUserData] = useState({
+    follower: 0,
+    following: 0,
+  });
   const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    axios.get(SERVER + "/user/profile/" + token.id).then((res) => {
+      setUserData(res.data.user);
+    });
+    axios
+      .get(SERVER + "/restaurant/all")
+      .then((res) => {
+        if (res.data.restaurants.length !== 0) {
+          let restaurants = res.data.restaurants;
+          let myPosts = [];
+          restaurants.map((data) => {
+            data.review.map((reviewData, index) => {
+              if (reviewData.user.id === token.id) {
+                myPosts.push(reviewData);
+              }
+            });
+          });
+          setPosts(myPosts);
+          setRefreshing(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <SafeAreaView style={styles.safeAreaView}>
@@ -49,28 +88,29 @@ const profile = (props) => {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
-          <Image
+          <Loader
             source={{ uri: userData.coverImage }}
             style={styles.imageCover}
-          ></Image>
+            PlaceholderContent={<ActivityIndicator />}
+          ></Loader>
 
-          {userData.id === token.id ? (
-            <View style={styles.settingContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  props.navigation.navigate("Setting");
-                }}
-              >
-                <Image
-                  style={styles.settingIcon}
-                  source={require("../assets/setting.png")}
-                ></Image>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <></>
-          )}
+          <View style={styles.settingContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                props.navigation.navigate("Setting");
+              }}
+            >
+              <Image
+                style={styles.settingIcon}
+                source={require("../assets/setting.png")}
+              ></Image>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.screen}>
             <View style={styles.header}>
               <View style={styles.imageCoverContainer} />
@@ -85,10 +125,11 @@ const profile = (props) => {
                     <Text style={{ color: "#E29821" }}>Followers</Text>
                   </View>
                   <View style={styles.avatarContainer}>
-                    <Image
+                    <Loader
                       style={styles.avatar}
                       source={{ uri: userData.avatar }}
-                    ></Image>
+                      PlaceholderContent={<ActivityIndicator />}
+                    ></Loader>
                   </View>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
@@ -120,15 +161,6 @@ const profile = (props) => {
                   >
                     {userData.caption}
                   </Text>
-                  {userData.id !== token.id ? (
-                    <Button
-                      title="FOLLOW"
-                      style={styles.followButton}
-                      color="#fff"
-                    ></Button>
-                  ) : (
-                    <></>
-                  )}
                 </View>
               </View>
             </View>

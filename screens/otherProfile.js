@@ -65,7 +65,7 @@ const profile = (props) => {
   const [alert, setAlert] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const follow = () => {
     let otherUserId = props.navigation.getParam("id");

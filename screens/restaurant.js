@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import Backpage from "../components/BackPage";
 import Constants from "expo-constants";
@@ -16,6 +17,8 @@ import { SERVER } from "../util/server.json";
 import axios from "axios";
 import Alert from "../components/MyAlert";
 import { useSelector } from "react-redux";
+import { Image as Loader } from "react-native-elements";
+import { ActivityIndicator } from "react-native";
 
 const restaurant = (props) => {
   const token = useSelector((state) => {
@@ -28,6 +31,8 @@ const restaurant = (props) => {
   const [Star, setStar] = useState([]);
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const [isFollow, setIsFollow] = useState(false);
 
   genStar = () => {
     let newArray = [];
@@ -52,6 +57,9 @@ const restaurant = (props) => {
           let restaurants = res.data.restaurants;
           let index = restaurants.findIndex((x) => x.id === id);
           setData(restaurants[index]);
+          restaurants[index].follower.map((id) => {
+            id === token.id ? setIsFollow(true) : setIsFollow(false);
+          });
           genStar();
         }
       })
@@ -59,6 +67,27 @@ const restaurant = (props) => {
         console.log(err);
       });
   }, [id]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    axios
+      .get(SERVER + "/restaurant/all")
+      .then((res) => {
+        if (res.data.restaurants.length !== 0) {
+          let restaurants = res.data.restaurants;
+          let index = restaurants.findIndex((x) => x.id === id);
+          setData(restaurants[index]);
+          restaurants[index].follower.map((id) => {
+            id === token.id ? setIsFollow(true) : setIsFollow(false);
+          });
+          genStar();
+          setRefreshing(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the earth in km
@@ -78,6 +107,29 @@ const restaurant = (props) => {
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
+
+  const follow = () => {
+    let body = {
+      user: token.id,
+      restaurant: data.id,
+    };
+    axios
+      .put(SERVER + "/restaurant/follow", body)
+      .then((res) => {
+        setAlert(true);
+        if (isFollow === true) {
+          setErrorMessage("Unfollowing " + data.restaurantName);
+          setIsFollow(false);
+        } else {
+          setErrorMessage("Following " + data.restaurantName);
+          setIsFollow(true);
+        }
+      })
+      .catch((err) => {
+        setAlert(true);
+        setErrorMessage(err.message || "Server error.");
+      });
+  };
 
   return (
     <>
@@ -100,6 +152,9 @@ const restaurant = (props) => {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           <Image
             source={{ uri: data.coverImg }}
@@ -108,10 +163,11 @@ const restaurant = (props) => {
           <View style={styles.screen}>
             <View style={styles.imageCoverContainer} />
             <View style={[styles.coverImage, styles.profileContainer]}>
-              <Image
+              <Loader
                 source={{ uri: data.avatar }}
                 style={styles.avatar}
-              ></Image>
+                PlaceholderContent={<ActivityIndicator />}
+              ></Loader>
               <Text style={styles.restaurantTitle}>{data.restaurantName}</Text>
               <View style={styles.starContainer}>
                 {Star.map((data) => {
@@ -120,10 +176,13 @@ const restaurant = (props) => {
               </View>
             </View>
             <View style={styles.actionContainer}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => follow()}>
                 <Image
                   source={require("../assets/followButton.png")}
-                  style={styles.actionButton}
+                  style={[
+                    styles.actionButton,
+                    { opacity: isFollow === true ? 0.5 : 1 },
+                  ]}
                 ></Image>
               </TouchableOpacity>
               <TouchableOpacity
@@ -172,7 +231,10 @@ const restaurant = (props) => {
                   style={styles.navigateButton}
                   onPress={() => {
                     console.log(data.promotion);
-                    if(data.promotion) return props.navigation.navigate("Promation", {promotion:data.promotion})
+                    if (data.promotion)
+                      return props.navigation.navigate("Promation", {
+                        promotion: data.promotion,
+                      });
                   }}
                 ></Button>
                 <Button

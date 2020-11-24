@@ -5,12 +5,13 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Image,
   TouchableOpacity,
 } from "react-native";
 import Button from "./Button";
 import axios from "axios";
 import { SERVER } from "../util/server.json";
+import { Image } from "react-native-elements";
+import { ActivityIndicator } from "react-native";
 
 class Card extends Component {
   render() {
@@ -26,6 +27,7 @@ class Card extends Component {
           <Image
             source={{ uri: this.props.data.avatar }}
             style={stylesCard.image}
+            PlaceholderContent={<ActivityIndicator />}
           />
           <View style={stylesCard.footer}>
             <Text style={stylesCard.text} numberOfLines={2}>
