@@ -2,60 +2,54 @@ import React, { Component, useState, useEffect } from "react";
 import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import BackPage from "../components/BackPage";
 import Promotion from "../components/Promotion";
-import axios from "axios";
-import {SERVER} from "../util/server";
+import Alert from "../components/MyAlert";
 
 const promotion = (props) => {
-  const [promotions, setPromotions] = useState([
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-    },
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-    },
-    {
-      image:
-        "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-      description:
-        "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-      exp: "10 - 12 - 2021",
-    },
-  ]);
-
+  const [promotions, setPromotions] = useState([]);
+  const [alert, setAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   let promotion = props.navigation.getParam("promotion");
 
   useEffect(() => {
-    setPromotions(promotion)
+    if (promotion.length === 0) {
+      setAlert(true);
+      setErrorMessage("Not have promotion.");
+    }
+    setPromotions(promotion);
   }, [promotion]);
 
   return (
-    <View style={styles.screen}>
-      <SafeAreaView style={styles.safeAreaView}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          style={styles.scrollView}
-        >
-          <View style={styles.haeder}>
-            <BackPage navigation={props} path={"Restaurant"}></BackPage>
-          </View>
-          <View style={styles.content}>
-            {promotions.map((data, index) => {
-              return <Promotion data={data} key={index}></Promotion>;
-            })}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+    <>
+      <Alert
+        open={alert}
+        value={errorMessage}
+        close={() => {
+          setAlert(false);
+        }}
+      ></Alert>
+      <View style={styles.screen}>
+        <BackPage
+          navigation={props}
+          path={"Restaurant"}
+          isFlow={true}
+          magin={10}
+        ></BackPage>
+        <SafeAreaView style={styles.safeAreaView}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            style={styles.scrollView}
+          >
+            <View style={styles.content}>
+              {promotions.map((data, index) => {
+                return <Promotion data={data} key={index}></Promotion>;
+              })}
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    </>
   );
 };
 
@@ -67,6 +61,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     display: "flex",
     flexDirection: "column",
+  },
+  scrollView: {
+    paddingTop: 90,
+    height: "100%",
   },
   haeder: {
     width: "100%",
