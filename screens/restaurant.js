@@ -255,9 +255,10 @@ const restaurant = (props) => {
                 <Text style={styles.descriptionText}>{data.about}</Text>
               </View>
               <View style={styles.postsContainer}>
-                {data.review.map((data) => {
+                {data.review.map((data, index) => {
                   return (
                     <Post
+                      key={index}
                       data={data}
                       userId={token}
                       navigation={props.navigation}
