@@ -241,7 +241,13 @@ const restaurant = (props) => {
                   title={"Coupon"}
                   fontSize={20}
                   style={styles.navigateButton}
-                  onPress={() => props.navigation.navigate("RestaurantCoupon")}
+                  onPress={() => {
+                    if (data.coupon) {
+                      return props.navigation.navigate("RestaurantCoupon", {
+                        coupon: data.coupon,
+                      });
+                    }
+                  }}
                 ></Button>
               </View>
               <View>
