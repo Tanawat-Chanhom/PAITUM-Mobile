@@ -15,8 +15,12 @@ import Post from "../components/Post";
 import { SERVER } from "../util/server.json";
 import axios from "axios";
 import Alert from "../components/MyAlert";
+import { useSelector } from "react-redux";
 
 const restaurant = (props) => {
+  const token = useSelector((state) => {
+    return state.authenReducer.token;
+  });
   const [data, setData] = useState({
     follower: [],
     review: [],
@@ -184,6 +188,7 @@ const restaurant = (props) => {
                   return (
                     <Post
                       data={data}
+                      userId={token}
                       navigation={props.navigation}
                       profileNavigate={true}
                     ></Post>
