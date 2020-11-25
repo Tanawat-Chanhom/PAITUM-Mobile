@@ -7,6 +7,7 @@ import {
   ScrollView,
   TextInput,
   Image,
+  RefreshControl,
 } from "react-native";
 import Header from "../components/Header";
 import Button from "../components/Button";
@@ -19,6 +20,7 @@ const map = (props) => {
   const [distance, setDistance] = useState(5);
   const [findType, setFindType] = useState("Near Me");
   const [search, setSearch] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     let body = {
@@ -47,9 +49,11 @@ const map = (props) => {
             setErrorMessage("Server error.");
           });
       } else {
+        console.log(body);
         axios
           .post(SERVER + "/restaurant/near", body)
           .then((res) => {
+            console.log(res.data);
             if (res.data.restaurants.length !== 0) {
               setRestaurants(res.data.restaurants);
             } else {
@@ -70,6 +74,60 @@ const map = (props) => {
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    let body = {
+      latitude: 0,
+      longitude: 0,
+      radius: distance,
+    };
+    navigator.geolocation.getCurrentPosition((position) => {
+      body.latitude = position.coords.latitude;
+      body.longitude = position.coords.longitude;
+      if (findType === "Recommend") {
+        setDistance(0);
+        axios
+          .get(SERVER + "/restaurant/all")
+          .then((res) => {
+            if (res.data.restaurants.length !== 0) {
+              setRestaurants(res.data.restaurants);
+              setRefreshing(false);
+            } else {
+              setRestaurants([]);
+              setAlert(true);
+              setErrorMessage("Not Found");
+              setRefreshing(false);
+            }
+          })
+          .catch((err) => {
+            setAlert(true);
+            setErrorMessage("Server error.");
+            setRefreshing(false);
+          });
+      } else {
+        axios
+          .post(SERVER + "/restaurant/near", body)
+          .then((res) => {
+            console.log(res.data);
+            if (res.data.restaurants.length !== 0) {
+              setRestaurants(res.data.restaurants);
+              setRefreshing(false);
+            } else {
+              setRestaurants([]);
+              setAlert(true);
+              setErrorMessage("Not Found");
+              setRefreshing(false);
+            }
+          })
+          .catch((err) => {
+            setAlert(true);
+            setErrorMessage("Server error.");
+            setRefreshing(false);
+          });
+      }
+    });
+  };
+
   return (
     <>
       <Alert
@@ -88,6 +146,9 @@ const map = (props) => {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             style={styles.scrollView}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
             <View style={styles.searchContainer}>
               {/* <View style={styles.searchBar}>
