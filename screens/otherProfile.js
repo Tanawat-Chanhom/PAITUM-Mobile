@@ -24,6 +24,9 @@ const profile = (props) => {
 
   useEffect(() => {
     let otherUserId = props.navigation.getParam("id");
+    if (token.id === otherUserId) {
+      props.navigation.navigate("Profile");
+    }
     if (otherUserId !== undefined) {
       axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
         setUserData(res.data.user);

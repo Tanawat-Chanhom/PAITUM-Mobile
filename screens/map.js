@@ -189,28 +189,28 @@ const map = (props) => {
                 <Button
                   title={"5 Km."}
                   fontSize={20}
-                  color={distance === 5 ? "#E29821" : "#111"}
+                  color={distance === 5000 ? "#E29821" : "#111"}
                   style={[styles.optionButton, { marginLeft: 0 }]}
                   onPress={() => {
-                    setDistance(5);
+                    setDistance(5000);
                   }}
                 ></Button>
                 <Button
                   title={"10 Km."}
                   fontSize={20}
-                  color={distance === 10 ? "#E29821" : "#111"}
+                  color={distance === 10000 ? "#E29821" : "#111"}
                   style={styles.optionButton}
                   onPress={() => {
-                    setDistance(10);
+                    setDistance(10000);
                   }}
                 ></Button>
                 <Button
                   title={"20 Km."}
                   fontSize={20}
-                  color={distance === 20 ? "#E29821" : "#111"}
+                  color={distance === 20000 ? "#E29821" : "#111"}
                   style={[styles.optionButton, { marginRight: 0 }]}
                   onPress={() => {
-                    setDistance(20);
+                    setDistance(20000);
                   }}
                 ></Button>
               </View>

@@ -187,9 +187,13 @@ export default class Post extends Component {
             <TouchableOpacity
               onPress={() => {
                 if (this.props.profileNavigate === true) {
-                  this.props.navigation.navigate("OtherProfile", {
-                    id: this.props.data.user.id,
-                  });
+                  if (this.state.userId === this.props.data.user.id) {
+                    this.props.navigation.navigate("Profile");
+                  } else {
+                    this.props.navigation.navigate("OtherProfile", {
+                      id: this.props.data.user.id,
+                    });
+                  }
                 }
               }}
             >
