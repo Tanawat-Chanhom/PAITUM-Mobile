@@ -1,42 +1,54 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Image, TextInput } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
+// import { useSelector, useDispatch } from "react-redux";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
-import { SERVER } from "../util/server.json";
-import axios from "axios";
-
-import { setToken } from "../store/action/authenAction";
+import { login as loginService } from "../services/auth.service";
 
 const login = (props) => {
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
-  });
-  const dispatch = useDispatch();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("1");
+  const [password, setPassword] = useState("1");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Login loading
 
   function Login() {
+    setIsLoading(true);
     let body = {
       username: username,
       password: password,
     };
-    axios
-      .post(SERVER + "/user/login", body)
-      .then((res) => {
-        if (res.data.status === 200) {
-          dispatch(setToken(res.data.user));
-          props.navigation.navigate("Home");
+
+    if (username === "" || password === "") {
+      setAlert(true);
+      setErrorMessage("Please input your username and password.");
+      setIsLoading(false);
+    }
+
+    loginService(body)
+      .then((result) => {
+        console.log(result.data.user.id);
+        if (result.data.status === 200) {
+          // props.navigation.navigate("Home");
+          setIsLoading(false);
         } else {
+          setIsLoading(false);
           setAlert(true);
           setErrorMessage(res.data.message);
         }
       })
-      .catch((err) => {
+      .catch((error) => {
+        console.error(error);
         setAlert(true);
         setErrorMessage(err.message || "Server error.");
+        setIsLoading(false);
       });
   }
 
@@ -71,20 +83,25 @@ const login = (props) => {
               onChangeText={(x) => setPassword(x)}
             ></TextInput>
           </View>
-          {/* <Text style={styles.forgotText}>Forgot Password ?</Text> */}
         </View>
-        <View style={styles.login_button_container}>
-          <Button
-            color="#FFFFFF"
-            onPress={() => Login()}
-            title={"LOGIN"}
-            style={styles.loginButton}
-            fontSize={14}
-          ></Button>
+        <View style={styles.loginButtonContainer}>
+          {isLoading ? (
+            <View style={{ margin: 10 }}>
+              <ActivityIndicator color="#fff" />
+            </View>
+          ) : (
+            <Button
+              color="#FFFFFF"
+              onPress={() => Login()}
+              title={"LOGIN"}
+              style={styles.loginButton}
+              fontSize={14}
+            ></Button>
+          )}
         </View>
       </View>
       <Text
-        style={styles.registerText}
+        style={styles.signupText}
         onPress={() => props.navigation.navigate("Register")}
       >
         Sing Up
@@ -107,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
   },
-  login_button_container: {
+  loginButtonContainer: {
     backgroundColor: "#E29821",
     borderRadius: 50,
     width: "90%",
@@ -130,10 +147,10 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 10,
   },
-  registerText: {
+  signupText: {
     bottom: 0,
     position: "absolute",
-    margin: 10,
+    margin: 15,
     color: "#E29821",
   },
   forgotText: {

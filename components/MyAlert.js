@@ -106,5 +106,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#E16A6A",
     alignSelf: "center",
+    textAlign: "center",
   },
 });
