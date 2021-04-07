@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -7,10 +7,11 @@ import {
   TextInput,
   ActivityIndicator,
 } from "react-native";
-// import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
 import { login as loginService } from "../services/auth.service";
+import { setToken } from "../store/action/userAction";
 
 const login = (props) => {
   const [username, setUsername] = useState("1");
@@ -18,8 +19,16 @@ const login = (props) => {
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Login loading
+  const { userReduducer } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
-  function Login() {
+  useEffect(() => {
+    if (userReduducer.token !== null) {
+      props.navigation.navigate("Home");
+    }
+  }, [userReduducer]);
+
+  const Login = () => {
     setIsLoading(true);
     let body = {
       username: username,
@@ -34,23 +43,23 @@ const login = (props) => {
 
     loginService(body)
       .then((result) => {
-        console.log(result.data.user.id);
         if (result.data.status === 200) {
-          // props.navigation.navigate("Home");
+          dispatch(setToken(result.data.user.id));
+          props.navigation.navigate("Home");
           setIsLoading(false);
         } else {
           setIsLoading(false);
           setAlert(true);
-          setErrorMessage(res.data.message);
+          setErrorMessage(result.data.message);
         }
       })
       .catch((error) => {
         console.error(error);
         setAlert(true);
-        setErrorMessage(err.message || "Server error.");
+        setErrorMessage(error.message || "Server error.");
         setIsLoading(false);
       });
-  }
+  };
 
   return (
     <View style={styles.screen}>
