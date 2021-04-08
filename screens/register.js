@@ -139,6 +139,7 @@ export default function Register(props) {
               style={styles.textInput}
               placeholder="e-mail"
               value={data.eMail}
+              keyboardType="email-address"
               onChangeText={(x) => {
                 setData({ ...data, eMail: x });
               }}
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   genderButton: {
+    flex: 1,
     justifyContent: "center",
     alignContent: "center",
     width: 100,

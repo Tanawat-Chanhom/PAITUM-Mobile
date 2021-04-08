@@ -25,7 +25,7 @@ export default class Post extends Component {
       modelIsShow: false,
       isShowComments: false,
       liked: props.data.detail.liked,
-      userId: props.userId.id,
+      userId: props.userId,
       comments: props.data.detail.comments,
       message: "",
       like: props.data.detail.like,

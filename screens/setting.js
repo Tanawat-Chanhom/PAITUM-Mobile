@@ -2,11 +2,17 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import settingAccount from "./settingAccount";
 import { useSelector, useDispatch } from "react-redux";
-import { logout as Logout } from "../store/action/authenAction";
+import { setToken } from "../store/action/userAction";
 import { AntDesign } from "@expo/vector-icons";
 import BackPage from "../components/BackPage";
 
 const setting = (props) => {
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(setToken(null));
+  };
+
   return (
     <View style={styles.Container}>
       <View style={styles.backContainer}>
@@ -31,6 +37,7 @@ const setting = (props) => {
         <TouchableOpacity
           style={styles.settingContainer}
           onPress={() => {
+            handleLogout();
             props.navigation.navigate("Login");
           }}
         >

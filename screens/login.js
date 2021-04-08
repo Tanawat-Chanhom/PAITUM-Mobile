@@ -19,16 +19,16 @@ const login = (props) => {
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Login loading
-  const { userReduducer } = useSelector((state) => state);
+  const { userReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userReduducer.token !== null) {
-      props.navigation.navigate("Home");
+    if (userReducer.token !== null) {
+      props.navigation.navigate("SettingProfile");
     }
-  }, [userReduducer]);
+  }, [userReducer]);
 
-  const Login = () => {
+  const handleLogin = () => {
     setIsLoading(true);
     let body = {
       username: username,
@@ -101,7 +101,7 @@ const login = (props) => {
           ) : (
             <Button
               color="#FFFFFF"
-              onPress={() => Login()}
+              onPress={() => handleLogin()}
               title={"LOGIN"}
               style={styles.loginButton}
               fontSize={14}

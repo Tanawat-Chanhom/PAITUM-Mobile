@@ -7,25 +7,85 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
+  ActivityIndicator,
+  RefreshControl,
+  DatePickerIOS,
 } from "react-native";
+import Constants from "expo-constants";
+import { useSelector } from "react-redux";
+import { getProfile } from "../services/profile.service";
 import BackPage from "../components/BackPage";
 import * as ImagePicker from "expo-image-picker";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
+import Model from "../components/Model";
 
 const settingProfile = (props) => {
-  const data = props.navigation.getParam("data");
-  const [image, setImage] = useState(null);
-  const [caption, setCaption] = useState("");
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [email, setEmail] = useState("");
+  const { userReducer } = useSelector((state) => state);
+  const userToken = userReducer.token;
+  const [base64, setBase64] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Sending Data
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const [stateGenderModel, setStateGenderModel] = useState(false);
+  const [stateDateModel, setStateDateModel] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    image: null,
+    caption: "",
+    name: "",
+    gender: "",
+    birthday: new Date(),
+    email: "",
+  });
+
+  const isShowGender = (state) => {
+    state === true ? setStateGenderModel(true) : setStateGenderModel(false);
+  };
+  const isShowDate = (state) => {
+    state === true ? setStateDateModel(true) : setStateDateModel(false);
+  };
+
+  const dateSelecterComponent = (
+    <View>
+      <DatePickerIOS
+        mode={"date"}
+        date={userProfile.birthday}
+        onDateChange={(result) => {
+          setUserProfile({ ...userProfile, birthday: result });
+        }}
+      />
+    </View>
+  );
+
+  const genderOptionComponent = (
+    <View style={styles.genderContainer}>
+      <View style={styles.genderButton}>
+        <Button
+          title={"Men"}
+          color="black"
+          onPress={() => {
+            setUserProfile({ ...userProfile, gender: "men" });
+            isShowGender(false);
+          }}
+        ></Button>
+      </View>
+      <View style={styles.genderButton}>
+        <Button
+          title={"Women"}
+          color="black"
+          onPress={() => {
+            setUserProfile({ ...userProfile, gender: "women" });
+            isShowGender(false);
+          }}
+        ></Button>
+      </View>
+    </View>
+  );
 
   useEffect(() => {
-    (async () => {
+    async () => {
       if (Platform.OS !== "web") {
         const {
           status,
@@ -34,7 +94,29 @@ const settingProfile = (props) => {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
       }
-    })();
+    };
+    getProfile(userToken)
+      .then((result) => {
+        const {
+          avatar,
+          caption,
+          name,
+          gender,
+          birthday,
+          email,
+        } = result.data.user;
+        setUserProfile({
+          ...userProfile,
+          image: avatar,
+          caption: caption,
+          name: name,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        setAlert(true);
+        setErrorMessage("Server error.");
+      });
   }, []);
 
   const pickImage = async () => {
@@ -47,25 +129,57 @@ const settingProfile = (props) => {
     });
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setBase64(result.base64);
+      setUserProfile({ ...userProfile, image: result.uri });
     }
   };
 
-  const submit = () => {
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    getProfile(userToken)
+      .then((result) => {
+        const {
+          avatar,
+          caption,
+          name,
+          gender,
+          birthday,
+          email,
+        } = result.data.user;
+        setUserProfile({
+          ...userProfile,
+          image: avatar,
+          caption: caption,
+          name: name,
+        });
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setAlert(true);
+        setRefreshing(false);
+        setErrorMessage("Server error.");
+      });
+  };
+
+  const handleSubmit = () => {
     let body = {
-      ...data,
-      caption: caption,
-      avatar: image,
-      name: name,
-      gender: gender,
-      birthday: birthday,
-      email: email,
+      ...userProfile,
+      base64: base64,
     };
-    props.navigation.navigate("Profile");
+    setIsLoading(true);
+
+    // props.navigation.navigate("Profile");
   };
 
   return (
-    <ScrollView style={styles.screen}>
+    <View>
+      <BackPage
+        navigation={props}
+        path={"Setting"}
+        isFlow={true}
+        magin={10}
+      ></BackPage>
       <Alert
         open={alert}
         value={errorMessage}
@@ -73,94 +187,130 @@ const settingProfile = (props) => {
           setAlert(false);
         }}
       ></Alert>
-      <BackPage navigation={props} path={"Setting"}></BackPage>
-      <View style={styles.profileImg}>
-        <View style={[styles.ImgContainer]}>
-          <TouchableOpacity onPress={pickImage}>
-            {image === null ? (
-              <Image source={require("../assets/camera.png")} />
-            ) : (
-              <Image source={{ uri: image }} style={styles.image} />
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.textInputContainer}>
-        <Text style={styles.text}>Caption</Text>
-        <TextInput
-          style={styles.textInput}
-          value={caption}
-          placeholder="Web-Designner"
-          onChangeText={(x) => {
-            setCaption(x);
-          }}
-        ></TextInput>
-      </View>
-      <View style={styles.textInputContainer}>
-        <Text style={styles.text}>Name</Text>
-        <TextInput
-          style={styles.textInput_nobd}
-          value={name}
-          placeholder="Your Name"
-          onChangeText={(x) => {
-            setName(x);
-          }}
-        ></TextInput>
-      </View>
-      <View style={styles.textInputContainer}>
-        <Text style={styles.text}>Gender</Text>
-        <TextInput
-          style={styles.textInput_nobd}
-          value={gender}
-          placeholder="Male"
-          onChangeText={(x) => {
-            setGender(x);
-          }}
-        ></TextInput>
-      </View>
-      <View style={styles.textInputContainer}>
-        <Text style={styles.text}>Birthday</Text>
-        <TextInput
-          style={styles.textInput_nobd}
-          value={birthday}
-          placeholder="Your Birthday"
-          onChangeText={(x) => {
-            setBirthday(x);
-          }}
-        ></TextInput>
-      </View>
-      <View style={styles.textInputContainer}>
-        <Text style={styles.text}>E-mail</Text>
-        <TextInput
-          style={styles.textInput_nobd}
-          value={email}
-          placeholder="Your Email"
-          onChangeText={(x) => {
-            setEmail(x);
-          }}
-        ></TextInput>
-      </View>
-      <View style={{ alignItems: "center" }}>
-        <View style={styles.login_button_container}>
-          <Button
-            color="#FFFFFF"
-            title={"SAVE"}
-            style={styles.loginButton}
-            onPress={() => submit()}
-            fontSize={14}
-          ></Button>
-        </View>
-      </View>
-    </ScrollView>
+      <Model
+        show={stateGenderModel}
+        component={genderOptionComponent}
+        cencel={isShowGender}
+      ></Model>
+      <Model
+        show={stateDateModel}
+        component={dateSelecterComponent}
+        cencel={isShowDate}
+      ></Model>
+      <SafeAreaView style={styles.safeAreaView}>
+        <ScrollView
+          style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        >
+          <View style={styles.profileImg}>
+            <View style={[styles.ImgContainer]}>
+              <TouchableOpacity onPress={pickImage}>
+                {userProfile.image === null ? (
+                  <Image source={require("../assets/camera.png")} />
+                ) : (
+                  <Image
+                    source={{ uri: userProfile.image }}
+                    style={styles.image}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>Caption</Text>
+            <TextInput
+              style={styles.textInput}
+              value={userProfile.caption}
+              placeholder="Web-Designner"
+              onChangeText={(x) => {
+                setUserProfile({ ...userProfile, caption: x });
+              }}
+            ></TextInput>
+          </View>
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>Name</Text>
+            <TextInput
+              style={styles.textInput_nobd}
+              value={userProfile.name}
+              placeholder="Your Name"
+              onChangeText={(x) => {
+                setUserProfile({ ...userProfile, name: x });
+              }}
+            ></TextInput>
+          </View>
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>E-mail</Text>
+            <TextInput
+              style={styles.textInput_nobd}
+              value={userProfile.email}
+              placeholder="Your Email"
+              keyboardType="email-address"
+              onChangeText={(x) => {
+                setUserProfile({ ...userProfile, email: x });
+              }}
+            ></TextInput>
+          </View>
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>Gender</Text>
+            <View style={styles.selecterContainer}>
+              <Text
+                style={styles.genderText}
+                onPress={() => {
+                  isShowGender(true);
+                }}
+              >
+                {userProfile.gender === "men" ? "Men" : "Women"}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>Birthday</Text>
+            <View style={styles.selecterContainer}>
+              <Text
+                style={styles.dateText}
+                onPress={() => {
+                  isShowDate(true);
+                }}
+              >
+                {userProfile.birthday.toLocaleDateString()}
+              </Text>
+            </View>
+          </View>
+
+          <View style={{ alignItems: "center", paddingBottom: 20 }}>
+            <View style={styles.login_button_container}>
+              {isLoading === true ? (
+                <View style={{ margin: 10 }}>
+                  <ActivityIndicator color="#fff" />
+                </View>
+              ) : (
+                <Button
+                  color="#FFFFFF"
+                  title={"SAVE"}
+                  style={styles.loginButton}
+                  onPress={() => handleSubmit()}
+                  fontSize={14}
+                ></Button>
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
+  safeAreaView: {
+    marginTop: -Constants.statusBarHeight,
+  },
+  scrollView: {
+    height: "100%",
+    backgroundColor: "#fff",
     paddingLeft: 20,
     paddingRight: 20,
-    backgroundColor: "#FFF",
   },
   nextButton: {
     backgroundColor: "#E29821",
@@ -235,12 +385,33 @@ const styles = StyleSheet.create({
   loginButton: {
     padding: 10,
   },
+  genderText: {
+    color: "#A9C3BC",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  selecterContainer: {
+    borderColor: "#707070",
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+    padding: 5,
+  },
+  genderContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+  genderButton: {
+    flex: 1,
+    position: "relative",
+    justifyContent: "center",
+    alignContent: "center",
+    height: 100,
+    backgroundColor: "#F1F1F1",
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
+  },
 });
-
-// settingProfile.navigationOptions = (navigationData) => {
-//   return {
-//     headerShown: false,
-//   };
-// };
 
 export default settingProfile;

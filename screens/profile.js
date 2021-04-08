@@ -8,24 +8,31 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import Constants from "expo-constants";
-import Button from "../components/Button";
+// import Button from "../components/Button";
 import Post from "../components/Post";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { SERVER } from "../util/server.json";
-import { Image as Loader } from "react-native-elements";
-import { ActivityIndicator } from "react-native";
+import { getProfile } from "../services/profile.service";
 
 const profile = (props) => {
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
+  const { userReducer } = useSelector((state) => state);
+  const userToken = userReducer.token;
+  const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [userProfile, setUserProfile] = useState({
+    follower: 0,
+    following: 0,
   });
+
   useEffect(() => {
-    axios.get(SERVER + "/user/profile/" + token.id).then((res) => {
-      setUserData(res.data.user);
+    getProfile(userToken).then((result) => {
+      setUserProfile(result.data.user);
     });
+
     axios
       .get(SERVER + "/restaurant/all")
       .then((res) => {
@@ -34,7 +41,7 @@ const profile = (props) => {
           let myPosts = [];
           restaurants.map((data) => {
             data.review.map((reviewData, index) => {
-              if (reviewData.user.id === token.id) {
+              if (reviewData.user.id === userToken) {
                 myPosts.push(reviewData);
               }
             });
@@ -43,23 +50,16 @@ const profile = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }, []);
 
-  const [userData, setUserData] = useState({
-    follower: 0,
-    following: 0,
-  });
-  const [posts, setPosts] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = () => {
+  const handleRefresh = async () => {
     setRefreshing(true);
-    axios.get(SERVER + "/user/profile/" + token.id).then((res) => {
-      setUserData(res.data.user);
+    await getProfile(userToken).then((result) => {
+      setUserProfile(result.data.user);
     });
-    axios
+    await axios
       .get(SERVER + "/restaurant/all")
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
@@ -67,7 +67,7 @@ const profile = (props) => {
           let myPosts = [];
           restaurants.map((data) => {
             data.review.map((reviewData, index) => {
-              if (reviewData.user.id === token.id) {
+              if (reviewData.user.id === userToken) {
                 myPosts.push(reviewData);
               }
             });
@@ -77,7 +77,7 @@ const profile = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -89,11 +89,11 @@ const profile = (props) => {
           showsHorizontalScrollIndicator={false}
           style={styles.scrollView}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
         >
           <Image
-            source={{ uri: userData.coverImage }}
+            source={{ uri: userProfile.coverImage }}
             style={styles.imageCover}
             PlaceholderContent={<ActivityIndicator />}
           ></Image>
@@ -118,24 +118,24 @@ const profile = (props) => {
                 <View style={styles.profileHeader}>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
-                      {userData.follower.length >= 1000
-                        ? (userData.follower.length / 1000).toFixed(1) + "K"
-                        : userData.follower.length}
+                      {userProfile.follower.length >= 1000
+                        ? (userProfile.follower.length / 1000).toFixed(1) + "K"
+                        : userProfile.follower.length}
                     </Text>
                     <Text style={{ color: "#E29821" }}>Followers</Text>
                   </View>
                   <View style={styles.avatarContainer}>
                     <Image
                       style={styles.avatar}
-                      source={{ uri: userData.avatar }}
+                      source={{ uri: userProfile.avatar }}
                       PlaceholderContent={<ActivityIndicator />}
                     ></Image>
                   </View>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
-                      {userData.following.length >= 1000
-                        ? (userData.following.length / 1000).toFixed(1) + "K"
-                        : userData.following.length}
+                      {userProfile.following.length >= 1000
+                        ? (userProfile.following.length / 1000).toFixed(1) + "K"
+                        : userProfile.following.length}
                     </Text>
                     <Text style={{ color: "#E29821" }}>Following</Text>
                   </View>
@@ -149,7 +149,7 @@ const profile = (props) => {
                       marginBottom: 5,
                     }}
                   >
-                    {userData.name}
+                    {userProfile.name}
                   </Text>
                   <Text
                     style={{
@@ -159,7 +159,7 @@ const profile = (props) => {
                       textAlign: "center",
                     }}
                   >
-                    {userData.caption}
+                    {userProfile.caption}
                   </Text>
                 </View>
               </View>
@@ -169,7 +169,7 @@ const profile = (props) => {
                 return (
                   <Post
                     data={data}
-                    userId={token}
+                    userId={userToken}
                     navigation={props.navigation}
                     key={index}
                     profileNavigate={false}
