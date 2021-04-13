@@ -5,15 +5,15 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  TextInput,
-  Image,
   RefreshControl,
 } from "react-native";
 import Header from "../components/Header";
 import Button from "../components/Button";
 import RestaurantCord from "../components/RestaurantCord";
-import axios from "axios";
-import { SERVER } from "../util/server.json";
+import {
+  getRestaurants,
+  getNearRestaurants,
+} from "../services/restaurant.service";
 import Alert from "../components/MyAlert";
 
 const map = (props) => {
@@ -31,10 +31,10 @@ const map = (props) => {
     navigator.geolocation.getCurrentPosition((position) => {
       body.latitude = position.coords.latitude;
       body.longitude = position.coords.longitude;
+
       if (findType === "Recommend") {
         setDistance(0);
-        axios
-          .get(SERVER + "/restaurant/all")
+        getRestaurants()
           .then((res) => {
             if (res.data.restaurants.length !== 0) {
               setRestaurants(res.data.restaurants);
@@ -49,11 +49,8 @@ const map = (props) => {
             setErrorMessage("Server error.");
           });
       } else {
-        console.log(body);
-        axios
-          .post(SERVER + "/restaurant/near", body)
+        getNearRestaurants(body)
           .then((res) => {
-            console.log(res.data);
             if (res.data.restaurants.length !== 0) {
               setRestaurants(res.data.restaurants);
             } else {
@@ -86,8 +83,7 @@ const map = (props) => {
       body.longitude = position.coords.longitude;
       if (findType === "Recommend") {
         setDistance(0);
-        axios
-          .get(SERVER + "/restaurant/all")
+        getRestaurants()
           .then((res) => {
             if (res.data.restaurants.length !== 0) {
               setRestaurants(res.data.restaurants);
@@ -105,8 +101,7 @@ const map = (props) => {
             setRefreshing(false);
           });
       } else {
-        axios
-          .post(SERVER + "/restaurant/near", body)
+        getNearRestaurants(body)
           .then((res) => {
             console.log(res.data);
             if (res.data.restaurants.length !== 0) {
@@ -151,20 +146,6 @@ const map = (props) => {
             }
           >
             <View style={styles.searchContainer}>
-              {/* <View style={styles.searchBar}>
-                <Image
-                  style={styles.searchIcon}
-                  source={require("../assets/search.png")}
-                ></Image>
-                <TextInput
-                  placeholder="Search"
-                  style={{ flex: 1 }}
-                  onChangeText={(text) => {
-                    setSearch(text);
-                  }}
-                  value={search}
-                ></TextInput>
-              </View> */}
               <View style={styles.optionBar}>
                 <Button
                   title={"Near Me"}

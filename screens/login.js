@@ -24,7 +24,7 @@ const login = (props) => {
 
   useEffect(() => {
     if (userReducer.token !== null) {
-      props.navigation.navigate("SettingProfile");
+      props.navigation.navigate("Map");
     }
   }, [userReducer]);
 
