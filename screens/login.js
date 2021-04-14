@@ -25,7 +25,7 @@ const login = (props) => {
 
   useEffect(() => {
     if (userReducer.userId !== null) {
-      props.navigation.navigate("MyCoupon");
+      props.navigation.navigate("Home");
     }
   }, [userReducer]);
 

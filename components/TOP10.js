@@ -12,8 +12,16 @@ import axios from "axios";
 import { SERVER } from "../util/server.json";
 import { Image } from "react-native-elements";
 import { ActivityIndicator } from "react-native";
+import { getRestaurants } from "../services/restaurant.service";
 
 class Card extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: props.ratingNumber,
+    };
+  }
+
   render() {
     return (
       <TouchableOpacity
@@ -29,6 +37,9 @@ class Card extends Component {
             style={stylesCard.image}
             PlaceholderContent={<ActivityIndicator />}
           />
+          <View style={stylesCard.ratingContainer}>
+            <Text style={stylesCard.ratingText}>{this.state.index}</Text>
+          </View>
           <View style={stylesCard.footer}>
             <Text style={stylesCard.text} numberOfLines={2}>
               {this.props.data.restaurantName}
@@ -64,6 +75,19 @@ const stylesCard = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  ratingContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  ratingText: {
+    color: "#E29821",
+    fontWeight: "bold",
+    fontSize: 100,
+    opacity: 0.4,
+  },
 });
 
 export default class TOP10 extends Component {
@@ -75,8 +99,7 @@ export default class TOP10 extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get(SERVER + "/restaurant/all")
+    getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
           this.setState({
@@ -117,6 +140,7 @@ export default class TOP10 extends Component {
                   <Card
                     data={data}
                     key={index}
+                    ratingNumber={index + 1}
                     navigation={this.props.navigation}
                   ></Card>
                 );

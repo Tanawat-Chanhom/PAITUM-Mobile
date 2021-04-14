@@ -12,6 +12,7 @@ import Post from "../components/Post";
 import axios from "axios";
 import { SERVER } from "../util/server.json";
 import { useSelector } from "react-redux";
+import { getRestaurants } from "../services/restaurant.service";
 
 const home = (props) => {
   const token = useSelector((state) => {
@@ -22,22 +23,25 @@ const home = (props) => {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(SERVER + "/restaurant/all")
-      .then((res) => {
-        if (res.data.restaurants.length !== 0) {
-          let UpdatePosts = [];
-          res.data.restaurants.map((data) => {
-            let reviews = data.review;
-            let newUpdate = UpdatePosts.concat(reviews);
-            UpdatePosts = newUpdate;
-          });
-          setPosts(UpdatePosts);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    async function fatchData() {
+      await getRestaurants()
+        .then((res) => {
+          if (res.data.restaurants.length !== 0) {
+            let UpdatePosts = [];
+            res.data.restaurants.map((data) => {
+              let reviews = data.review;
+              let newUpdate = UpdatePosts.concat(reviews);
+              UpdatePosts = newUpdate;
+            });
+            setPosts(UpdatePosts);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    fatchData();
   }, []);
 
   const onRefresh = () => {
