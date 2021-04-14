@@ -11,20 +11,21 @@ import { useSelector, useDispatch } from "react-redux";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
 import { login as loginService } from "../services/auth.service";
-import { setToken } from "../store/action/userAction";
+import { setUserId } from "../store/action/userAction";
 
 const login = (props) => {
+  const dispatch = useDispatch();
+  const { userReducer } = useSelector((state) => state);
+
   const [username, setUsername] = useState("1");
   const [password, setPassword] = useState("1");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Login loading
-  const { userReducer } = useSelector((state) => state);
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userReducer.token !== null) {
-      props.navigation.navigate("Map");
+    if (userReducer.userId !== null) {
+      props.navigation.navigate("MyCoupon");
     }
   }, [userReducer]);
 
@@ -44,7 +45,7 @@ const login = (props) => {
     loginService(body)
       .then((result) => {
         if (result.data.status === 200) {
-          dispatch(setToken(result.data.user.id));
+          dispatch(setUserId(result.data.user.id));
           props.navigation.navigate("Home");
           setIsLoading(false);
         } else {

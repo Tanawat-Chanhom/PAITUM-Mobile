@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { useSelector } from "react-redux";
-import { getProfile } from "../services/profile.service";
+import { getUserProfile } from "../services/user.service";
 import BackPage from "../components/BackPage";
 import * as ImagePicker from "expo-image-picker";
 import Alert from "../components/MyAlert";
@@ -23,7 +23,7 @@ import Model from "../components/Model";
 
 const settingProfile = (props) => {
   const { userReducer } = useSelector((state) => state);
-  const userToken = userReducer.token;
+  const userId = userReducer.userId;
   const [base64, setBase64] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Sending Data
   const [alert, setAlert] = useState(false);
@@ -95,7 +95,7 @@ const settingProfile = (props) => {
         }
       }
     };
-    getProfile(userToken)
+    getUserProfile(userId)
       .then((result) => {
         const {
           avatar,
@@ -136,7 +136,7 @@ const settingProfile = (props) => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    getProfile(userToken)
+    getProfile(userId)
       .then((result) => {
         const {
           avatar,

@@ -11,16 +11,16 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Constants from "expo-constants";
-// import Button from "../components/Button";
 import Post from "../components/Post";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { SERVER } from "../util/server.json";
-import { getProfile } from "../services/profile.service";
+import { getUserProfile } from "../services/user.service";
+import { getRestaurants } from "../services/restaurant.service";
 
 const profile = (props) => {
   const { userReducer } = useSelector((state) => state);
-  const userToken = userReducer.token;
+  const userId = userReducer.userId;
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [userProfile, setUserProfile] = useState({
@@ -28,20 +28,18 @@ const profile = (props) => {
     following: 0,
   });
 
-  useEffect(() => {
-    getProfile(userToken).then((result) => {
+  useEffect(async () => {
+    getUserProfile(userId).then((result) => {
       setUserProfile(result.data.user);
     });
-
-    axios
-      .get(SERVER + "/restaurant/all")
+    getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
           let restaurants = res.data.restaurants;
           let myPosts = [];
           restaurants.map((data) => {
             data.review.map((reviewData, index) => {
-              if (reviewData.user.id === userToken) {
+              if (reviewData.user.id === userId) {
                 myPosts.push(reviewData);
               }
             });
@@ -56,18 +54,17 @@ const profile = (props) => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await getProfile(userToken).then((result) => {
+    await getUserProfile(userId).then((result) => {
       setUserProfile(result.data.user);
     });
-    await axios
-      .get(SERVER + "/restaurant/all")
+    await getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
           let restaurants = res.data.restaurants;
           let myPosts = [];
           restaurants.map((data) => {
             data.review.map((reviewData, index) => {
-              if (reviewData.user.id === userToken) {
+              if (reviewData.user.id === userId) {
                 myPosts.push(reviewData);
               }
             });
@@ -169,7 +166,7 @@ const profile = (props) => {
                 return (
                   <Post
                     data={data}
-                    userId={userToken}
+                    userId={userId}
                     navigation={props.navigation}
                     key={index}
                     profileNavigate={false}

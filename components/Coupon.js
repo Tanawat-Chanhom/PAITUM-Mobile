@@ -9,7 +9,6 @@ export default class Coupon extends Component {
     this.state = {
       numberOfLines: 3,
       isShow: false,
-      isDelete: false,
     };
   }
 
@@ -21,9 +20,6 @@ export default class Coupon extends Component {
   );
 
   render() {
-    if (this.state.isDelete === true) {
-      return <></>;
-    }
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -82,9 +78,6 @@ export default class Coupon extends Component {
               fontSize={20}
               onPress={() => {
                 this.props.delete(this.props.data.coin);
-                this.setState({
-                  isDelete: true,
-                });
               }}
             ></Button>
             <Button
