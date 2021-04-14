@@ -28,28 +28,32 @@ const profile = (props) => {
     following: 0,
   });
 
-  useEffect(async () => {
-    getUserProfile(userId).then((result) => {
-      setUserProfile(result.data.user);
-    });
-    getRestaurants()
-      .then((res) => {
-        if (res.data.restaurants.length !== 0) {
-          let restaurants = res.data.restaurants;
-          let myPosts = [];
-          restaurants.map((data) => {
-            data.review.map((reviewData, index) => {
-              if (reviewData.user.id === userId) {
-                myPosts.push(reviewData);
-              }
-            });
-          });
-          setPosts(myPosts);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
+  useEffect(() => {
+    async function fatchData() {
+      await getUserProfile(userId).then((result) => {
+        setUserProfile(result.data.user);
       });
+      await getRestaurants()
+        .then((res) => {
+          if (res.data.restaurants.length !== 0) {
+            let restaurants = res.data.restaurants;
+            let myPosts = [];
+            restaurants.map((data) => {
+              data.review.map((reviewData, index) => {
+                if (reviewData.user.id === userId) {
+                  myPosts.push(reviewData);
+                }
+              });
+            });
+            setPosts(myPosts);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+
+    fatchData();
   }, []);
 
   const handleRefresh = async () => {
