@@ -19,11 +19,14 @@ import Alert from "../components/MyAlert";
 import { useSelector } from "react-redux";
 import { Image as Loader } from "react-native-elements";
 import { ActivityIndicator } from "react-native";
+import {
+  getRestaurants,
+  getRestaurantFollow,
+} from "../services/restaurant.service";
 
 const restaurant = (props) => {
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
-  });
+  const { userReducer } = useSelector((state) => state);
+  const userId = userReducer.userId;
   const [data, setData] = useState({
     follower: [],
     review: [],
@@ -51,15 +54,14 @@ const restaurant = (props) => {
   let id = props.navigation.getParam("id");
 
   useEffect(() => {
-    axios
-      .get(SERVER + "/restaurant/all")
+    getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
           let restaurants = res.data.restaurants;
           let index = restaurants.findIndex((x) => x.id === id);
           setData(restaurants[index]);
           restaurants[index].follower.map((id) => {
-            id === token.id ? setIsFollow(true) : setIsFollow(false);
+            id === userId ? setIsFollow(true) : setIsFollow(false);
           });
           genStar();
         }
@@ -71,15 +73,14 @@ const restaurant = (props) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    axios
-      .get(SERVER + "/restaurant/all")
+    getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
           let restaurants = res.data.restaurants;
           let index = restaurants.findIndex((x) => x.id === id);
           setData(restaurants[index]);
           restaurants[index].follower.map((id) => {
-            id === token.id ? setIsFollow(true) : setIsFollow(false);
+            id === userId ? setIsFollow(true) : setIsFollow(false);
           });
           genStar();
           setRefreshing(false);
@@ -111,11 +112,10 @@ const restaurant = (props) => {
 
   const follow = () => {
     let body = {
-      user: token.id,
+      user: userId,
       restaurant: data.id,
     };
-    axios
-      .put(SERVER + "/restaurant/follow", body)
+    getRestaurantFollow(body)
       .then((res) => {
         setAlert(true);
         if (isFollow === true) {
@@ -261,7 +261,7 @@ const restaurant = (props) => {
                     <Post
                       key={index}
                       data={data}
-                      userId={token}
+                      userId={userId}
                       navigation={props.navigation}
                       profileNavigate={true}
                     ></Post>

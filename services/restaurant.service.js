@@ -8,3 +8,7 @@ export const getRestaurants = async () => {
 export const getNearRestaurants = async (body) => {
   return await axios.post(env.SERVER + "/restaurant/near", body);
 };
+
+export const getRestaurantFollow = async (body) => {
+  return await axios.put(env.SERVER + "/restaurant/follow", body);
+};

@@ -9,8 +9,6 @@ import {
 import Header from "../components/Header";
 import TOP10 from "../components/TOP10";
 import Post from "../components/Post";
-import axios from "axios";
-import { SERVER } from "../util/server.json";
 import { useSelector } from "react-redux";
 import { getRestaurants } from "../services/restaurant.service";
 
@@ -47,8 +45,7 @@ const home = (props) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    axios
-      .get(SERVER + "/restaurant/all")
+    getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
           let UpdatePosts = [];
