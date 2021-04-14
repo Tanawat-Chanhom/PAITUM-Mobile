@@ -94,7 +94,7 @@ export default class TOP10 extends Component {
   constructor() {
     super();
     this.state = {
-      top10: [],
+      top10: [{}, {}, {}],
     };
   }
 

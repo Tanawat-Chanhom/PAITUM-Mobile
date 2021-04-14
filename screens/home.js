@@ -20,7 +20,7 @@ const home = (props) => {
   });
 
   const [posts, setPosts] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(true);
 
   useEffect(() => {
     async function fatchData() {
@@ -39,6 +39,7 @@ const home = (props) => {
         .catch((err) => {
           console.log(err);
         });
+      await setRefreshing(false);
     }
 
     fatchData();
