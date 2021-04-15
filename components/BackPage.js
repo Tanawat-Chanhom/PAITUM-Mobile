@@ -12,12 +12,16 @@ export default class backPage extends Component {
   render() {
     return (
       <View
-        style={{
-          position: this.props.isFlow === true ? "absolute" : "relative",
-          zIndex: 99,
-          margin: this.props.magin,
-          marginTop: Constants.statusBarHeight,
-        }}
+        style={[
+          {
+            position: this.props.isFlow === true ? "absolute" : "relative",
+            zIndex: 99,
+            margin: this.props.magin,
+            marginTop: Constants.statusBarHeight,
+          },
+          ,
+          styles.dropShadow,
+        ]}
       >
         <TouchableWithoutFeedback
           onPress={() =>
@@ -48,5 +52,16 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
+  },
+  dropShadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
   },
 });

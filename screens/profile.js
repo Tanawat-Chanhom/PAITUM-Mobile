@@ -84,6 +84,18 @@ const profile = (props) => {
 
   return (
     <>
+      <View style={[styles.settingContainer, styles.dropShadow]}>
+        <TouchableOpacity
+          onPress={() => {
+            props.navigation.navigate("Setting");
+          }}
+        >
+          <Image
+            style={styles.settingIcon}
+            source={require("../assets/setting.png")}
+          ></Image>
+        </TouchableOpacity>
+      </View>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -98,19 +110,6 @@ const profile = (props) => {
             style={styles.imageCover}
             PlaceholderContent={<ActivityIndicator />}
           ></Image>
-
-          <View style={styles.settingContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                props.navigation.navigate("Setting");
-              }}
-            >
-              <Image
-                style={styles.settingIcon}
-                source={require("../assets/setting.png")}
-              ></Image>
-            </TouchableOpacity>
-          </View>
 
           <View style={styles.screen}>
             <View style={styles.header}>
@@ -263,6 +262,17 @@ const styles = StyleSheet.create({
   settingIcon: {
     width: "100%",
     height: "100%",
+  },
+  dropShadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
   },
 });
 
