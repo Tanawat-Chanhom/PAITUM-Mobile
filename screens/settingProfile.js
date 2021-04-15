@@ -136,7 +136,7 @@ const settingProfile = (props) => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    getProfile(userId)
+    getUserProfile(userId)
       .then((result) => {
         const {
           avatar,
