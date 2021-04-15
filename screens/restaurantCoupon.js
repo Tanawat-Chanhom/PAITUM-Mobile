@@ -10,31 +10,40 @@ import {
 import BackPage from "../components/BackPage";
 import ReCoupon from "../components/ReCoupon";
 import Alert from "../components/MyAlert";
+import Constants from "expo-constants";
 import { useSelector, useDispatch } from "react-redux";
-import { setCoin as setUserCoin } from "../store/action/authenAction";
-import { setCoupon as setUserCoupon } from "../store/action/authenAction";
+import { getUserProfile } from "../services/user.service";
 
 const restaurantCoupon = (props) => {
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
-  });
+  let coupon = props.navigation.getParam("coupon"); //Passing data from restaurant main page
+
+  const { userReducer } = useSelector((state) => state);
+  const userCoin = userReducer.coin;
+  const userId = userReducer.userId;
   const dispatch = useDispatch();
-  const [Coin, setCoin] = useState(token.coin);
+  const [Coin, setCoin] = useState(userCoin);
   const [Coupons, setCoupons] = useState([]);
   const [rerender, setRerender] = useState(0);
-  let coupon = props.navigation.getParam("coupon");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    if (coupon.length === 0) {
-      setAlert(true);
-      setErrorMessage("Not have coupon at this time!");
+    async function fatchData() {
+      await getUserProfile(userId).then((result) => {
+        let userData = result.data.user;
+
+        if (coupon.length === 0) {
+          setAlert(true);
+          setErrorMessage("Not have coupon at this time!");
+        }
+        setCoupons(coupon);
+        setCoin(userData.coin);
+      });
     }
-    setCoupons(coupon);
-    setCoin(token.coin);
-  }, [coupon, token, rerender]);
+
+    fatchData();
+  }, [coupon, rerender]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -43,6 +52,7 @@ const restaurantCoupon = (props) => {
       setRefreshing(false);
     }, 1500);
   };
+
   return (
     <View style={styles.screen}>
       <Alert
@@ -52,6 +62,12 @@ const restaurantCoupon = (props) => {
           setAlert(false);
         }}
       ></Alert>
+      <BackPage
+        navigation={props}
+        path={"Restaurant"}
+        isFlow={true}
+        magin={10}
+      ></BackPage>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -61,9 +77,6 @@ const restaurantCoupon = (props) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <View style={{ height: 20 }}>
-            <BackPage navigation={props} path={"Restaurant"}></BackPage>
-          </View>
           <View style={styles.haeder}>
             <View
               style={[styles.circle, { width: 206, height: 206 }]}
@@ -85,24 +98,7 @@ const restaurantCoupon = (props) => {
           <View style={styles.content}>
             {Coupons.map((data, index) => {
               return (
-                <ReCoupon
-                  data={data}
-                  key={index}
-                  userCoin={Coin}
-                  delete={(couponCoin, object) => {
-                    if (Coin >= couponCoin) {
-                      let newCoin = Number(Coin) - Number(couponCoin);
-                      dispatch(setUserCoin(newCoin));
-                      dispatch(setUserCoupon(object));
-                      setRerender(rerender + 1);
-                    }
-                    if (couponCoin === false) {
-                      setAlert(true);
-                      setErrorMessage("Out Of Coin!");
-                      setRerender(rerender + 1);
-                    }
-                  }}
-                ></ReCoupon>
+                <ReCoupon data={data} key={index} userCoin={Coin}></ReCoupon>
               );
             })}
           </View>
@@ -120,6 +116,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     display: "flex",
     flexDirection: "column",
+  },
+  safeAreaView: {
+    marginTop: -Constants.statusBarHeight,
+    backgroundColor: "#fff",
   },
   scrollView: {
     height: "100%",

@@ -24,30 +24,7 @@ const coupon = (props) => {
   const userId = userReducer.userId;
   const userCoin = userReducer.coin;
   const [coin, setCoin] = useState(0);
-  const [coupon, setCoupon] = useState([
-    // {
-    //   avatar:
-    //     "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-    //   coin: "70",
-    //   description:
-    //     "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-    //   exp: "14 - 12 - 2020",
-    //   name: "1",
-    //   qr:
-    //     "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
-    // },
-    // {
-    //   avatar:
-    //     "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
-    //   coin: "70",
-    //   description:
-    //     "Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds. Gift card valued at 150 or 10% off at McDonalds.",
-    //   exp: "14 - 12 - 2020",
-    //   name: "1",
-    //   qr:
-    //     "https://m.thaiware.com/upload_misc/software/2014_12/thumbnails/10811_161026120301Vm.png",
-    // },
-  ]);
+  const [coupon, setCoupon] = useState([]);
   const [rerender, setRerender] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const forceUpdate = useForceUpdate();

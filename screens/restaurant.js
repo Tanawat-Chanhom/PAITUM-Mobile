@@ -13,8 +13,6 @@ import Backpage from "../components/BackPage";
 import Constants from "expo-constants";
 import Button from "../components/Button";
 import Post from "../components/Post";
-import { SERVER } from "../util/server.json";
-import axios from "axios";
 import Alert from "../components/MyAlert";
 import { useSelector } from "react-redux";
 import { Image as Loader } from "react-native-elements";

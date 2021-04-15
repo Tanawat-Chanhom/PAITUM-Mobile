@@ -1,23 +1,66 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import Button from "../components/Button";
+import Alert from "../components/MyAlert";
+import { redeemRestaurantCoupon } from "../services/restaurant.service";
 
 export default class Coupon extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
+      couponData: props.data,
       numberOfLines: 3,
       isShow: false,
-      isDelete: false,
+      alert: false,
+      errorMessage: "",
+      isLoading: false,
     };
   }
 
-  render() {
-    if (this.state.isDelete === true) {
-      return <></>;
+  hendleRedeemCoupon = (userCoin) => {
+    if (userCoin < this.state.couponData.coin) {
+      this.setState({
+        alert: true,
+        errorMessage: "Out Of Coin!",
+      });
+    } else {
+      this.setState({ isLoading: true });
+      redeemRestaurantCoupon()
+        .then((result) => {
+          this.setState({
+            alert: true,
+            errorMessage: result.message,
+            isLoading: false,
+          });
+        })
+        .catch(() => {
+          this.setState({
+            alert: true,
+            errorMessage: "Error from server",
+            isLoading: false,
+          });
+        });
     }
+  };
+
+  render() {
     return (
       <View style={styles.container}>
+        <Alert
+          open={this.state.alert}
+          value={this.state.errorMessage}
+          timeOut={1500}
+          close={() => {
+            this.setState.alert(false);
+          }}
+        ></Alert>
         <View style={styles.titleContainer}>
           <Image
             source={{ uri: this.props.data.avatar }}
@@ -63,25 +106,19 @@ export default class Coupon extends Component {
               fontSize={20}
               title={this.props.data.coin}
             ></Button>
-            <Button
-              title={"USE"}
-              style={styles.coinIcon}
-              color="#E29821"
-              fontSize={20}
-              onPress={() => {
-                let coin = this.props.userCoin;
-                if (coin >= this.props.data.coin) {
-                  if (this.props.data !== undefined) {
-                    this.props.delete(this.props.data.coin, this.props.data);
-                    this.setState({
-                      isDelete: true,
-                    });
-                  }
-                } else {
-                  this.props.delete(false);
-                }
-              }}
-            ></Button>
+            {this.state.isLoading ? (
+              <ActivityIndicator color="#E29821" style={styles.coinIcon} />
+            ) : (
+              <Button
+                title={"USE"}
+                style={styles.coinIcon}
+                color="#E29821"
+                fontSize={20}
+                onPress={() => {
+                  this.hendleRedeemCoupon(this.props.userCoin);
+                }}
+              ></Button>
+            )}
           </View>
         </View>
       </View>
@@ -95,6 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
+    overflow: "hidden",
   },
   titleContainer: {
     display: "flex",

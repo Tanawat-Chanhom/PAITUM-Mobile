@@ -8,6 +8,8 @@ export default class MyAlert extends Component {
     this.state = {
       open: props.open,
       fadeAnim: new Animated.Value(-200),
+      opacity: new Animated.Value(0),
+      timeOut: props.timeOut || 4000,
     };
   }
 
@@ -44,11 +46,24 @@ export default class MyAlert extends Component {
       damping: 12,
       useNativeDriver: false,
     }).start();
+    Animated.spring(this.state.opacity, {
+      toValue: 1,
+      stiffness: 150,
+      damping: 12,
+      useNativeDriver: false,
+    }).start();
+    setTimeout(() => {
+      this.out();
+    }, this.state.timeOut);
   };
 
   out = () => {
     Animated.spring(this.state.fadeAnim, {
       toValue: -100,
+      useNativeDriver: false,
+    }).start();
+    Animated.spring(this.state.opacity, {
+      toValue: 0,
       useNativeDriver: false,
     }).start();
   };
@@ -60,6 +75,7 @@ export default class MyAlert extends Component {
           styles.modalView,
           {
             transform: [{ translateY: this.state.fadeAnim }],
+            opacity: this.state.opacity,
             backgroundColor:
               this.props.backgroundColor || styles.modalView.backgroundColor,
             marginLeft: this.props.margin,

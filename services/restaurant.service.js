@@ -12,3 +12,12 @@ export const getNearRestaurants = async (body) => {
 export const getRestaurantFollow = async (body) => {
   return await axios.put(env.SERVER + "/restaurant/follow", body);
 };
+
+export const redeemRestaurantCoupon = async (body) => {
+  // return await axios.post()
+
+  return {
+    status: 200,
+    message: "you have redeem a coupon!",
+  };
+};
