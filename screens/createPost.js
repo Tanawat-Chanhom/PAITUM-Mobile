@@ -8,12 +8,14 @@ import {
   ScrollView,
   Image,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { Rating, AirbnbRating } from "react-native-elements";
 import BackPage from "../components/BackPage";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker";
+import Constants from "expo-constants";
 import { useSelector } from "react-redux";
 import { createPost as createPostService } from "../services/post.service";
 import { getUserProfile } from "../services/user.service";
@@ -30,6 +32,7 @@ const createPost = (props) => {
   const [reander, setreander] = useState(0);
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [createPostInProgress, setCreatePostInProgress] = useState(false);
 
   useEffect(() => {
     async function fatchData() {
@@ -101,14 +104,17 @@ const createPost = (props) => {
       },
       star: rating,
     };
+    setCreatePostInProgress(true);
     createPostService(body, data.id)
       .then((res) => {
         setAlert(true);
         setErrorMessage(res.status.message || "Create success.");
+        setCreatePostInProgress(false);
       })
       .catch((err) => {
         setAlert(true);
         setErrorMessage(err.message || "Server error.");
+        setCreatePostInProgress(false);
       });
   };
 
@@ -210,14 +216,18 @@ const createPost = (props) => {
             </TouchableOpacity>
           </View>
           <View style={styles.footer}>
-            <Button
-              title={"POST"}
-              style={styles.createButton}
-              color={"#ffffff"}
-              onPress={() => {
-                createPost();
-              }}
-            ></Button>
+            {createPostInProgress ? (
+              <ActivityIndicator color="#fff" style={styles.createButton} />
+            ) : (
+              <Button
+                title={"POST"}
+                style={styles.createButton}
+                color={"#ffffff"}
+                onPress={() => {
+                  createPost();
+                }}
+              />
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -233,7 +243,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   safeAreaView: {
-    height: "100%",
+    marginTop: -Constants.statusBarHeight,
+    // height: "100%",
   },
   scrollView: {
     height: "100%",
