@@ -444,23 +444,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-// Object {
-//   "detail": Object {
-//     "comments": 3000,
-//     "discription": "Ratiorg got statues of different sizes as a present from CodeMaster for his birthday, each statue having an non-negative integer size. Since he likes to make things",
-//     "image": Array [
-//       "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-//       "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-//       "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-//     ],
-//     "like": 10000,
-//     "view": 1000,
-//   },
-//   "user": Object {
-//     "avatar": "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-//     "createAt": "3 mins ago",
-//     "name": "Tanwat Chanhom",
-//     "uid": 2,
-//   },
-// }

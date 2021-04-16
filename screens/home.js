@@ -13,9 +13,8 @@ import { useSelector } from "react-redux";
 import { getRestaurants } from "../services/restaurant.service";
 
 const home = (props) => {
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
-  });
+  const { userReducer } = useSelector((state) => state);
+  const userId = userReducer.userId;
 
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(true);
@@ -82,7 +81,7 @@ const home = (props) => {
                 <Post
                   data={data}
                   key={index}
-                  userId={token}
+                  userId={userId}
                   navigation={props.navigation}
                   profileNavigate={true}
                 ></Post>
