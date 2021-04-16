@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useSelector } from "react-redux";
 import {
   Text,
   View,
@@ -8,53 +9,25 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import Constants from "expo-constants";
 import Button from "../components/Button";
 import Post from "../components/Post";
-import { useSelector } from "react-redux";
-import axios from "axios";
-import { SERVER } from "../util/server.json";
 import Alert from "../components/MyAlert";
+import BackPage from "../components/BackPage";
+import {
+  getUserProfile,
+  userFollowBetweenUser,
+} from "../services/user.service";
+import { getRestaurants } from "../services/restaurant.service";
 
 const profile = (props) => {
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
-  });
-
-  useEffect(() => {
-    let otherUserId = props.navigation.getParam("id");
-    if (token.id === otherUserId) {
-      props.navigation.navigate("Profile");
-    }
-    if (otherUserId !== undefined) {
-      axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
-        setUserData(res.data.user);
-        res.data.user.follower.map((id) => {
-          id === token.id ? setIsFollow(true) : setIsFollow(false);
-        });
-      });
-      axios
-        .get(SERVER + "/restaurant/all")
-        .then((res) => {
-          if (res.data.restaurants.length !== 0) {
-            let restaurants = res.data.restaurants;
-            let myPosts = [];
-            restaurants.map((data) => {
-              data.review.map((reviewData, index) => {
-                if (reviewData.user.id === otherUserId) {
-                  myPosts.push(reviewData);
-                }
-              });
-            });
-            setPosts(myPosts);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [props]);
+  const { userReducer } = useSelector((state) => state);
+  const userId = userReducer.userId;
+  const [otherUserId, setOtherUserId] = useState(
+    props.navigation.getParam("id")
+  );
   const [userData, setUserData] = useState({
     coverImage:
       "https://img3.goodfon.com/wallpaper/nbig/8/f9/android-l-material-design-3707.jpg",
@@ -67,45 +40,37 @@ const profile = (props) => {
   const [posts, setPosts] = useState([]);
   const [alert, setAlert] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
+  const [followInProgress, setFollowInProgress] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
-  const follow = () => {
-    let otherUserId = props.navigation.getParam("id");
-    let body = {
-      main: token.id,
-      sub: otherUserId,
-    };
-    axios
-      .put(SERVER + "/user/follow", body)
-      .then((res) => {
-        setAlert(true);
-        if (isFollow === true) {
-          setErrorMessage("Unfollowing " + userData.name);
-          setIsFollow(false);
-        } else {
-          setErrorMessage("Following " + userData.name);
-          setIsFollow(true);
-        }
-      })
-      .catch((err) => {
-        setAlert(true);
-        setErrorMessage(err.message || "Server error.");
-      });
-  };
+  useEffect(() => {
+    if (userId === otherUserId) {
+      props.navigation.navigate("Profile");
+    }
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    let otherUserId = props.navigation.getParam("id");
+    fatchData();
+  }, [props]);
+
+  const fatchData = async () => {
     if (otherUserId !== undefined) {
-      axios.get(SERVER + "/user/profile/" + otherUserId).then((res) => {
-        setUserData(res.data.user);
+      await getUserProfile(otherUserId).then((res) => {
+        setUserData({
+          ...res.data.user,
+          follower:
+            res.data.user.follower.length >= 1000
+              ? (res.data.user.follower.length / 1000).toFixed(1) + "K"
+              : res.data.user.follower.length,
+          following:
+            res.data.user.following.length >= 1000
+              ? (res.data.user.following.length / 1000).toFixed(1) + "K"
+              : res.data.user.following.length,
+        });
         res.data.user.follower.map((id) => {
-          id === token.id ? setIsFollow(true) : setIsFollow(false);
+          id === userId ? setIsFollow(true) : setIsFollow(false);
         });
       });
-      axios
-        .get(SERVER + "/restaurant/all")
+      await getRestaurants()
         .then((res) => {
           if (res.data.restaurants.length !== 0) {
             let restaurants = res.data.restaurants;
@@ -127,6 +92,45 @@ const profile = (props) => {
     }
   };
 
+  const hendleFollowBetweenUser = async () => {
+    let body = {
+      main: userId,
+      sub: otherUserId,
+    };
+    setFollowInProgress(true);
+    await userFollowBetweenUser(body)
+      .then((res) => {
+        setAlert(true);
+        if (isFollow === true) {
+          setErrorMessage("Unfollowing " + userData.name);
+          setUserData({
+            ...userData,
+            follower: userData.follower - 1,
+          });
+          setIsFollow(false);
+          setFollowInProgress(false);
+        } else {
+          setErrorMessage("Following " + userData.name);
+          setUserData({
+            ...userData,
+            follower: userData.follower + 1,
+          });
+          setIsFollow(true);
+          setFollowInProgress(false);
+        }
+      })
+      .catch((err) => {
+        setAlert(true);
+        setErrorMessage(err.message || "Server error.");
+        setFollowInProgress(false);
+      });
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fatchData();
+  };
+
   return (
     <>
       <Alert
@@ -136,6 +140,7 @@ const profile = (props) => {
           setAlert(false);
         }}
       ></Alert>
+      <BackPage navigation={props} path={"Home"} isFlow={true} magin={10} />
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -150,7 +155,7 @@ const profile = (props) => {
             style={styles.imageCover}
           ></Image>
 
-          {userData.id === token.id ? (
+          {userData.id === userId ? (
             <View style={styles.settingContainer}>
               <TouchableOpacity
                 onPress={() => {
@@ -173,9 +178,10 @@ const profile = (props) => {
                 <View style={styles.profileHeader}>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
-                      {userData.follower.length >= 1000
+                      {/* {userData.follower.length >= 1000
                         ? (userData.follower.length / 1000).toFixed(1) + "K"
-                        : userData.follower.length}
+                        : userData.follower.length} */}
+                      {userData.follower}
                     </Text>
                     <Text style={{ color: "#E29821" }}>Followers</Text>
                   </View>
@@ -187,9 +193,10 @@ const profile = (props) => {
                   </View>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>
-                      {userData.following.length >= 1000
+                      {/* {userData.following.length >= 1000
                         ? (userData.following.length / 1000).toFixed(1) + "K"
-                        : userData.following.length}
+                        : userData.following.length} */}
+                      {userData.following}
                     </Text>
                     <Text style={{ color: "#E29821" }}>Following</Text>
                   </View>
@@ -215,13 +222,22 @@ const profile = (props) => {
                   >
                     {userData.caption}
                   </Text>
-                  {userData.id !== token.id ? (
-                    <Button
-                      title={isFollow === true ? "UNFOLLOW" : "FOLLOW"}
-                      style={styles.followButton}
-                      color="#fff"
-                      onPress={() => follow()}
-                    ></Button>
+                  {userData.id !== userId ? (
+                    <>
+                      {followInProgress === true ? (
+                        <ActivityIndicator
+                          color="#fff"
+                          style={styles.followButton}
+                        />
+                      ) : (
+                        <Button
+                          title={isFollow === true ? "UNFOLLOW" : "FOLLOW"}
+                          style={styles.followButton}
+                          color="#fff"
+                          onPress={() => hendleFollowBetweenUser()}
+                        />
+                      )}
+                    </>
                   ) : (
                     <></>
                   )}
@@ -233,7 +249,7 @@ const profile = (props) => {
                 return (
                   <Post
                     data={data}
-                    userId={token}
+                    userId={userId}
                     navigation={props.navigation}
                     key={index}
                   ></Post>
