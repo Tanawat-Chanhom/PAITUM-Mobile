@@ -22,7 +22,6 @@ const coupon = (props) => {
   const dispatch = useDispatch();
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
-  const userCoin = userReducer.coin;
   const [coin, setCoin] = useState(0);
   const [coupon, setCoupon] = useState([]);
   const [rerender, setRerender] = useState(0);

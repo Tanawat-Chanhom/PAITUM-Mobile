@@ -11,24 +11,40 @@ import {
 } from "react-native";
 import { Rating, AirbnbRating } from "react-native-elements";
 import BackPage from "../components/BackPage";
-import * as ImagePicker from "expo-image-picker";
-import { useSelector } from "react-redux";
-import { SERVER } from "../util/server.json";
-import axios from "axios";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
+import * as ImagePicker from "expo-image-picker";
+import { useSelector } from "react-redux";
+import { createPost as createPostService } from "../services/post.service";
+import { getUserProfile } from "../services/user.service";
 
 const createPost = (props) => {
-  let { data } = props.navigation.state.params;
-  const token = useSelector((state) => {
-    return state.authenReducer.token;
-  });
+  let { data } = props.navigation.state.params; // Passing restaurant data from restaurant page
+  const { userReducer } = useSelector((state) => state);
+  const userId = userReducer.userId;
+
+  const [userProfile, setUserProfile] = useState({});
   const [images, setImages] = useState([]);
   const [description, setDescription] = useState("");
   const [rating, setRating] = useState(3);
   const [reander, setreander] = useState(0);
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function fatchData() {
+      await getUserProfile(userId)
+        .then((result) => {
+          let userData = result.data.user;
+          setUserProfile(userData);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    fatchData();
+  }, [images, description]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,8 +61,6 @@ const createPost = (props) => {
     }
     setreander(reander + 1);
   };
-
-  useEffect(() => {}, [images, description]);
 
   function AddZero(num) {
     return num >= 0 && num < 10 ? "0" + num : num + "";
@@ -65,12 +79,12 @@ const createPost = (props) => {
     ].join(" ");
 
     let body = {
-      userId: token.id,
+      userId: userProfile.id,
       user: {
-        name: token.name,
+        name: userProfile.name,
         createAt: strDateTime,
-        id: token.id,
-        avatar: token.avatar,
+        id: userProfile.id,
+        avatar: userProfile.avatar,
       },
       detail: {
         restaurantId: data.id,
@@ -87,8 +101,7 @@ const createPost = (props) => {
       },
       star: rating,
     };
-    axios
-      .post(SERVER + "/restaurant/review/" + data.id, body)
+    createPostService(body, data.id)
       .then((res) => {
         setAlert(true);
         setErrorMessage(res.status.message || "Create success.");
@@ -153,9 +166,9 @@ const createPost = (props) => {
           </View>
           <Text style={styles.imagesText}>Images</Text>
           <View style={styles.imagesContainer}>
-            {images.map((path) => {
+            {images.map((path, index) => {
               return (
-                <View style={[styles.imageBox]}>
+                <View style={[styles.imageBox]} key={index}>
                   <Image
                     source={{ uri: path }}
                     style={{ width: "100%", aspectRatio: 1 }}
