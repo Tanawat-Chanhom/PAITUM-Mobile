@@ -7,3 +7,29 @@ export const createPost = async (body, restaurantId) => {
     body
   );
 };
+
+export const getPostComments = async (body) => {
+  return {
+    data: [
+      {
+        avatar: "https://picsum.photos/200",
+        id: Math.random(),
+        message: "อร่อยจริงๆ ครับ" + Math.random(),
+      },
+      {
+        avatar: "https://picsum.photos/300",
+        id: Math.random(),
+        message: "+1" + Math.random(),
+      },
+      {
+        avatar: "https://picsum.photos/400",
+        id: Math.random(),
+        message: "ไม่ลองไม่รู้!!!" + Math.random(),
+      },
+    ],
+  };
+};
+
+export const sendPostComment = async (body) => {
+  return {};
+};

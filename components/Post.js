@@ -94,94 +94,12 @@ export default class Post extends Component {
             </View>
           </Modal>
         </View>
-        <View styl={styles.madelContainer}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.isShowComments}
-          >
-            <View style={styles.elementContainer}>
-              <View
-                style={[
-                  styles.modalView,
-                  {
-                    height: "80%",
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                  },
-                ]}
-              >
-                <SafeAreaView style={{ height: "100%" }}>
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.scrollView}
-                  >
-                    <View style={styles.commentBar}>
-                      <TextInput
-                        placeholder="Type Something"
-                        style={styles.commentInput}
-                        value={this.state.message}
-                        onChangeText={(text) => {
-                          this.setState({
-                            message: text,
-                          });
-                        }}
-                      ></TextInput>
-                      <View style={styles.commentIcon}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            if (this.state.message === "") {
-                              return null;
-                            }
-                            let updataArray = this.state.comments;
-                            updataArray.unshift({
-                              uid: "1234",
-                              avatar:
-                                "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-                              message: this.state.message,
-                            });
-                            this.setState({
-                              message: "",
-                              comments: updataArray,
-                            });
-                          }}
-                        >
-                          <Image
-                            source={require("../assets/send.png")}
-                            style={{ width: 26, height: 26 }}
-                          ></Image>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    {this.state.comments.map((data, index) => {
-                      return <Comment data={data} key={index}></Comment>;
-                    })}
-                  </ScrollView>
-                </SafeAreaView>
-              </View>
-              <Button
-                title="Close"
-                style={styles.cancelButton}
-                color="#fff"
-                fontSize={16}
-                onPress={() => {
-                  this.setState({
-                    isShowComments: false,
-                  });
-                }}
-              ></Button>
-            </View>
-          </Modal>
-        </View>
+        <Comment
+          isShow={this.state.isShowComments}
+          onClose={() => {
+            this.setState({ isShowComments: false });
+          }}
+        />
         <View style={styles.header}>
           <View style={styles.profile}>
             <TouchableOpacity
