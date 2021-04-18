@@ -5,16 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
-  SafeAreaView,
-  ScrollView,
-  TextInput,
-  Image,
+  ActivityIndicator,
 } from "react-native";
 import Button from "./Button";
 import Carousel from "react-native-snap-carousel";
 import Comment from "./Comment";
 import { Image as Loader } from "react-native-elements";
-import { ActivityIndicator } from "react-native";
+import { likedPost } from "../services/post.service";
 
 export default class Post extends Component {
   constructor(props) {
@@ -37,11 +34,22 @@ export default class Post extends Component {
       <View style={styles.slide}>
         <Loader
           style={styles.postImages}
-          PlaceholderContent={<ActivityIndicator />}
+          PlaceholderContent={<ActivityIndicator color="#fff" />}
           source={{ uri: item }}
-        ></Loader>
+        />
       </View>
     );
+  };
+
+  handleLike = () => {
+    likedPost().then((result) => {
+      console.log(result);
+    });
+    if (this.state.liked === true) {
+      this.setState({ liked: false, like: this.state.like - 1 });
+    } else {
+      this.setState({ liked: true, like: this.state.like + 1 });
+    }
   };
 
   render() {
@@ -202,13 +210,7 @@ export default class Post extends Component {
                 backgroundColor: this.state.liked === true ? "#E29821" : "#fff",
               },
             ]}
-            onPress={() => {
-              if (this.state.liked === true) {
-                this.setState({ liked: false, like: this.state.like - 1 });
-              } else {
-                this.setState({ liked: true, like: this.state.like + 1 });
-              }
-            }}
+            onPress={this.handleLike}
           ></Button>
           <Button
             title={
@@ -268,10 +270,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   footer: {
-    display: "flex",
     flexDirection: "row",
     marginTop: 5,
-    justifyContent: "space-evenly",
     backgroundColor: "#F1F1F1",
     borderRadius: 10,
   },
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     flex: 1,
-    margin: 10,
+    margin: 7,
   },
   madelContainer: {
     width: "100%",

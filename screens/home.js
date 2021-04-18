@@ -44,6 +44,7 @@ const home = (props) => {
 
   const onRefresh = () => {
     setRefreshing(true);
+    setPosts([]);
     getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
