@@ -1,10 +1,17 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import settingAccount from "./settingAccount";
 import { useSelector, useDispatch } from "react-redux";
 import { setToken } from "../store/action/userAction";
 import { AntDesign } from "@expo/vector-icons";
-import BackPage from "../components/BackPage";
+import Backpage from "../components/BackPage";
 
 const setting = (props) => {
   const dispatch = useDispatch();
@@ -15,36 +22,47 @@ const setting = (props) => {
 
   return (
     <View style={styles.Container}>
-      <View style={styles.backContainer}>
-        <BackPage navigation={props} path={"Profile"}></BackPage>
-      </View>
-      <View style={styles.screen}>
-        <TouchableOpacity
-          style={styles.settingContainer}
-          onPress={() => props.navigation.navigate("SettingProfile")}
+      <Backpage
+        navigation={props}
+        path={"Home"}
+        isFlow={true}
+        magin={10}
+      ></Backpage>
+      <SafeAreaView style={styles.safeAreaView}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          style={styles.scrollView}
         >
-          <Text>Profile</Text>
-          <AntDesign name="arrowright" size={24} color="black" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.settingContainer}
+            onPress={() => props.navigation.navigate("SettingProfile")}
+          >
+            <Text style={styles.settingText}>Profile</Text>
+            <AntDesign name="arrowright" size={24} color="black" />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.settingContainer}
-          onPress={() => props.navigation.navigate("SettingAccount")}
-        >
-          <Text>Account</Text>
-          <AntDesign name="arrowright" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.settingContainer}
-          onPress={() => {
-            handleLogout();
-            props.navigation.navigate("Login");
-          }}
-        >
-          <Text style={{ color: "#c98f22" }}>Logout</Text>
-          <AntDesign name="arrowright" size={24} color="#c98f22" />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.settingContainer}
+            onPress={() => props.navigation.navigate("SettingAccount")}
+          >
+            <Text style={styles.settingText}>Account</Text>
+            <AntDesign name="arrowright" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.settingContainer}
+            onPress={() => {
+              handleLogout();
+              props.navigation.navigate("Login");
+            }}
+          >
+            <Text style={[styles.settingText, { color: "#c98f22" }]}>
+              Logout
+            </Text>
+            <AntDesign name="arrowright" size={24} color="#c98f22" />
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };
@@ -52,6 +70,18 @@ const setting = (props) => {
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: "#fff",
+  },
+  safeAreaView: {
+    backgroundColor: "#fff",
+    marginTop: 100,
+  },
+  scrollView: {
+    height: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 10,
   },
   screen: {
     flex: 2,
@@ -64,19 +94,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "95%",
-    height: "8%",
     marginVertical: 5,
     backgroundColor: "#ebe9e6",
     borderRadius: 10,
-    padding: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+  },
+  settingText: {
+    fontWeight: "bold",
   },
 });
-
-// setting.navigationOptions = (navigationData) => {
-//   return {
-//     headerShown: false,
-//   };
-// };
 
 export default setting;
