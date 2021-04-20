@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import Backpage from "../components/BackPage";
 import Constants from "expo-constants";
@@ -16,13 +17,14 @@ import Post from "../components/Post";
 import Alert from "../components/MyAlert";
 import { useSelector } from "react-redux";
 import { Image as Loader } from "react-native-elements";
-import { ActivityIndicator } from "react-native";
 import {
   getRestaurants,
   getRestaurantFollow,
 } from "../services/restaurant.service";
 
 const restaurant = (props) => {
+  let id = props.navigation.getParam("id");
+
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
   const [data, setData] = useState({
@@ -34,6 +36,7 @@ const restaurant = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [isFollow, setIsFollow] = useState(false);
+  const [followInProgress, setFollowInProgress] = useState(false);
 
   genStar = () => {
     let newArray = [];
@@ -48,8 +51,6 @@ const restaurant = (props) => {
     }
     setStar(newArray);
   };
-
-  let id = props.navigation.getParam("id");
 
   useEffect(() => {
     getRestaurants()
@@ -113,19 +114,23 @@ const restaurant = (props) => {
       user: userId,
       restaurant: data.id,
     };
+    setFollowInProgress(true);
     getRestaurantFollow(body)
       .then((res) => {
         setAlert(true);
         if (isFollow === true) {
           setErrorMessage("Unfollowing " + data.restaurantName);
           setIsFollow(false);
+          setFollowInProgress(false);
         } else {
           setErrorMessage("Following " + data.restaurantName);
           setIsFollow(true);
+          setFollowInProgress(false);
         }
       })
       .catch((err) => {
         setAlert(true);
+        setFollowInProgress(false);
         setErrorMessage(err.message || "Server error.");
       });
   };
@@ -175,15 +180,25 @@ const restaurant = (props) => {
               </View>
             </View>
             <View style={styles.actionContainer}>
-              <TouchableOpacity onPress={() => follow()}>
-                <Image
-                  source={require("../assets/followButton.png")}
+              {followInProgress === true ? (
+                <ActivityIndicator
+                  color="#E29821"
                   style={[
                     styles.actionButton,
-                    { opacity: isFollow === true ? 0.5 : 1 },
+                    { backgroundColor: "#ffffffc2", borderRadius: 100 },
                   ]}
-                ></Image>
-              </TouchableOpacity>
+                />
+              ) : (
+                <TouchableOpacity onPress={() => follow()}>
+                  <Image
+                    source={require("../assets/followButton.png")}
+                    style={[
+                      styles.actionButton,
+                      { opacity: isFollow === true ? 0.5 : 1 },
+                    ]}
+                  />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 onPress={() => {
                   navigator.geolocation.getCurrentPosition((position) => {
