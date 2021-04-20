@@ -6,12 +6,10 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import Button from "./Button";
-import axios from "axios";
-import { SERVER } from "../util/server.json";
 import { Image } from "react-native-elements";
-import { ActivityIndicator } from "react-native";
 import { getRestaurants } from "../services/restaurant.service";
 
 class Card extends Component {
@@ -35,7 +33,7 @@ class Card extends Component {
           <Image
             source={{ uri: this.props.data.avatar }}
             style={stylesCard.image}
-            PlaceholderContent={<ActivityIndicator />}
+            PlaceholderContent={<ActivityIndicator color="#fff" />}
           />
           <View style={stylesCard.ratingContainer}>
             <Text style={stylesCard.ratingText}>{this.state.index}</Text>
