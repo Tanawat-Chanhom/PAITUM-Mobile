@@ -8,6 +8,10 @@ export const createPost = async (body, restaurantId) => {
   );
 };
 
+export const deletePost = async (body) => {
+  return;
+};
+
 export const likedPost = async (body) => {
   return {};
 };

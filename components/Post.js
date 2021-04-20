@@ -11,7 +11,7 @@ import Button from "./Button";
 import Carousel from "react-native-snap-carousel";
 import Comment from "./Comment";
 import { Image as Loader } from "react-native-elements";
-import { likedPost } from "../services/post.service";
+import { likedPost, deletePost } from "../services/post.service";
 
 export default class Post extends Component {
   constructor(props) {
@@ -26,6 +26,10 @@ export default class Post extends Component {
       comments: props.data.detail.comments,
       message: "",
       like: props.data.detail.like,
+      isDeleted: {
+        status: false,
+        isInProgress: false,
+      },
     };
   }
 
@@ -52,7 +56,24 @@ export default class Post extends Component {
     }
   };
 
+  handleRemovePost = (postId) => {
+    this.setState({ isDeleted: { status: false, isInProgress: true } });
+    deletePost()
+      .then((result) => {
+        setTimeout(() => {
+          this.setState({ isDeleted: { status: true, isInProgress: false } });
+        }, 2000);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   render() {
+    if (this.state.isDeleted.status) {
+      return <></>;
+    }
+
     return (
       <View style={styles.container}>
         <View styl={styles.madelContainer}>
@@ -76,14 +97,26 @@ export default class Post extends Component {
                       modelIsShow: false,
                     });
                   }}
-                ></Button>
+                />
                 {this.state.userId === this.props.data.user.id ? (
-                  <Button
-                    title={"Delet Post"}
-                    style={styles.deleteButton}
-                    color="#FFF"
-                    fontSize={16}
-                  ></Button>
+                  <>
+                    {this.state.isDeleted.isInProgress === true ? (
+                      <ActivityIndicator
+                        color="#fff"
+                        style={styles.deleteButton}
+                      />
+                    ) : (
+                      <Button
+                        title={"Delet Post"}
+                        style={styles.deleteButton}
+                        color="#FFF"
+                        fontSize={16}
+                        onPress={() => {
+                          this.handleRemovePost();
+                        }}
+                      />
+                    )}
+                  </>
                 ) : (
                   <></>
                 )}
@@ -190,14 +223,6 @@ export default class Post extends Component {
           </View>
         </View>
         <View style={styles.footer}>
-          <Button
-            title={
-              this.props.data.detail.view >= 1000
-                ? (this.props.data.detail.view / 1000).toFixed(1) + "K View"
-                : this.props.data.detail.view + " View"
-            }
-            style={styles.footerButton}
-          ></Button>
           <Button
             title={
               this.state.like >= 1000
