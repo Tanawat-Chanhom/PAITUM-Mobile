@@ -40,7 +40,7 @@ class Card extends Component {
           </View>
           <View style={stylesCard.footer}>
             <Text style={stylesCard.text} numberOfLines={2}>
-              {this.props.data.restaurantName}
+              {this.props.data.restaurantName.slice(0, 7) + "..."}
             </Text>
           </View>
         </View>
@@ -92,7 +92,11 @@ export default class TOP10 extends Component {
   constructor() {
     super();
     this.state = {
-      top10: [{}, {}, {}],
+      top10: [
+        { restaurantName: "Loading" },
+        { restaurantName: "Loading" },
+        { restaurantName: "Loading" },
+      ],
     };
   }
 

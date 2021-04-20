@@ -13,8 +13,6 @@ import {
 import Constants from "expo-constants";
 import Post from "../components/Post";
 import { useSelector } from "react-redux";
-import axios from "axios";
-import { SERVER } from "../util/server.json";
 import { getUserProfile } from "../services/user.service";
 import { getRestaurants } from "../services/restaurant.service";
 
