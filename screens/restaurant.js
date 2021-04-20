@@ -165,7 +165,7 @@ const restaurant = (props) => {
               <Loader
                 source={{ uri: data.avatar }}
                 style={styles.avatar}
-                PlaceholderContent={<ActivityIndicator />}
+                PlaceholderContent={<ActivityIndicator color="#FFF" />}
               ></Loader>
               <Text style={styles.restaurantTitle}>{data.restaurantName}</Text>
               <View style={styles.starContainer}>
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   imageCover: {
-    position: "absolute",
+    position: "relative",
     width: "100%",
     height: 250,
   },

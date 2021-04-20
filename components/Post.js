@@ -46,9 +46,7 @@ export default class Post extends Component {
   };
 
   handleLike = () => {
-    likedPost().then((result) => {
-      console.log(result);
-    });
+    likedPost().then((result) => {});
     if (this.state.liked === true) {
       this.setState({ liked: false, like: this.state.like - 1 });
     } else {
