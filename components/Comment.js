@@ -74,6 +74,43 @@ export default class Comment extends Component {
                 },
               ]}
             >
+              <View style={styles.commentBar}>
+                <TextInput
+                  placeholder="Type Something"
+                  style={styles.commentInput}
+                  value={this.state.message}
+                  onChangeText={(text) => {
+                    this.setState({
+                      message: text,
+                    });
+                  }}
+                ></TextInput>
+                <View style={styles.commentIcon}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (this.state.message === "") {
+                        return null;
+                      }
+                      let updataArray = this.state.comments;
+                      updataArray.unshift({
+                        uid: "1234",
+                        avatar:
+                          "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                        message: this.state.message,
+                      });
+                      this.setState({
+                        message: "",
+                        comments: updataArray,
+                      });
+                    }}
+                  >
+                    <Image
+                      source={require("../assets/send.png")}
+                      style={{ width: 26, height: 26 }}
+                    ></Image>
+                  </TouchableOpacity>
+                </View>
+              </View>
               <SafeAreaView style={{ height: "100%" }}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
@@ -84,44 +121,8 @@ export default class Comment extends Component {
                       onRefresh={this.onRefresh}
                     />
                   }
+                  style={styles.scrollView}
                 >
-                  <View style={styles.commentBar}>
-                    <TextInput
-                      placeholder="Type Something"
-                      style={styles.commentInput}
-                      value={this.state.message}
-                      onChangeText={(text) => {
-                        this.setState({
-                          message: text,
-                        });
-                      }}
-                    ></TextInput>
-                    <View style={styles.commentIcon}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (this.state.message === "") {
-                            return null;
-                          }
-                          let updataArray = this.state.comments;
-                          updataArray.unshift({
-                            uid: "1234",
-                            avatar:
-                              "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-                            message: this.state.message,
-                          });
-                          this.setState({
-                            message: "",
-                            comments: updataArray,
-                          });
-                        }}
-                      >
-                        <Image
-                          source={require("../assets/send.png")}
-                          style={{ width: 26, height: 26 }}
-                        ></Image>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
                   {this.state.comments.map((data, index) => {
                     return (
                       <View style={styles.container} key={index}>
@@ -158,9 +159,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
+    marginBottom: 10,
     borderRadius: 10,
     backgroundColor: "#F1F1F1",
+  },
+  scrollView: {
+    borderRadius: 10,
   },
   avatar: {
     height: 50,
@@ -229,8 +233,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-
     marginTop: 10,
+    marginBottom: 10,
   },
   commentIcon: {
     width: 40,
