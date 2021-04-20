@@ -140,6 +140,7 @@ export default class Post extends Component {
           onClose={() => {
             this.setState({ isShowComments: false });
           }}
+          navigation={this.props.navigation}
         />
         <View style={styles.header}>
           <View style={styles.profile}>

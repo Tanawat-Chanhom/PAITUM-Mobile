@@ -21,17 +21,17 @@ export const getPostComments = async (body) => {
     data: [
       {
         avatar: "https://picsum.photos/200",
-        id: Math.random(),
+        id: "L6gDfZBYQ4dUcA8oSP5M",
         message: "อร่อยจริงๆ ครับ",
       },
       {
         avatar: "https://picsum.photos/300",
-        id: Math.random(),
+        id: "OfPQktW6mzGZ58B60lYD",
         message: "+1",
       },
       {
         avatar: "https://picsum.photos/400",
-        id: Math.random(),
+        id: "Q716nBcqJ72qq0n15LZ2",
         message: "ไม่ลองไม่รู้!!!",
       },
     ],

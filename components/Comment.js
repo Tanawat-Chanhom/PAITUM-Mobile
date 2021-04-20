@@ -10,9 +10,12 @@ import {
   TouchableOpacity,
   Text,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import Button from "./Button";
+import { Image as Loader } from "react-native-elements";
 import { getPostComments } from "../services/post.service";
+import { useNavigation } from "@react-navigation/native";
 
 export default class Comment extends Component {
   constructor(props) {
@@ -22,6 +25,7 @@ export default class Comment extends Component {
       onClose: props.onClose,
       comments: [],
       refreshing: false,
+      navigation: props.navigation,
     };
   }
 
@@ -126,10 +130,20 @@ export default class Comment extends Component {
                   {this.state.comments.map((data, index) => {
                     return (
                       <View style={styles.container} key={index}>
-                        <Image
-                          source={{ uri: data.avatar }}
-                          style={styles.avatar}
-                        ></Image>
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.state.navigation.navigate("OtherProfile", {
+                              id: data.id,
+                            });
+                            this.state.onClose();
+                          }}
+                        >
+                          <Loader
+                            source={{ uri: data.avatar }}
+                            PlaceholderContent={<ActivityIndicator />}
+                            style={styles.avatar}
+                          ></Loader>
+                        </TouchableOpacity>
                         <Text style={styles.message}>{data.message}</Text>
                       </View>
                     );
