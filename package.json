@@ -11,6 +11,7 @@
     "@expo/vector-icons": "^10.0.0",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "0.1.10",
+    "aws-sdk": "^2.889.0",
     "axios": "^0.21.0",
     "expo": "~39.0.2",
     "expo-image-picker": "~9.1.0",
@@ -18,6 +19,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
+    "react-native-aws3": "0.0.9",
     "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-gesture-handler": "~1.7.0",
@@ -33,7 +35,8 @@
     "react-navigation-stack": "^2.8.4",
     "react-navigation-tabs": "^2.9.2",
     "react-redux": "^7.2.2",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"
