@@ -1,6 +1,7 @@
 // import S3 from "aws-sdk/clients/s3";
 // import { Credentials } from "aws-sdk";
-// import { v4 as uuid } from "uuid";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 import env from "./env.json";
 
 import { RNS3 } from "react-native-aws3";
@@ -26,7 +27,7 @@ import { RNS3 } from "react-native-aws3";
 //   Expires: signedUrlExpireSeconds,
 // });
 
-const fileUUID = uuid();
+const fileUUID = uuidv4();
 
 const configS3 = {
   keyPrefix: "images/",
@@ -37,14 +38,20 @@ const configS3 = {
   successActionStatus: 201,
 };
 
-export const uploadImageToS3 = async (imageLocation, imageName, imageType) => {
+export const uploadImageToS3 = async (
+  imageLocation,
+  imageName = fileUUID,
+  imageType = "jpg"
+) => {
   const fileObject = {
     uri: imageLocation,
-    name: imageName + `-${fileUUID}`,
+    name: imageName,
     type: "image/" + imageType,
   };
 
-  RNS3.put(fileObject, configS3)
+  return fileObject;
+
+  await RNS3.put(fileObject, configS3)
     .then((response) => {
       if (response.status !== 201) {
         throw new Error("Failed to upload image to S3");

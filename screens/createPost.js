@@ -19,6 +19,7 @@ import Constants from "expo-constants";
 import { useSelector } from "react-redux";
 import { createPost as createPostService } from "../services/post.service";
 import { getUserProfile } from "../services/user.service";
+import { uploadImageToS3 } from "../util/aws";
 
 const createPost = (props) => {
   let { data } = props.navigation.state.params; // Passing restaurant data from restaurant page
@@ -59,7 +60,7 @@ const createPost = (props) => {
 
     if (!result.cancelled) {
       let updateArray = images;
-      updateArray.push(result.uri);
+      updateArray.push(result);
       setImages(updateArray);
     }
     setreander(reander + 1);
@@ -69,7 +70,15 @@ const createPost = (props) => {
     return num >= 0 && num < 10 ? "0" + num : num + "";
   }
 
-  const createPost = () => {
+  const convertImageToURL = async (imageArray) => {
+    return Promise.all(
+      imageArray.map(async (imageObj) => {
+        return uploadImageToS3(imageObj.uri);
+      })
+    );
+  };
+
+  const createPost = async () => {
     let now = new Date();
     let strDateTime = [
       [
@@ -80,6 +89,7 @@ const createPost = (props) => {
       [AddZero(now.getHours()), AddZero(now.getMinutes())].join(":"),
       now.getHours() >= 12 ? "PM" : "AM",
     ].join(" ");
+    const imagesURL = await convertImageToURL(images);
 
     let body = {
       userId: userProfile.id,
@@ -91,11 +101,7 @@ const createPost = (props) => {
       },
       detail: {
         restaurantId: data.id,
-        image: [
-          "https://img.taste.com.au/s7LrmKGe/w733-h489-cfill-q80/taste/2018/02/healthy-beef-mince-thai-noodle-salad-135046-1.jpg",
-          "https://i.pinimg.com/736x/3c/19/8d/3c198d1e76cd489f179353f95771ce88.jpg",
-          "https://www.irvingyummythai.com/wp-content/uploads/2019/07/Common_Thai_Food_Misconceptions.jpg",
-        ],
+        image: imagesURL,
         discription: description,
         view: 0,
         like: 0,
@@ -104,18 +110,19 @@ const createPost = (props) => {
       },
       star: rating,
     };
-    setCreatePostInProgress(true);
-    createPostService(body, data.id)
-      .then((res) => {
-        setAlert(true);
-        setErrorMessage(res.status.message || "Create success.");
-        setCreatePostInProgress(false);
-      })
-      .catch((err) => {
-        setAlert(true);
-        setErrorMessage(err.message || "Server error.");
-        setCreatePostInProgress(false);
-      });
+    console.log(body);
+    // setCreatePostInProgress(true);
+    // createPostService(body, data.id)
+    //   .then((res) => {
+    //     setAlert(true);
+    //     setErrorMessage(res.status.message || "Create success.");
+    //     setCreatePostInProgress(false);
+    //   })
+    //   .catch((err) => {
+    //     setAlert(true);
+    //     setErrorMessage(err.message || "Server error.");
+    //     setCreatePostInProgress(false);
+    //   });
   };
 
   return (
@@ -172,17 +179,17 @@ const createPost = (props) => {
           </View>
           <Text style={styles.imagesText}>Images</Text>
           <View style={styles.imagesContainer}>
-            {images.map((path, index) => {
+            {images.map((imageObj, index) => {
               return (
                 <View style={[styles.imageBox]} key={index}>
                   <Image
-                    source={{ uri: path }}
+                    source={{ uri: imageObj.uri }}
                     style={{ width: "100%", aspectRatio: 1 }}
                   />
                 </View>
               );
             })}
-            <View style={[styles.imageBox]}>
+            {/* <View style={[styles.imageBox]}>
               <Image
                 source={{
                   uri:
@@ -208,7 +215,7 @@ const createPost = (props) => {
                 }}
                 style={{ width: "100%", aspectRatio: 1 }}
               />
-            </View>
+            </View> */}
             <TouchableOpacity onPress={pickImage}>
               <View style={[styles.imageBox, styles.contentCenter]}>
                 <Image source={require("../assets/plus.png")}></Image>

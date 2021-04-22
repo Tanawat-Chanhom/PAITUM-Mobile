@@ -114,3 +114,6 @@ package-lock.json
 
 #Expo
 .expo
+
+#ENV File
+env.json
