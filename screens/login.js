@@ -17,8 +17,8 @@ const login = (props) => {
   const dispatch = useDispatch();
   const { userReducer } = useSelector((state) => state);
 
-  const [username, setUsername] = useState("1");
-  const [password, setPassword] = useState("1");
+  const [username, setUsername] = useState("nobiaccess");
+  const [password, setPassword] = useState("12345678");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Login loading

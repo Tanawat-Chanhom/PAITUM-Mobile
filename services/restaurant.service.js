@@ -1,4 +1,4 @@
-import env from "../util/server.json";
+import env from "../util/env.json";
 import axios from "axios";
 
 export const getRestaurants = async () => {

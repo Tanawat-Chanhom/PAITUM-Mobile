@@ -12,21 +12,20 @@ import {
 } from "react-native";
 import Model from "../components/Model";
 import BackPage from "../components/BackPage";
-import { SERVER } from "../util/server.json";
-import axios from "axios";
 import Alert from "../components/MyAlert";
 
 export default function Register(props) {
   const [stateGenderModel, setStateGenderModel] = useState(false);
   const [stateDateModel, setStateDateModel] = useState(false);
-  const [gender, setGender] = useState("men");
+  const [gender, setGender] = useState("male");
   const [chosenDate, setChosenDate] = useState(new Date());
   const [data, setData] = useState({
-    username: "",
-    password: "",
-    eMail: "",
-    name: "",
-    confirm: "",
+    username: "nobiaccess",
+    password: "12345678",
+    eMail: "tae_chanhom@hotmail.com",
+    name: "Tanawat",
+    lastName: "Chanhom",
+    confirm: "12345678",
   });
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,10 +41,10 @@ export default function Register(props) {
     <View style={styles.genderContainer}>
       <View style={styles.genderButton}>
         <Button
-          title={"Men"}
+          title={"Male"}
           color="black"
           onPress={() => {
-            setGender("men");
+            setGender("male");
             isShowGender(false);
           }}
         ></Button>
@@ -146,13 +145,24 @@ export default function Register(props) {
             ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
-            <Text style={styles.text}>Name</Text>
+            <Text style={styles.text}>First Name</Text>
             <TextInput
               style={styles.textInput}
               value={data.name}
               placeholder="name"
               onChangeText={(x) => {
                 setData({ ...data, name: x });
+              }}
+            ></TextInput>
+          </View>
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>last Name</Text>
+            <TextInput
+              style={styles.textInput}
+              value={data.lastName}
+              placeholder="name"
+              onChangeText={(x) => {
+                setData({ ...data, lastName: x });
               }}
             ></TextInput>
           </View>
@@ -165,7 +175,7 @@ export default function Register(props) {
                   isShowGender(true);
                 }}
               >
-                {gender === "men" ? "Men" : "Women"}
+                {gender === "male" ? "Male" : "Women"}
               </Text>
             </View>
           </View>
@@ -195,6 +205,7 @@ export default function Register(props) {
               confirm: data.confirm,
               eMail: data.eMail,
               name: data.name,
+              lastName: data.lastName,
               gender: gender,
               birthday: chosenDate,
             };
@@ -245,7 +256,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   safeAreaView: {
-    width: "100%",
+    flex: 1,
+    height: "100%",
+  },
+  scrollView: {
+    paddingTop: 10,
     height: "100%",
   },
   genderContainer: {
@@ -282,7 +297,7 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     backgroundColor: "#E29821",
-    position: "absolute",
+    position: "relative",
     alignSelf: "stretch",
     width: "100%",
     borderRadius: 50,

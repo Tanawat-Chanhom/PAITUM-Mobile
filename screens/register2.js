@@ -7,19 +7,25 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import BackPage from "../components/BackPage";
 import * as ImagePicker from "expo-image-picker";
 import Alert from "../components/MyAlert";
 import axios from "axios";
-import { SERVER } from "../util/server.json";
+import { uploadImageToS3 } from "../util/aws";
+import { register as registerService } from "../services/user.service";
 
 export default function register2(props) {
   const data = props.navigation.getParam("data");
   const [image, setImage] = useState(null);
-  const [caption, setCaption] = useState("");
+  const [cover, setCoverImage] = useState(null);
+  const [caption, setCaption] = useState("Test user");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [registerInProgress, setRegisterInProgress] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -34,7 +40,7 @@ export default function register2(props) {
     })();
   }, []);
 
-  const pickImage = async () => {
+  const pickImage = async (setState) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -44,42 +50,36 @@ export default function register2(props) {
     });
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setState(result.uri);
     }
   };
 
-  const submit = () => {
+  const submit = async () => {
+    setRegisterInProgress(true);
     let body = {
-      avatar:
-        "https://cdn1.iconfinder.com/data/icons/user-pictures/100/boy-512.png",
-      caption: caption,
-      coin: 0,
-      coupon: [],
-      coverImage:
-        "https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/blue-and-turquoise-minimalist-mountain-landscape-matthias-hauser.jpg",
-      follower: [],
-      following: [],
-      followingRestaurant: [],
-      name: data.name,
-      password: data.password,
-      post: [],
       username: data.username,
+      password: data.password,
+      confirmPassword: data.password,
+      firstname: data.name,
+      lastname: data.lastName,
+      birthday: data.birthday,
+      gender: data.gender,
+      caption: caption,
+      avatar: await uploadImageToS3("profile-image/", image),
+      cover_image: await uploadImageToS3("profile-image/", cover),
     };
 
-    axios
-      .post(SERVER + "/user/register", body)
-      .then((res) => {
-        if (res.data.status === 200) {
-          props.navigation.navigate("Login");
-        } else {
-          setAlert(true);
-          setErrorMessage(res.data.message);
-        }
+    console.log(body);
+
+    await registerService(body)
+      .then((result) => {
+        console.log(result);
+        props.navigation.navigate("Login");
+        setRegisterInProgress(false);
       })
-      .catch((err) => {
-        console.log(err);
-        setAlert(true);
-        setErrorMessage(err.message);
+      .catch((error) => {
+        console.error(error);
+        setRegisterInProgress(false);
       });
   };
 
@@ -93,41 +93,75 @@ export default function register2(props) {
         }}
       ></Alert>
       <BackPage navigation={props} path={"stateOne"}></BackPage>
-      <View style={styles.profileImg}>
-        <View style={[styles.ImgContainer]}>
-          <TouchableOpacity onPress={pickImage}>
-            {image === null ? (
-              <Image source={require("../assets/camera.png")} />
-            ) : (
-              <Image source={{ uri: image }} style={styles.image} />
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.textInputContainer}>
-        <Text style={styles.text}>Caption</Text>
-        <TextInput
-          style={styles.textInput}
-          value={caption}
-          placeholder="Web-Designner"
-          onChangeText={(x) => {
-            setCaption(x);
-          }}
-        ></TextInput>
-      </View>
+      <SafeAreaView style={styles.safeAreaView}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          style={styles.scrollView}
+        >
+          <View style={styles.textInputContainer}>
+            <Text style={styles.text}>Caption</Text>
+            <TextInput
+              style={styles.textInput}
+              value={caption}
+              placeholder="Web-Designner"
+              onChangeText={(x) => {
+                setCaption(x);
+              }}
+            ></TextInput>
+          </View>
+          <View>
+            <Text style={styles.text}>Profile Image</Text>
+            <View style={[styles.ImgContainerProfile]}>
+              <TouchableOpacity
+                onPress={() => {
+                  pickImage(setImage);
+                }}
+              >
+                {image === null ? (
+                  <Image source={require("../assets/camera.png")} />
+                ) : (
+                  <Image source={{ uri: image }} style={styles.profileImage} />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View>
+            <Text style={styles.text}>Cover Image</Text>
+            <View style={[styles.ImgContainerCover]}>
+              <TouchableOpacity
+                onPress={() => {
+                  pickImage(setCoverImage);
+                }}
+              >
+                {cover === null ? (
+                  <Image source={require("../assets/camera.png")} />
+                ) : (
+                  <Image source={{ uri: cover }} style={styles.coverImage} />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+
       <View style={styles.nextButton}>
-        <Button
-          title={"FINISH"}
-          color="white"
-          onPress={() => {
-            if (caption !== "" && image !== null) {
-              submit();
-            } else {
-              setAlert(true);
-              setErrorMessage("Please enter your information.");
-            }
-          }}
-        ></Button>
+        {registerInProgress === true ? (
+          <ActivityIndicator color="#fff" style={styles.activityIndicator} />
+        ) : (
+          <Button
+            title={"FINISH"}
+            color="white"
+            onPress={() => {
+              if (caption !== "" && image !== null && cover !== null) {
+                submit();
+              } else {
+                setAlert(true);
+                setErrorMessage("Please enter your information.");
+              }
+            }}
+          ></Button>
+        )}
       </View>
     </View>
   );
@@ -140,9 +174,17 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     backgroundColor: "#FFF",
   },
+  safeAreaView: {
+    flex: 1,
+    height: "100%",
+  },
+  scrollView: {
+    paddingTop: 10,
+    height: "100%",
+  },
   nextButton: {
     backgroundColor: "#E29821",
-    position: "absolute",
+    position: "relative",
     alignSelf: "stretch",
     width: "100%",
     borderRadius: 50,
@@ -150,13 +192,9 @@ const styles = StyleSheet.create({
     margin: 34,
     bottom: 0,
   },
-  profileImg: {
-    width: "100%",
-    padding: 20,
-  },
-  ImgContainer: {
-    height: 175,
-    width: 175,
+  ImgContainerProfile: {
+    height: 145,
+    width: 145,
     borderWidth: 2,
     borderRadius: 100,
     alignSelf: "center",
@@ -164,13 +202,32 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 10,
+    overflow: "hidden",
   },
-  image: {
-    borderColor: "#707070",
-    height: 175,
-    width: 175,
+  ImgContainerCover: {
+    height: 145,
+    width: 300,
     borderWidth: 2,
+    borderRadius: 10,
+    alignSelf: "center",
+    borderColor: "#707070",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    overflow: "hidden",
+  },
+  profileImage: {
+    position: "relative",
+    height: 145,
+    width: 145,
     borderRadius: 100,
+  },
+  coverImage: {
+    position: "relative",
+    height: 145,
+    width: 300,
   },
   text: {
     color: "#E29821",
@@ -191,5 +248,8 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingTop: 10,
     paddingBottom: 10,
+  },
+  activityIndicator: {
+    paddingVertical: 10,
   },
 });
