@@ -14,6 +14,7 @@ import Constants from "expo-constants";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserProfile } from "../services/user.service";
 import { getRestaurantCoupon } from "../services/restaurant.service";
+import { setUserCoin } from "../store/action/userAction";
 
 const restaurantCoupon = (props) => {
   let restaurantId = props.navigation.getParam("restaurantId"); //Passing data from restaurant main page
@@ -36,7 +37,6 @@ const restaurantCoupon = (props) => {
         setCoin(userData.coin);
       });
       await getRestaurantCoupon(restaurantId).then((result) => {
-        console.log(result.data.coupons);
         setCoupons(result.data.coupons);
         if (result.data.coupons.length === 0) {
           setAlert(true);
@@ -101,7 +101,15 @@ const restaurantCoupon = (props) => {
           <View style={styles.content}>
             {Coupons.map((data, index) => {
               return (
-                <ReCoupon data={data} key={index} userCoin={Coin}></ReCoupon>
+                <ReCoupon
+                  data={data}
+                  key={index}
+                  userCoin={Coin}
+                  userId={userId}
+                  onPress={(couponCoin) => {
+                    setCoin(Coin - couponCoin);
+                  }}
+                ></ReCoupon>
               );
             })}
           </View>

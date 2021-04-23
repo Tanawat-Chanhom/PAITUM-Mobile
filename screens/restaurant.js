@@ -21,6 +21,7 @@ import {
   getRestaurants,
   getRestaurantFollow,
   getRestaurantWithId,
+  getRestaurantUnfollow,
 } from "../services/restaurant.service";
 
 const restaurant = (props) => {
@@ -29,8 +30,9 @@ const restaurant = (props) => {
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
   const [data, setData] = useState({
-    follower: [],
+    followers: [],
     userReviews: [],
+    coin: 0,
   });
   const [Star, setStar] = useState([]);
   const [alert, setAlert] = useState(false);
@@ -43,13 +45,13 @@ const restaurant = (props) => {
     getRestaurantWithId(restaurantId)
       .then((res) => {
         setData(res.data.restautants);
-        res.data.restautants.followers.map((id) => {
-          id === userId ? setIsFollow(true) : setIsFollow(false);
+        res.data.restautants.followers.map((userObj) => {
+          userObj.id === userId ? setIsFollow(true) : setIsFollow(false);
         });
         genStar(res.data.restautants.star);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }, [restaurantId]);
 
@@ -80,7 +82,7 @@ const restaurant = (props) => {
         setRefreshing(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setRefreshing(false);
       });
   };
@@ -106,22 +108,36 @@ const restaurant = (props) => {
 
   const follow = () => {
     let body = {
-      user: userId,
-      restaurant: data.id,
+      userId: userId,
+      restaurantId: data.id,
     };
     setFollowInProgress(true);
     getRestaurantFollow(body)
       .then((res) => {
         setAlert(true);
-        if (isFollow === true) {
-          setErrorMessage("Unfollowing " + data.restaurantName);
-          setIsFollow(false);
-          setFollowInProgress(false);
-        } else {
-          setErrorMessage("Following " + data.restaurantName);
-          setIsFollow(true);
-          setFollowInProgress(false);
-        }
+        setErrorMessage("Following " + data.name);
+        setIsFollow(true);
+        setFollowInProgress(false);
+      })
+      .catch((err) => {
+        setAlert(true);
+        setFollowInProgress(false);
+        setErrorMessage(err.message || "Server error.");
+      });
+  };
+
+  const unfollow = () => {
+    let body = {
+      userId: userId,
+      restaurantId: data.id,
+    };
+    setFollowInProgress(true);
+    getRestaurantUnfollow(body)
+      .then((res) => {
+        setAlert(true);
+        setErrorMessage("Unfollowing " + data.name);
+        setIsFollow(false);
+        setFollowInProgress(false);
       })
       .catch((err) => {
         setAlert(true);
@@ -184,7 +200,9 @@ const restaurant = (props) => {
                   ]}
                 />
               ) : (
-                <TouchableOpacity onPress={() => follow()}>
+                <TouchableOpacity
+                  onPress={() => (isFollow === true ? unfollow() : follow())}
+                >
                   <Image
                     source={require("../assets/followButton.png")}
                     style={[
@@ -230,8 +248,7 @@ const restaurant = (props) => {
                 </View>
                 <View>
                   <Text style={styles.statusText}>Follower</Text>
-                  {/* <Text style={styles.statusText}>{data.followers.length}</Text> */}
-                  <Text style={styles.statusText}>1</Text>
+                  <Text style={styles.statusText}>{data.followers.length}</Text>
                 </View>
               </View>
               <View style={styles.flexRow}>

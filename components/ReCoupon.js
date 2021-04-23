@@ -25,6 +25,10 @@ export default class Coupon extends Component {
   }
 
   hendleRedeemCoupon = (userCoin) => {
+    let body = {
+      userId: this.props.userId,
+      couponId: this.state.couponData.id,
+    };
     if (userCoin < this.state.couponData.coin) {
       this.setState({
         alert: true,
@@ -32,13 +36,22 @@ export default class Coupon extends Component {
       });
     } else {
       this.setState({ isLoading: true });
-      redeemRestaurantCoupon()
+      redeemRestaurantCoupon(body)
         .then((result) => {
-          this.setState({
-            alert: true,
-            errorMessage: result.message,
-            isLoading: false,
-          });
+          if (result.data.status === 200) {
+            this.props.onPress(this.props.data.coin);
+            this.setState({
+              alert: true,
+              errorMessage: result.data.message,
+              isLoading: false,
+            });
+          } else {
+            this.setState({
+              alert: true,
+              errorMessage: result.data.message,
+              isLoading: false,
+            });
+          }
         })
         .catch(() => {
           this.setState({
