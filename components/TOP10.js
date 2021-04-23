@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import Button from "./Button";
 import { Image } from "react-native-elements";
 import { getRestaurants } from "../services/restaurant.service";
 
@@ -40,7 +39,7 @@ class Card extends Component {
           </View>
           <View style={stylesCard.footer}>
             <Text style={stylesCard.text} numberOfLines={2}>
-              {this.props.data.restaurantName.slice(0, 7) + "..."}
+              {this.props.data.name.slice(0, 7) + "..."}
             </Text>
           </View>
         </View>
@@ -92,20 +91,16 @@ export default class TOP10 extends Component {
   constructor() {
     super();
     this.state = {
-      top10: [
-        { restaurantName: "Loading" },
-        { restaurantName: "Loading" },
-        { restaurantName: "Loading" },
-      ],
+      top10: [{ name: "Loading" }, { name: "Loading" }, { name: "Loading" }],
     };
   }
 
   componentDidMount() {
     getRestaurants()
       .then((res) => {
-        if (res.data.restaurants.length !== 0) {
+        if (res.data.restautants.length !== 0) {
           this.setState({
-            top10: res.data.restaurants,
+            top10: res.data.restautants,
           });
         }
       })
@@ -119,15 +114,6 @@ export default class TOP10 extends Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={{ fontSize: 30, fontWeight: "bold" }}>TOP’10</Text>
-          <Button
-            title={"See All"}
-            color="#6E6E6E"
-            fontSize={14}
-            onPress={() => {
-              console.log("test");
-            }}
-            style={{ display: "none" }}
-          ></Button>
         </View>
         <View style={styles.content}>
           <SafeAreaView style={styles.safeAreaView}>
