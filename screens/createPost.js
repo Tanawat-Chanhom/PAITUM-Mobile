@@ -28,7 +28,7 @@ const createPost = (props) => {
 
   const [userProfile, setUserProfile] = useState({});
   const [images, setImages] = useState([]);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState("ต้องลองๆๆๆ");
   const [rating, setRating] = useState(3);
   const [reander, setreander] = useState(0);
   const [alert, setAlert] = useState(false);
@@ -36,18 +36,17 @@ const createPost = (props) => {
   const [createPostInProgress, setCreatePostInProgress] = useState(false);
 
   useEffect(() => {
-    async function fatchData() {
-      await getUserProfile(userId)
-        .then((result) => {
-          let userData = result.data.user;
-          setUserProfile(userData);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-
-    fatchData();
+    // async function fatchData() {
+    //   await getUserProfile(userId)
+    //     .then((result) => {
+    //       let userData = result.data.user;
+    //       setUserProfile(userData);
+    //     })
+    //     .catch((error) => {
+    //       console.error(error);
+    //     });
+    // }
+    // fatchData();
   }, [images, description]);
 
   const pickImage = async () => {
@@ -66,70 +65,43 @@ const createPost = (props) => {
     setreander(reander + 1);
   };
 
-  function AddZero(num) {
-    return num >= 0 && num < 10 ? "0" + num : num + "";
-  }
-
   const convertImageToURL = async (imageArray) => {
     return Promise.all(
       imageArray.map(async (imageObj) => {
         let URL = await uploadImageToS3("post-image/", imageObj.uri);
-        return URL;
+        let createObj = {
+          url: URL,
+        };
+        return createObj;
       })
     );
   };
 
   const createPost = async () => {
-    let now = new Date();
-    let strDateTime = [
-      [
-        AddZero(now.getDate()),
-        AddZero(now.getMonth() + 1),
-        now.getFullYear(),
-      ].join("/"),
-      [AddZero(now.getHours()), AddZero(now.getMinutes())].join(":"),
-      now.getHours() >= 12 ? "PM" : "AM",
-    ].join(" ");
-
     setCreatePostInProgress(true);
 
     const imagesURL = await convertImageToURL(images);
     console.log(imagesURL);
 
-    setCreatePostInProgress(false);
+    let body = {
+      userId: userId,
+      restaurantId: data.id,
+      message: description,
+      star: rating,
+      images: imagesURL,
+    };
 
-    // let body = {
-    //   userId: userProfile.id,
-    //   user: {
-    //     name: userProfile.name,
-    //     createAt: strDateTime,
-    //     id: userProfile.id,
-    //     avatar: userProfile.avatar,
-    //   },
-    //   detail: {
-    //     restaurantId: data.id,
-    //     image: imagesURL,
-    //     discription: description,
-    //     view: 0,
-    //     like: 0,
-    //     comments: [],
-    //     liked: false,
-    //   },
-    //   star: rating,
-    // };
-    // console.log(body);
-    // setCreatePostInProgress(true);
-    // createPostService(body, data.id)
-    //   .then((res) => {
-    //     setAlert(true);
-    //     setErrorMessage(res.status.message || "Create success.");
-    //     setCreatePostInProgress(false);
-    //   })
-    //   .catch((err) => {
-    //     setAlert(true);
-    //     setErrorMessage(err.message || "Server error.");
-    //     setCreatePostInProgress(false);
-    //   });
+    createPostService(body)
+      .then((res) => {
+        setAlert(true);
+        setErrorMessage(res.status.message || "Create success.");
+        setCreatePostInProgress(false);
+      })
+      .catch((err) => {
+        setAlert(true);
+        setErrorMessage(err.message || "Server error.");
+        setCreatePostInProgress(false);
+      });
   };
 
   return (

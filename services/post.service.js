@@ -1,11 +1,8 @@
 import env from "../util/env.json";
 import axios from "axios";
 
-export const createPost = async (body, restaurantId) => {
-  return await axios.post(
-    env.SERVER + "/restaurant/review/" + restaurantId,
-    body
-  );
+export const createPost = async (body) => {
+  return await axios.post(env.SERVER + "/restaurant/review", body);
 };
 
 export const deletePost = async (body) => {
