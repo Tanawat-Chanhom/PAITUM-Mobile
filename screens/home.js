@@ -35,22 +35,11 @@ const home = (props) => {
   const onRefresh = () => {
     setRefreshing(true);
     setPosts([]);
-    getRestaurants()
-      .then((res) => {
-        if (res.data.restaurants.length !== 0) {
-          let UpdatePosts = [];
-          res.data.restaurants.map((data) => {
-            let reviews = data.review;
-            let newUpdate = UpdatePosts.concat(reviews);
-            UpdatePosts = newUpdate;
-          });
-          setPosts(UpdatePosts);
-          setRefreshing(false);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    getPosts(userId).then((result) => {
+      console.log(result.data.reviews);
+      setPosts(result.data.reviews);
+      setRefreshing(false);
+    });
   };
 
   return (
