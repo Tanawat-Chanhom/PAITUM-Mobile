@@ -20,16 +20,18 @@ import { Image as Loader } from "react-native-elements";
 import {
   getRestaurants,
   getRestaurantFollow,
+  getRestaurantWithId,
 } from "../services/restaurant.service";
 
 const restaurant = (props) => {
+  let restaurantId = props.navigation.getParam("id");
   let id = props.navigation.getParam("id");
 
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
   const [data, setData] = useState({
     follower: [],
-    review: [],
+    userReviews: [],
   });
   const [Star, setStar] = useState([]);
   const [alert, setAlert] = useState(false);
@@ -38,9 +40,25 @@ const restaurant = (props) => {
   const [isFollow, setIsFollow] = useState(false);
   const [followInProgress, setFollowInProgress] = useState(false);
 
-  genStar = () => {
+  useEffect(() => {
+    getRestaurantWithId(restaurantId)
+      .then((res) => {
+        setData(res.data.restautants);
+        res.data.restautants.followers.map((id) => {
+          id === userId ? setIsFollow(true) : setIsFollow(false);
+        });
+        genStar(res.data.restautants.star);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [restaurantId]);
+
+  const genStar = (star) => {
     let newArray = [];
-    for (let index = 0; index < data.star; index++) {
+    const length = star === 0 ? 1 : star;
+    console.log(length);
+    for (let index = 0; index < length; index++) {
       newArray.push(
         <Image
           key={index}
@@ -52,36 +70,18 @@ const restaurant = (props) => {
     setStar(newArray);
   };
 
-  useEffect(() => {
-    getRestaurants()
-      .then((res) => {
-        if (res.data.restaurants.length !== 0) {
-          let restaurants = res.data.restaurants;
-          let index = restaurants.findIndex((x) => x.id === id);
-          setData(restaurants[index]);
-          restaurants[index].follower.map((id) => {
-            id === userId ? setIsFollow(true) : setIsFollow(false);
-          });
-          genStar();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [id]);
-
   const onRefresh = () => {
     setRefreshing(true);
     getRestaurants()
       .then((res) => {
         if (res.data.restaurants.length !== 0) {
-          let restaurants = res.data.restaurants;
-          let index = restaurants.findIndex((x) => x.id === id);
-          setData(restaurants[index]);
-          restaurants[index].follower.map((id) => {
-            id === userId ? setIsFollow(true) : setIsFollow(false);
-          });
-          genStar();
+          // let restaurants = res.data.restaurants;
+          // let index = restaurants.findIndex((x) => x.id === id);
+          // setData(restaurants[index]);
+          // restaurants[index].follower.map((id) => {
+          //   id === userId ? setIsFollow(true) : setIsFollow(false);
+          // });
+          // genStar();
           setRefreshing(false);
         }
       })
@@ -161,7 +161,7 @@ const restaurant = (props) => {
           }
         >
           <Image
-            source={{ uri: data.coverImg }}
+            source={{ uri: data.cover_image }}
             style={styles.imageCover}
           ></Image>
           <View style={styles.screen}>
@@ -235,7 +235,8 @@ const restaurant = (props) => {
                 </View>
                 <View>
                   <Text style={styles.statusText}>Follower</Text>
-                  <Text style={styles.statusText}>{data.follower.length}</Text>
+                  {/* <Text style={styles.statusText}>{data.followers.length}</Text> */}
+                  <Text style={styles.statusText}>1</Text>
                 </View>
               </View>
               <View style={styles.flexRow}>
@@ -269,7 +270,7 @@ const restaurant = (props) => {
                 <Text style={styles.descriptionText}>{data.about}</Text>
               </View>
               <View style={styles.postsContainer}>
-                {data.review.map((data, index) => {
+                {data.userReviews.map((data, index) => {
                   return (
                     <Post
                       key={index}

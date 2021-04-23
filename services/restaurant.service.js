@@ -5,6 +5,10 @@ export const getRestaurants = async () => {
   return await axios.get(env.SERVER + "/restaurant/all");
 };
 
+export const getRestaurantWithId = async (restaurantId) => {
+  return await axios.get(env.SERVER + "/restaurant/" + restaurantId);
+};
+
 export const getNearRestaurants = async (body) => {
   return await axios.post(env.SERVER + "/restaurant/near", body);
 };
