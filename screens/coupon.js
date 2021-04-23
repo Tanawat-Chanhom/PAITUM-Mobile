@@ -63,6 +63,24 @@ const coupon = (props) => {
     <>
       <Header></Header>
       <View style={styles.screen}>
+        <View style={styles.haeder}>
+          <View
+            style={[styles.circle, { width: 206, height: 206 }]}
+            opacity={0.07}
+          ></View>
+          <View
+            style={[styles.circle, { width: 175, height: 175 }]}
+            opacity={0.15}
+          ></View>
+          <View
+            style={[styles.circle, { width: 138, height: 138 }]}
+            opacity={0.24}
+          ></View>
+          <Text style={{ fontSize: 35, fontWeight: "600", color: "#403D56" }}>
+            {coin}
+          </Text>
+          <Text style={{ color: "#403D56" }}>Total coin</Text>
+        </View>
         <SafeAreaView style={styles.safeAreaView}>
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -72,26 +90,6 @@ const coupon = (props) => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
-            <View style={styles.haeder}>
-              <View
-                style={[styles.circle, { width: 206, height: 206 }]}
-                opacity={0.07}
-              ></View>
-              <View
-                style={[styles.circle, { width: 175, height: 175 }]}
-                opacity={0.15}
-              ></View>
-              <View
-                style={[styles.circle, { width: 138, height: 138 }]}
-                opacity={0.24}
-              ></View>
-              <Text
-                style={{ fontSize: 35, fontWeight: "600", color: "#403D56" }}
-              >
-                {coin}
-              </Text>
-              <Text style={{ color: "#403D56" }}>Total coin</Text>
-            </View>
             <View style={styles.content}>
               {coupon.map((data, index) => {
                 return (
@@ -124,6 +122,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     height: "100%",
+    borderRadius: 10,
   },
   haeder: {
     width: "100%",
