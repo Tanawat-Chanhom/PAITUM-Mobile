@@ -13,9 +13,10 @@ import Alert from "../components/MyAlert";
 import Constants from "expo-constants";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserProfile } from "../services/user.service";
+import { getRestaurantCoupon } from "../services/restaurant.service";
 
 const restaurantCoupon = (props) => {
-  let coupon = props.navigation.getParam("coupon"); //Passing data from restaurant main page
+  let restaurantId = props.navigation.getParam("restaurantId"); //Passing data from restaurant main page
 
   const { userReducer } = useSelector((state) => state);
   const userCoin = userReducer.coin;
@@ -32,18 +33,20 @@ const restaurantCoupon = (props) => {
     async function fatchData() {
       await getUserProfile(userId).then((result) => {
         let userData = result.data.user;
-
-        if (coupon.length === 0) {
+        setCoin(userData.coin);
+      });
+      await getRestaurantCoupon(restaurantId).then((result) => {
+        console.log(result.data.coupons);
+        setCoupons(result.data.coupons);
+        if (result.data.coupons.length === 0) {
           setAlert(true);
           setErrorMessage("Not have coupon at this time!");
         }
-        setCoupons(coupon);
-        setCoin(userData.coin);
       });
     }
 
     fatchData();
-  }, [coupon, rerender]);
+  }, [rerender]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -68,6 +71,24 @@ const restaurantCoupon = (props) => {
         isFlow={true}
         magin={10}
       ></BackPage>
+      <View style={styles.haeder}>
+        <View
+          style={[styles.circle, { width: 206, height: 206 }]}
+          opacity={0.07}
+        ></View>
+        <View
+          style={[styles.circle, { width: 175, height: 175 }]}
+          opacity={0.15}
+        ></View>
+        <View
+          style={[styles.circle, { width: 138, height: 138 }]}
+          opacity={0.24}
+        ></View>
+        <Text style={{ fontSize: 35, fontWeight: "600", color: "#403D56" }}>
+          {Coin}
+        </Text>
+        <Text style={{ color: "#403D56" }}>Total coin</Text>
+      </View>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -77,24 +98,6 @@ const restaurantCoupon = (props) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <View style={styles.haeder}>
-            <View
-              style={[styles.circle, { width: 206, height: 206 }]}
-              opacity={0.07}
-            ></View>
-            <View
-              style={[styles.circle, { width: 175, height: 175 }]}
-              opacity={0.15}
-            ></View>
-            <View
-              style={[styles.circle, { width: 138, height: 138 }]}
-              opacity={0.24}
-            ></View>
-            <Text style={{ fontSize: 35, fontWeight: "600", color: "#403D56" }}>
-              {Coin}
-            </Text>
-            <Text style={{ color: "#403D56" }}>Total coin</Text>
-          </View>
           <View style={styles.content}>
             {Coupons.map((data, index) => {
               return (
@@ -123,6 +126,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     height: "100%",
+    borderRadius: 10,
   },
   haeder: {
     width: "100%",
@@ -130,6 +134,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginVertical: 10,
   },
   circle: {
     backgroundColor: "#F3CA1B",

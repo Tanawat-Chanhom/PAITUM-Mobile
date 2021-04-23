@@ -63,7 +63,7 @@ export default class Coupon extends Component {
         ></Alert>
         <View style={styles.titleContainer}>
           <Image
-            source={{ uri: this.props.data.avatar }}
+            source={{ uri: this.props.data.image }}
             style={styles.icon}
           ></Image>
           <TouchableOpacity
@@ -95,7 +95,7 @@ export default class Coupon extends Component {
           <View>
             <Text style={{ color: "#9C9797", fontSize: 13 }}>Expires</Text>
             <Text style={{ color: "#403D56", fontWeight: "600" }}>
-              {this.props.data.exp}
+              {this.props.data.exp.split("T")[0]}
             </Text>
           </View>
           <View style={[styles.titleContainer, { alignItems: "center" }]}>

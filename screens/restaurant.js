@@ -250,11 +250,9 @@ const restaurant = (props) => {
                   fontSize={20}
                   style={styles.navigateButton}
                   onPress={() => {
-                    if (data.coupon) {
-                      return props.navigation.navigate("RestaurantCoupon", {
-                        coupon: data.coupon,
-                      });
-                    }
+                    return props.navigation.navigate("RestaurantCoupon", {
+                      restaurantId: restaurantId,
+                    });
                   }}
                 ></Button>
               </View>
