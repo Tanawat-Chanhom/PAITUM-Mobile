@@ -248,14 +248,18 @@ export default class Post extends Component {
             </Text>
           </TouchableOpacity>
           <View style={styles.carousel}>
-            <Carousel
-              data={this.props.data.images.map((x) => x.url)}
-              renderItem={this.renderImage}
-              layout={"default"}
-              sliderWidth={this.state.contentLayout.width || 300}
-              itemWidth={300}
-              itemHeight={300}
-            />
+            {this.props.data.images !== undefined ? (
+              <Carousel
+                data={this.props.data.images.map((x) => x.url)}
+                renderItem={this.renderImage}
+                layout={"default"}
+                sliderWidth={this.state.contentLayout.width || 300}
+                itemWidth={300}
+                itemHeight={300}
+              />
+            ) : (
+              <></>
+            )}
           </View>
         </View>
         <View style={styles.footer}>

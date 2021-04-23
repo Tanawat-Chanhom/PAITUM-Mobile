@@ -1,6 +1,10 @@
 import env from "../util/env.json";
 import axios from "axios";
 
+export const getPosts = async (userId) => {
+  return await axios.get(env.SERVER + "/restaurant/feed/" + userId);
+};
+
 export const createPost = async (body) => {
   return await axios.post(env.SERVER + "/restaurant/review", body);
 };
