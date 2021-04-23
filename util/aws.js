@@ -27,10 +27,8 @@ import { RNS3 } from "react-native-aws3";
 //   Expires: signedUrlExpireSeconds,
 // });
 
-const fileUUID = uuidv4();
-
 const configS3 = {
-  keyPrefix: "images/",
+  keyPrefix: "post-image/",
   bucket: env.S3_BUCKET,
   region: env.S3_REGION,
   accessKey: env.AWS_KEY_ID,
@@ -39,8 +37,9 @@ const configS3 = {
 };
 
 export const uploadImageToS3 = async (
+  keyPrefix = "image/",
   imageLocation,
-  imageName = fileUUID,
+  imageName = uuidv4(),
   imageType = "jpg"
 ) => {
   const fileObject = {
@@ -49,9 +48,9 @@ export const uploadImageToS3 = async (
     type: "image/" + imageType,
   };
 
-  return fileObject;
+  configS3.keyPrefix = keyPrefix;
 
-  await RNS3.put(fileObject, configS3)
+  return await RNS3.put(fileObject, configS3)
     .then((response) => {
       if (response.status !== 201) {
         throw new Error("Failed to upload image to S3");
@@ -73,3 +72,14 @@ export const uploadImageToS3 = async (
       console.error(error);
     });
 };
+
+
+// กดเลือกดูสินค้าที่ต้องการซื้อ
+// ใส่ข้อมูลสินค้า
+// กด Add to cart
+// กด Proceed to checkout
+// กด Proceed to checkout
+// เข้าสู่ระบบ
+// ที่อยู่จัดส่ง
+// เลือกการส่ง
+// จ่ายเงิน

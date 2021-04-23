@@ -8,3 +8,7 @@ export const getUserProfile = async (userId) => {
 export const userFollowBetweenUser = async (body) => {
   return await axios.put(env.SERVER + "/user/follow", body);
 };
+
+export const Register = async (body) => {
+  return await axios.post(env.SERVER + "/user/register", body);
+};

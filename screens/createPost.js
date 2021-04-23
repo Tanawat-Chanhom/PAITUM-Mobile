@@ -73,7 +73,8 @@ const createPost = (props) => {
   const convertImageToURL = async (imageArray) => {
     return Promise.all(
       imageArray.map(async (imageObj) => {
-        return uploadImageToS3(imageObj.uri);
+        let URL = await uploadImageToS3("post-image/", imageObj.uri);
+        return URL;
       })
     );
   };
@@ -89,28 +90,34 @@ const createPost = (props) => {
       [AddZero(now.getHours()), AddZero(now.getMinutes())].join(":"),
       now.getHours() >= 12 ? "PM" : "AM",
     ].join(" ");
-    const imagesURL = await convertImageToURL(images);
 
-    let body = {
-      userId: userProfile.id,
-      user: {
-        name: userProfile.name,
-        createAt: strDateTime,
-        id: userProfile.id,
-        avatar: userProfile.avatar,
-      },
-      detail: {
-        restaurantId: data.id,
-        image: imagesURL,
-        discription: description,
-        view: 0,
-        like: 0,
-        comments: [],
-        liked: false,
-      },
-      star: rating,
-    };
-    console.log(body);
+    setCreatePostInProgress(true);
+
+    const imagesURL = await convertImageToURL(images);
+    console.log(imagesURL);
+
+    setCreatePostInProgress(false);
+
+    // let body = {
+    //   userId: userProfile.id,
+    //   user: {
+    //     name: userProfile.name,
+    //     createAt: strDateTime,
+    //     id: userProfile.id,
+    //     avatar: userProfile.avatar,
+    //   },
+    //   detail: {
+    //     restaurantId: data.id,
+    //     image: imagesURL,
+    //     discription: description,
+    //     view: 0,
+    //     like: 0,
+    //     comments: [],
+    //     liked: false,
+    //   },
+    //   star: rating,
+    // };
+    // console.log(body);
     // setCreatePostInProgress(true);
     // createPostService(body, data.id)
     //   .then((res) => {
