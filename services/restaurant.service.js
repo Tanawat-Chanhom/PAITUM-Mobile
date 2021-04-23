@@ -25,3 +25,11 @@ export const redeemRestaurantCoupon = async (body) => {
     message: "you have redeem a coupon!",
   };
 };
+
+export const getRestaurantCoupon = async (restaurantId) => {
+  return await axios.get(env.SERVER + "/restaurant/coupon/" + restaurantId);
+};
+
+export const getRestaurantPromotion = async (restaurantId) => {
+  return await axios.get(env.SERVER + "/restaurant/promotion/" + restaurantId);
+};

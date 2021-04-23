@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import Button from "../components/Button";
 
 export default class Promotion extends Component {
   constructor() {
@@ -32,6 +31,9 @@ export default class Promotion extends Component {
             }}
             style={{ flex: 1 }}
           >
+            <Text style={{ marginLeft: 10, fontSize: 25 }}>
+              {this.props.data.name}
+            </Text>
             <Text
               style={styles.description}
               numberOfLines={this.state.numberOfLines}
@@ -44,7 +46,7 @@ export default class Promotion extends Component {
           <View>
             <Text style={{ color: "#9C9797", fontSize: 13 }}>Expires</Text>
             <Text style={{ color: "#403D56", fontWeight: "600" }}>
-              {this.props.data.exp}
+              {this.props.data.exp.split("T")[0]}
             </Text>
           </View>
           <View

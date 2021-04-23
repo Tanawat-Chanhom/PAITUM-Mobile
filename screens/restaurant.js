@@ -25,7 +25,6 @@ import {
 
 const restaurant = (props) => {
   let restaurantId = props.navigation.getParam("id");
-  let id = props.navigation.getParam("id");
 
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
@@ -241,11 +240,9 @@ const restaurant = (props) => {
                   fontSize={20}
                   style={styles.navigateButton}
                   onPress={() => {
-                    console.log(data.promotion);
-                    if (data.promotion)
-                      return props.navigation.navigate("Promation", {
-                        promotion: data.promotion,
-                      });
+                    return props.navigation.navigate("Promation", {
+                      restaurantId: restaurantId,
+                    });
                   }}
                 ></Button>
                 <Button

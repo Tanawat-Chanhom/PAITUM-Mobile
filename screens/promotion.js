@@ -1,23 +1,57 @@
 import React, { Component, useState, useEffect } from "react";
-import { Text, View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import BackPage from "../components/BackPage";
 import Promotion from "../components/Promotion";
 import Alert from "../components/MyAlert";
+import Constants from "expo-constants";
+import { getRestaurantPromotion } from "../services/restaurant.service";
 
 const promotion = (props) => {
+  let restaurantId = props.navigation.getParam("restaurantId");
+
   const [promotions, setPromotions] = useState([]);
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  let promotion = props.navigation.getParam("promotion");
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    if (promotion.length === 0) {
-      setAlert(true);
-      setErrorMessage("Not have promotion at this time!");
-    }
-    setPromotions(promotion);
+    getRestaurantPromotion(restaurantId)
+      .then((result) => {
+        if (result.data.promotion.length === 0) {
+          setAlert(true);
+          setErrorMessage("Not have promotion at this time!");
+        }
+        setPromotions(result.data.promotion);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [promotion]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    getRestaurantPromotion(restaurantId)
+      .then((result) => {
+        if (result.data.promotion.length === 0) {
+          setAlert(true);
+          setErrorMessage("Not have promotion at this time!");
+          setRefreshing(false);
+        }
+        setPromotions(result.data.promotion);
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setRefreshing(false);
+      });
+  };
 
   return (
     <>
@@ -40,6 +74,9 @@ const promotion = (props) => {
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             style={styles.scrollView}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
             <View style={styles.content}>
               {promotions.map((data, index) => {
@@ -62,8 +99,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
   },
+  safeAreaView: {
+    marginTop: -Constants.statusBarHeight,
+  },
   scrollView: {
-    paddingTop: 90,
+    paddingTop: 100,
     height: "100%",
   },
   haeder: {
