@@ -47,7 +47,7 @@ const coupon = (props) => {
       const userData = result.data.user;
 
       setCoin(userData.coin);
-      setCoupon(userData.coupon);
+      setCoupon(userData.coupons);
       setRefreshing(false);
     });
   };

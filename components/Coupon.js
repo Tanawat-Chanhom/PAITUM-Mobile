@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Button from "../components/Button";
+import QRCode from "react-native-qrcode-svg";
 const CoinIcon = require("../assets/coin.png");
+const AppLogo = require("../assets/login_logo.png");
 
 export default class Coupon extends Component {
   constructor() {
@@ -24,7 +26,7 @@ export default class Coupon extends Component {
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Image
-            source={{ uri: this.props.data.avatar }}
+            source={{ uri: this.props.data.image }}
             style={styles.icon}
           ></Image>
           <TouchableOpacity
@@ -54,10 +56,12 @@ export default class Coupon extends Component {
         </View>
         {this.state.isShow === true ? (
           <View style={styles.qrContainer}>
-            <Image
-              source={{ uri: this.props.data.qr }}
-              style={styles.qrImage}
-            ></Image>
+            <QRCode
+              value={this.props.data.id + ""}
+              size={300}
+              logo={AppLogo}
+              logoSize={100}
+            />
           </View>
         ) : (
           <></>
@@ -66,7 +70,7 @@ export default class Coupon extends Component {
           <View>
             <Text style={{ color: "#9C9797", fontSize: 13 }}>Expires</Text>
             <Text style={{ color: "#403D56", fontWeight: "600" }}>
-              {this.props.data.exp}
+              {this.props.data.exp.split("T")[0]}
             </Text>
           </View>
           <View style={[styles.titleContainer, { alignItems: "center" }]}>
@@ -151,6 +155,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     overflow: "hidden",
     padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   qrImage: {
     width: "100%",
