@@ -19,9 +19,9 @@ import { useSelector } from "react-redux";
 import { Image as Loader } from "react-native-elements";
 import {
   getRestaurants,
-  getRestaurantFollow,
+  putRestaurantFollow,
   getRestaurantWithId,
-  getRestaurantUnfollow,
+  putRestaurantUnfollow,
 } from "../services/restaurant.service";
 
 const restaurant = (props) => {
@@ -112,7 +112,7 @@ const restaurant = (props) => {
       restaurantId: data.id,
     };
     setFollowInProgress(true);
-    getRestaurantFollow(body)
+    putRestaurantFollow(body)
       .then((res) => {
         setAlert(true);
         setErrorMessage("Following " + data.name);
@@ -132,7 +132,7 @@ const restaurant = (props) => {
       restaurantId: data.id,
     };
     setFollowInProgress(true);
-    getRestaurantUnfollow(body)
+    putRestaurantUnfollow(body)
       .then((res) => {
         setAlert(true);
         setErrorMessage("Unfollowing " + data.name);

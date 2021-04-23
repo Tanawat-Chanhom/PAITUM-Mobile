@@ -13,11 +13,11 @@ export const getNearRestaurants = async (body) => {
   return await axios.post(env.SERVER + "/restaurant/near", body);
 };
 
-export const getRestaurantFollow = async (body) => {
+export const putRestaurantFollow = async (body) => {
   return await axios.put(env.SERVER + "/user/follow/restaurant", body);
 };
 
-export const getRestaurantUnfollow = async (body) => {
+export const putRestaurantUnfollow = async (body) => {
   return await axios.put(env.SERVER + "/user/unfollow/restaurant", body);
 };
 
