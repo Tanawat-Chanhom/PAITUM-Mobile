@@ -19,8 +19,10 @@ import Alert from "../components/MyAlert";
 const map = (props) => {
   const [distance, setDistance] = useState(5);
   const [findType, setFindType] = useState("Near Me");
-  const [search, setSearch] = useState("");
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(true);
+  const [restaurants, setRestaurants] = useState([]);
+  const [alert, setAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     let body = {
@@ -31,14 +33,17 @@ const map = (props) => {
     navigator.geolocation.getCurrentPosition((position) => {
       body.latitude = position.coords.latitude;
       body.longitude = position.coords.longitude;
+      setRefreshing(true);
 
       if (findType === "Recommend") {
-        setDistance(0);
+        setDistance(5);
         getRestaurants()
           .then((res) => {
-            if (res.data.restaurants.length !== 0) {
-              setRestaurants(res.data.restaurants);
+            if (res.data.restautants.length !== 0) {
+              setRestaurants(res.data.restautants);
+              setRefreshing(false);
             } else {
+              setRefreshing(false);
               setRestaurants([]);
               setAlert(true);
               setErrorMessage("Not Found");
@@ -46,30 +51,31 @@ const map = (props) => {
           })
           .catch((err) => {
             setAlert(true);
+            setRefreshing(false);
             setErrorMessage("Server error.");
           });
       } else {
+        console.log(body);
         getNearRestaurants(body)
           .then((res) => {
-            if (res.data.restaurants.length !== 0) {
-              setRestaurants(res.data.restaurants);
+            if (res.data.restautants.length !== 0) {
+              setRestaurants(res.data.restautants);
+              setRefreshing(false);
             } else {
               setRestaurants([]);
               setAlert(true);
+              setRefreshing(false);
               setErrorMessage("Not Found");
             }
           })
           .catch((err) => {
             setAlert(true);
+            setRefreshing(false);
             setErrorMessage("Server error.");
           });
       }
     });
-  }, [distance, findType, search]);
-
-  const [restaurants, setRestaurants] = useState([]);
-  const [alert, setAlert] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  }, [distance, findType]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -82,42 +88,42 @@ const map = (props) => {
       body.latitude = position.coords.latitude;
       body.longitude = position.coords.longitude;
       if (findType === "Recommend") {
-        setDistance(0);
+        setDistance(5);
         getRestaurants()
           .then((res) => {
-            if (res.data.restaurants.length !== 0) {
-              setRestaurants(res.data.restaurants);
+            if (res.data.restautants.length !== 0) {
+              setRestaurants(res.data.restautants);
               setRefreshing(false);
             } else {
+              setRefreshing(false);
               setRestaurants([]);
               setAlert(true);
               setErrorMessage("Not Found");
-              setRefreshing(false);
             }
           })
           .catch((err) => {
             setAlert(true);
-            setErrorMessage("Server error.");
             setRefreshing(false);
+            setErrorMessage("Server error.");
           });
       } else {
+        console.log(body);
         getNearRestaurants(body)
           .then((res) => {
-            console.log(res.data);
-            if (res.data.restaurants.length !== 0) {
-              setRestaurants(res.data.restaurants);
+            if (res.data.restautants.length !== 0) {
+              setRestaurants(res.data.restautants);
               setRefreshing(false);
             } else {
               setRestaurants([]);
               setAlert(true);
-              setErrorMessage("Not Found");
               setRefreshing(false);
+              setErrorMessage("Not Found");
             }
           })
           .catch((err) => {
             setAlert(true);
-            setErrorMessage("Server error.");
             setRefreshing(false);
+            setErrorMessage("Server error.");
           });
       }
     });
@@ -136,6 +142,61 @@ const map = (props) => {
       ></Alert>
       <Header></Header>
       <View style={styles.screen}>
+        <View style={styles.searchContainer}>
+          <View style={styles.optionBar}>
+            <Button
+              title={"Near Me"}
+              fontSize={20}
+              color={findType === "Near Me" ? "#E29821" : "#111"}
+              style={[styles.optionButton, { marginLeft: 0 }]}
+              onPress={() => {
+                setFindType("Near Me");
+              }}
+            ></Button>
+            <Button
+              title={"Recommend"}
+              fontSize={20}
+              color={findType === "Recommend" ? "#E29821" : "#111"}
+              style={[styles.optionButton, { marginRight: 0 }]}
+              onPress={() => {
+                setFindType("Recommend");
+              }}
+            ></Button>
+          </View>
+          {findType !== "Recommend" ? (
+            <View style={styles.optionBar}>
+              <Button
+                title={"5 Km."}
+                fontSize={20}
+                color={distance === 5000 ? "#E29821" : "#111"}
+                style={[styles.optionButton, { marginLeft: 0 }]}
+                onPress={() => {
+                  setDistance(5000);
+                }}
+              ></Button>
+              <Button
+                title={"10 Km."}
+                fontSize={20}
+                color={distance === 10000 ? "#E29821" : "#111"}
+                style={styles.optionButton}
+                onPress={() => {
+                  setDistance(10000);
+                }}
+              ></Button>
+              <Button
+                title={"20 Km."}
+                fontSize={20}
+                color={distance === 20000 ? "#E29821" : "#111"}
+                style={[styles.optionButton, { marginRight: 0 }]}
+                onPress={() => {
+                  setDistance(20000);
+                }}
+              ></Button>
+            </View>
+          ) : (
+            <></>
+          )}
+        </View>
         <SafeAreaView style={styles.safeAreaView}>
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -145,57 +206,6 @@ const map = (props) => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
-            <View style={styles.searchContainer}>
-              <View style={styles.optionBar}>
-                <Button
-                  title={"Near Me"}
-                  fontSize={20}
-                  color={findType === "Near Me" ? "#E29821" : "#111"}
-                  style={[styles.optionButton, { marginLeft: 0 }]}
-                  onPress={() => {
-                    setFindType("Near Me");
-                  }}
-                ></Button>
-                <Button
-                  title={"Recommend"}
-                  fontSize={20}
-                  color={findType === "Recommend" ? "#E29821" : "#111"}
-                  style={[styles.optionButton, { marginRight: 0 }]}
-                  onPress={() => {
-                    setFindType("Recommend");
-                  }}
-                ></Button>
-              </View>
-              <View style={styles.optionBar}>
-                <Button
-                  title={"5 Km."}
-                  fontSize={20}
-                  color={distance === 5000 ? "#E29821" : "#111"}
-                  style={[styles.optionButton, { marginLeft: 0 }]}
-                  onPress={() => {
-                    setDistance(5000);
-                  }}
-                ></Button>
-                <Button
-                  title={"10 Km."}
-                  fontSize={20}
-                  color={distance === 10000 ? "#E29821" : "#111"}
-                  style={styles.optionButton}
-                  onPress={() => {
-                    setDistance(10000);
-                  }}
-                ></Button>
-                <Button
-                  title={"20 Km."}
-                  fontSize={20}
-                  color={distance === 20000 ? "#E29821" : "#111"}
-                  style={[styles.optionButton, { marginRight: 0 }]}
-                  onPress={() => {
-                    setDistance(20000);
-                  }}
-                ></Button>
-              </View>
-            </View>
             <View style={styles.contentContainer}>
               {restaurants.map((data) => {
                 return (
@@ -222,18 +232,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   scrollView: {
-    paddingTop: 20,
     height: "100%",
+    borderRadius: 10,
   },
   searchContainer: {
-    // borderWidth: 1,
-  },
-  searchBar: {
-    backgroundColor: "#F1F1F1",
-    display: "flex",
-    flexDirection: "row",
-    borderRadius: 10,
-    marginBottom: 10,
+    marginTop: 20,
   },
   optionBar: {
     display: "flex",
@@ -259,7 +262,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginBottom: 35,
   },
 });
 

@@ -15,7 +15,8 @@ export default class RestaurantCord extends Component {
 
   stars = () => {
     let stars = [];
-    for (let index = 0; index < this.props.data.star; index++) {
+    let starLength = this.props.data.star === 0 ? 1 : this.props.data.star;
+    for (let index = 0; index < starLength; index++) {
       stars.push(
         <Image
           source={require("../assets/star.png")}
@@ -41,16 +42,16 @@ export default class RestaurantCord extends Component {
       >
         <View style={styles.imageCover}>
           <Image
-            source={{ uri: this.props.data.coverImg }}
+            source={{ uri: this.props.data.cover_image }}
             style={styles.image}
           ></Image>
         </View>
         <View style={styles.detailContainer}>
           <View style={styles.detail}>
             <Text numberOfLines={1}>
-              {this.props.data.restaurantName.length > 8
-                ? this.props.data.restaurantName.slice(0, 10) + "..."
-                : this.props.data.restaurantName}
+              {this.props.data.name.length > 8
+                ? this.props.data.name.slice(0, 10) + "..."
+                : this.props.data.name}
             </Text>
             <View style={styles.starContainer}>
               {this.state.stars.map((star) => {
@@ -74,8 +75,8 @@ const styles = StyleSheet.create({
     maxWidth: 170,
     height: 190,
     borderRadius: 10,
-    marginTop: 10,
     overflow: "hidden",
+    marginBottom: 10,
   },
   imageCover: {
     width: "100%",
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
 // {
 //   coverImg:
 //     "https://blog.opentable.com/wp-content/uploads/sites/108/2017/10/blog-Urbana_Washington-DC-copy.jpeg",
-//   restaurantName: "AL MUSTAFA3",
+//   name: "AL MUSTAFA3",
 //   avatar:
 //     "https://i.pinimg.com/originals/f8/8e/89/f88e898955530880794913f0efb38755.jpg",
 //   star: 1,
