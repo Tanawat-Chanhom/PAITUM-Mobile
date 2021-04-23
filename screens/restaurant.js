@@ -57,7 +57,6 @@ const restaurant = (props) => {
   const genStar = (star) => {
     let newArray = [];
     const length = star === 0 ? 1 : star;
-    console.log(length);
     for (let index = 0; index < length; index++) {
       newArray.push(
         <Image
@@ -72,21 +71,18 @@ const restaurant = (props) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    getRestaurants()
+    getRestaurantWithId(restaurantId)
       .then((res) => {
-        if (res.data.restaurants.length !== 0) {
-          // let restaurants = res.data.restaurants;
-          // let index = restaurants.findIndex((x) => x.id === id);
-          // setData(restaurants[index]);
-          // restaurants[index].follower.map((id) => {
-          //   id === userId ? setIsFollow(true) : setIsFollow(false);
-          // });
-          // genStar();
-          setRefreshing(false);
-        }
+        setData(res.data.restautants);
+        res.data.restautants.followers.map((id) => {
+          id === userId ? setIsFollow(true) : setIsFollow(false);
+        });
+        genStar(res.data.restautants.star);
+        setRefreshing(false);
       })
       .catch((err) => {
         console.log(err);
+        setRefreshing(false);
       });
   };
 

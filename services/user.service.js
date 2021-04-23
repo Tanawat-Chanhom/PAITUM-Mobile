@@ -2,7 +2,7 @@ import env from "../util/env.json";
 import axios from "axios";
 
 export const getUserProfile = async (userId) => {
-  return await axios.get(env.SERVER + "/user/profile/" + userId);
+  return await axios.get(env.SERVER + "/user/profile?userId=" + userId);
 };
 
 export const userFollowBetweenUser = async (body) => {

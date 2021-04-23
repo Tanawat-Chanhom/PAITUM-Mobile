@@ -12,6 +12,7 @@ import Carousel from "react-native-snap-carousel";
 import Comment from "./Comment";
 import { Image as Loader } from "react-native-elements";
 import { likedPost, deletePost } from "../services/post.service";
+import { getUserProfile } from "../services/user.service";
 
 export default class Post extends Component {
   constructor(props) {
@@ -21,16 +22,47 @@ export default class Post extends Component {
       numberOfLines: 3,
       modelIsShow: false,
       isShowComments: false,
-      liked: props.data.detail.liked,
+      liked: true,
       userId: props.userId,
-      comments: props.data.detail.comments,
+      userData: {
+        firstname: "",
+        lastname: "",
+        avartar: "",
+      },
+      comments: [
+        {
+          avatar: "https://picsum.photos/200",
+          id: "L6gDfZBYQ4dUcA8oSP5M",
+          message: "อร่อยจริงๆ ครับ",
+        },
+        {
+          avatar: "https://picsum.photos/300",
+          id: "OfPQktW6mzGZ58B60lYD",
+          message: "+1",
+        },
+        {
+          avatar: "https://picsum.photos/400",
+          id: "Q716nBcqJ72qq0n15LZ2",
+          message: "ไม่ลองไม่รู้!!!",
+        },
+      ],
       message: "",
-      like: props.data.detail.like,
+      like: 1000,
       isDeleted: {
         status: false,
         isInProgress: false,
       },
     };
+  }
+
+  componentDidMount() {
+    try {
+      getUserProfile(this.state.userId).then((result) => {
+        this.setState({ userData: result.data.user });
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   renderImage = ({ item, index }) => {
@@ -89,14 +121,14 @@ export default class Post extends Component {
                   fontSize={16}
                   onPress={() => {
                     this.props.navigation.navigate("RestaurantStack", {
-                      id: this.props.data.detail.restaurantId,
+                      id: this.props.data.id,
                     });
                     this.setState({
                       modelIsShow: false,
                     });
                   }}
                 />
-                {this.state.userId === this.props.data.user.id ? (
+                {this.state.userId === this.props.data.userId ? (
                   <>
                     {this.state.isDeleted.isInProgress === true ? (
                       <ActivityIndicator
@@ -139,17 +171,18 @@ export default class Post extends Component {
             this.setState({ isShowComments: false });
           }}
           navigation={this.props.navigation}
+          restaurantId={this.props.data.id}
         />
         <View style={styles.header}>
           <View style={styles.profile}>
             <TouchableOpacity
               onPress={() => {
                 if (this.props.profileNavigate === true) {
-                  if (this.state.userId === this.props.data.user.id) {
+                  if (this.state.userId === this.props.data.userId) {
                     this.props.navigation.navigate("Profile");
                   } else {
                     this.props.navigation.navigate("OtherProfile", {
-                      id: this.props.data.user.id,
+                      id: this.props.data.userId,
                     });
                   }
                 }
@@ -157,7 +190,11 @@ export default class Post extends Component {
             >
               <Loader
                 style={styles.avatar}
-                source={{ uri: this.props.data.user.avatar }}
+                source={{
+                  uri:
+                    this.state.userData.avatar ||
+                    "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                }}
                 PlaceholderContent={<ActivityIndicator />}
               ></Loader>
             </TouchableOpacity>
@@ -165,12 +202,12 @@ export default class Post extends Component {
               <Text
                 style={{ color: "#413C58", fontSize: 14, fontWeight: "700" }}
               >
-                {this.props.data.user.name}
+                {`${this.state.userData.firstname} ${this.state.userData.lastname}`}
               </Text>
               <Text
                 style={{ color: "#BFD7B5", fontSize: 13, fontWeight: "700" }}
               >
-                {this.props.data.user.createAt}
+                {this.props.data.createdAt.split("T")[0]}
               </Text>
             </View>
           </View>
@@ -207,12 +244,12 @@ export default class Post extends Component {
             }}
           >
             <Text numberOfLines={this.state.numberOfLines}>
-              {this.props.data.detail.discription}
+              {this.props.data.message}
             </Text>
           </TouchableOpacity>
           <View style={styles.carousel}>
             <Carousel
-              data={this.props.data.detail.image}
+              data={this.props.data.images.map((x) => x.url)}
               renderItem={this.renderImage}
               layout={"default"}
               sliderWidth={this.state.contentLayout.width || 300}
