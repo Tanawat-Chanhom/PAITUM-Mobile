@@ -23,7 +23,6 @@ const home = (props) => {
   useEffect(() => {
     async function fatchData() {
       await getPosts(userId).then((result) => {
-        console.log(result.data.reviews);
         setPosts(result.data.reviews);
       });
       await setRefreshing(false);
@@ -36,7 +35,6 @@ const home = (props) => {
     setRefreshing(true);
     setPosts([]);
     getPosts(userId).then((result) => {
-      console.log(result.data.reviews);
       setPosts(result.data.reviews);
       setRefreshing(false);
     });
