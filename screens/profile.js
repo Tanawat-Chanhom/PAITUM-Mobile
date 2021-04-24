@@ -14,16 +14,17 @@ import Constants from "expo-constants";
 import Post from "../components/Post";
 import { useSelector } from "react-redux";
 import { getUserProfile } from "../services/user.service";
-import { getRestaurants } from "../services/restaurant.service";
 
 const profile = (props) => {
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
-  const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [userProfile, setUserProfile] = useState({
     follower: 0,
     following: 0,
+    myReviews: [],
+    firstname: "",
+    lastname: "",
   });
 
   useEffect(() => {
@@ -31,24 +32,6 @@ const profile = (props) => {
       await getUserProfile(userId).then((result) => {
         setUserProfile(result.data.user);
       });
-      await getRestaurants()
-        .then((res) => {
-          if (res.data.restaurants.length !== 0) {
-            let restaurants = res.data.restaurants;
-            let myPosts = [];
-            restaurants.map((data) => {
-              data.review.map((reviewData, index) => {
-                if (reviewData.user.id === userId) {
-                  myPosts.push(reviewData);
-                }
-              });
-            });
-            setPosts(myPosts);
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
     }
 
     fatchData();
@@ -59,25 +42,7 @@ const profile = (props) => {
     await getUserProfile(userId).then((result) => {
       setUserProfile(result.data.user);
     });
-    await getRestaurants()
-      .then((res) => {
-        if (res.data.restaurants.length !== 0) {
-          let restaurants = res.data.restaurants;
-          let myPosts = [];
-          restaurants.map((data) => {
-            data.review.map((reviewData, index) => {
-              if (reviewData.user.id === userId) {
-                myPosts.push(reviewData);
-              }
-            });
-          });
-          setPosts(myPosts);
-          setRefreshing(false);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    setRefreshing(false);
   };
 
   return (
@@ -104,9 +69,8 @@ const profile = (props) => {
           }
         >
           <Image
-            source={{ uri: userProfile.coverImage }}
+            source={{ uri: userProfile.cover_image }}
             style={styles.imageCover}
-            PlaceholderContent={<ActivityIndicator />}
           ></Image>
 
           <View style={styles.screen}>
@@ -125,8 +89,11 @@ const profile = (props) => {
                   <View style={styles.avatarContainer}>
                     <Image
                       style={styles.avatar}
-                      source={{ uri: userProfile.avatar }}
-                      PlaceholderContent={<ActivityIndicator />}
+                      source={{
+                        uri:
+                          userProfile.avatar ||
+                          "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                      }}
                     ></Image>
                   </View>
                   <View style={styles.followContainer}>
@@ -147,7 +114,7 @@ const profile = (props) => {
                       marginBottom: 5,
                     }}
                   >
-                    {userProfile.name}
+                    {`${userProfile.firstname} ${userProfile.lastname}`}
                   </Text>
                   <Text
                     style={{
@@ -163,7 +130,7 @@ const profile = (props) => {
               </View>
             </View>
             <View>
-              {posts.map((data, index) => {
+              {userProfile.myReviews.map((data, index) => {
                 return (
                   <Post
                     data={data}

@@ -55,7 +55,6 @@ const map = (props) => {
             setErrorMessage("Server error.");
           });
       } else {
-        console.log(body);
         getNearRestaurants(body)
           .then((res) => {
             if (res.data.restautants.length !== 0) {
@@ -107,7 +106,6 @@ const map = (props) => {
             setErrorMessage("Server error.");
           });
       } else {
-        console.log(body);
         getNearRestaurants(body)
           .then((res) => {
             if (res.data.restautants.length !== 0) {
