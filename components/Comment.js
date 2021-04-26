@@ -63,24 +63,29 @@ export default class Comment extends Component {
     };
     this.setState({ isPendding: true });
 
-    sendCommentPost(body).then((result) => {
-      if (result.data.status === 201) {
-        let newArray = this.state.comments;
-        newArray.unshift({
-          id: 2,
-          avartar: null,
-          comments: {
-            message: body.message,
-          },
-        });
-        this.setState({
-          comments: newArray,
-        });
+    sendCommentPost(body)
+      .then((result) => {
+        if (result.data.status === 201) {
+          let newArray = this.state.comments;
+          newArray.unshift({
+            id: 2,
+            avartar: null,
+            comments: {
+              message: body.message,
+            },
+          });
+          this.setState({
+            comments: newArray,
+          });
+          this.setState({ isPendding: false });
+        } else {
+          this.setState({ isPendding: false });
+        }
+      })
+      .catch((error) => {
         this.setState({ isPendding: false });
-      } else {
-        this.setState({ isPendding: false });
-      }
-    });
+        console.error(error);
+      });
 
     // {
     //   "id": 2,
