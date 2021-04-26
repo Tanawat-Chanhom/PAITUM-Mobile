@@ -19,6 +19,7 @@ import BackPage from "../components/BackPage";
 import {
   getUserProfile,
   userFollowBetweenUser,
+  userUnfollowBetweenUser,
 } from "../services/user.service";
 import { getRestaurants } from "../services/restaurant.service";
 
@@ -29,13 +30,11 @@ const profile = (props) => {
     props.navigation.getParam("id")
   );
   const [userData, setUserData] = useState({
-    coverImage:
-      "https://img3.goodfon.com/wallpaper/nbig/8/f9/android-l-material-design-3707.jpg",
     follower: 0,
     following: 0,
-    avatar:
-      "https://cahsi.utep.edu/wp-content/uploads/kisspng-computer-icons-user-clip-art-user-5abf13db5624e4.1771742215224718993529.png",
-    posts: [],
+    myReviews: [],
+    firstname: "",
+    lastname: "",
   });
   const [posts, setPosts] = useState([]);
   const [alert, setAlert] = useState(false);
@@ -66,29 +65,11 @@ const profile = (props) => {
               ? (res.data.user.following.length / 1000).toFixed(1) + "K"
               : res.data.user.following.length,
         });
-        res.data.user.follower.map((id) => {
-          id === userId ? setIsFollow(true) : setIsFollow(false);
+        res.data.user.follower.map((userObj) => {
+          userObj.id === userId ? setIsFollow(true) : setIsFollow(false);
         });
       });
-      await getRestaurants()
-        .then((res) => {
-          if (res.data.restaurants.length !== 0) {
-            let restaurants = res.data.restaurants;
-            let myPosts = [];
-            restaurants.map((data) => {
-              data.review.map((reviewData, index) => {
-                if (reviewData.user.id === otherUserId) {
-                  myPosts.push(reviewData);
-                }
-              });
-            });
-            setPosts(myPosts);
-            setRefreshing(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      setRefreshing(false);
     }
   };
 
@@ -98,32 +79,41 @@ const profile = (props) => {
       sub: otherUserId,
     };
     setFollowInProgress(true);
-    await userFollowBetweenUser(body)
-      .then((res) => {
-        setAlert(true);
-        if (isFollow === true) {
-          setErrorMessage("Unfollowing " + userData.name);
+    if (isFollow === true) {
+      await userUnfollowBetweenUser(body)
+        .then(() => {
+          setAlert(true);
+          setErrorMessage("Unfollowing " + userData.firstname);
           setUserData({
             ...userData,
             follower: userData.follower - 1,
           });
-          setIsFollow(false);
+          setIsFollow(true);
           setFollowInProgress(false);
-        } else {
-          setErrorMessage("Following " + userData.name);
+        })
+        .catch((err) => {
+          setAlert(true);
+          setErrorMessage(err.message || "Server error.");
+          setFollowInProgress(false);
+        });
+    } else {
+      await userFollowBetweenUser(body)
+        .then(() => {
+          setAlert(true);
+          setErrorMessage("Following " + userData.firstname);
           setUserData({
             ...userData,
             follower: userData.follower + 1,
           });
           setIsFollow(true);
           setFollowInProgress(false);
-        }
-      })
-      .catch((err) => {
-        setAlert(true);
-        setErrorMessage(err.message || "Server error.");
-        setFollowInProgress(false);
-      });
+        })
+        .catch((err) => {
+          setAlert(true);
+          setErrorMessage(err.message || "Server error.");
+          setFollowInProgress(false);
+        });
+    }
   };
 
   const onRefresh = () => {
@@ -151,7 +141,15 @@ const profile = (props) => {
           }
         >
           <Image
-            source={{ uri: userData.coverImage }}
+            source={{
+              uri: "https://i.ibb.co/8YpfjMz/BG.jpg",
+            }}
+            style={styles.imageCover}
+          ></Image>
+          <Image
+            source={{
+              uri: userData.cover_image,
+            }}
             style={styles.imageCover}
           ></Image>
 
@@ -188,7 +186,11 @@ const profile = (props) => {
                   <View style={styles.avatarContainer}>
                     <Image
                       style={styles.avatar}
-                      source={{ uri: userData.avatar }}
+                      source={{
+                        uri:
+                          userData.avatar ||
+                          "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                      }}
                     ></Image>
                   </View>
                   <View style={styles.followContainer}>
@@ -210,7 +212,7 @@ const profile = (props) => {
                       marginBottom: 5,
                     }}
                   >
-                    {userData.name}
+                    {`${userData.firstname} ${userData.lastname}`}
                   </Text>
                   <Text
                     style={{
@@ -245,7 +247,7 @@ const profile = (props) => {
               </View>
             </View>
             <View>
-              {posts.map((data, index) => {
+              {userData.myReviews.map((data, index) => {
                 return (
                   <Post
                     data={data}

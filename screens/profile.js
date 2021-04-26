@@ -69,7 +69,15 @@ const profile = (props) => {
           }
         >
           <Image
-            source={{ uri: userProfile.cover_image }}
+            source={{
+              uri: "https://i.ibb.co/8YpfjMz/BG.jpg",
+            }}
+            style={styles.imageCover}
+          ></Image>
+          <Image
+            source={{
+              uri: userProfile.cover_image,
+            }}
             style={styles.imageCover}
           ></Image>
 
@@ -91,8 +99,13 @@ const profile = (props) => {
                       style={styles.avatar}
                       source={{
                         uri:
-                          userProfile.avatar ||
                           "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                      }}
+                    ></Image>
+                    <Image
+                      style={styles.avatar}
+                      source={{
+                        uri: userProfile.avatar,
                       }}
                     ></Image>
                   </View>

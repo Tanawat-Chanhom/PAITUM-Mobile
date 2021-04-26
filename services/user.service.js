@@ -9,6 +9,10 @@ export const userFollowBetweenUser = async (body) => {
   return await axios.put(env.SERVER + "/user/follow", body);
 };
 
+export const userUnfollowBetweenUser = async (body) => {
+  return await axios.put(env.SERVER + "/user/unfollow", body);
+};
+
 export const register = async (body) => {
   return await axios.post(env.SERVER + "/user/register", body);
 };
