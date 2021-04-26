@@ -172,6 +172,10 @@ const restaurant = (props) => {
           }
         >
           <Image
+            source={{ uri: "https://i.ibb.co/8YpfjMz/BG.jpg" }}
+            style={styles.imageCover}
+          ></Image>
+          <Image
             source={{ uri: data.cover_image }}
             style={styles.imageCover}
           ></Image>
