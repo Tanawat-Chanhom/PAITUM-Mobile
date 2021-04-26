@@ -29,6 +29,7 @@ export default class Comment extends Component {
       postId: props.postId,
       userId: props.userId,
       message: "",
+      isPendding: false,
     };
   }
 
@@ -60,6 +61,7 @@ export default class Comment extends Component {
       reviewId: this.state.postId,
       message: this.state.message,
     };
+    this.setState({ isPendding: true });
 
     sendCommentPost(body).then((result) => {
       if (result.data.status === 201) {
@@ -74,6 +76,9 @@ export default class Comment extends Component {
         this.setState({
           comments: newArray,
         });
+        this.setState({ isPendding: false });
+      } else {
+        this.setState({ isPendding: false });
       }
     });
 
@@ -124,7 +129,7 @@ export default class Comment extends Component {
             >
               <View style={styles.commentBar}>
                 <TextInput
-                  placeholder="Type Something"
+                  placeholder="Say Something"
                   style={styles.commentInput}
                   value={this.state.message}
                   onChangeText={(text) => {
@@ -134,19 +139,23 @@ export default class Comment extends Component {
                   }}
                 ></TextInput>
                 <View style={styles.commentIcon}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (this.state.message === "") {
-                        return null;
-                      }
-                      this.handleComment();
-                    }}
-                  >
-                    <Image
-                      source={require("../assets/send.png")}
-                      style={{ width: 26, height: 26 }}
-                    ></Image>
-                  </TouchableOpacity>
+                  {this.state.isPendding === true ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (this.state.message === "") {
+                          return null;
+                        }
+                        this.handleComment();
+                      }}
+                    >
+                      <Image
+                        source={require("../assets/send.png")}
+                        style={{ width: 26, height: 26 }}
+                      ></Image>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
               <SafeAreaView>
