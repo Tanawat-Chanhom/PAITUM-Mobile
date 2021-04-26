@@ -13,8 +13,12 @@ export const deletePost = async (body) => {
   return;
 };
 
-export const likedPost = async (body) => {
-  return {};
+export const likePost = async (body) => {
+  return axios.put(env.SERVER + "/restaurant/like", body);
+};
+
+export const unlikePost = async (body) => {
+  return axios.put(env.SERVER + "/restaurant/unlike", body);
 };
 
 export const getPostComments = async (body) => {

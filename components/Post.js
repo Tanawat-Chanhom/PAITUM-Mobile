@@ -11,7 +11,7 @@ import Button from "./Button";
 import Carousel from "react-native-snap-carousel";
 import Comment from "./Comment";
 import { Image as Loader } from "react-native-elements";
-import { likedPost, deletePost } from "../services/post.service";
+import { likePost, deletePost, unlikePost } from "../services/post.service";
 import { getUserProfile } from "../services/user.service";
 
 export default class Post extends Component {
@@ -22,32 +22,16 @@ export default class Post extends Component {
       numberOfLines: 3,
       modelIsShow: false,
       isShowComments: false,
-      liked: true,
+      liked: false,
       userId: props.userId,
       userData: {
         firstname: "",
         lastname: "",
         avartar: "",
       },
-      comments: [
-        {
-          avatar: "https://picsum.photos/200",
-          id: "L6gDfZBYQ4dUcA8oSP5M",
-          message: "อร่อยจริงๆ ครับ",
-        },
-        {
-          avatar: "https://picsum.photos/300",
-          id: "OfPQktW6mzGZ58B60lYD",
-          message: "+1",
-        },
-        {
-          avatar: "https://picsum.photos/400",
-          id: "Q716nBcqJ72qq0n15LZ2",
-          message: "ไม่ลองไม่รู้!!!",
-        },
-      ],
+      comments: 0 || props.data.commenBy.length,
       message: "",
-      like: 1000,
+      like: 0 || props.data.likeBy.length,
       isDeleted: {
         status: false,
         isInProgress: false,
@@ -57,6 +41,12 @@ export default class Post extends Component {
 
   componentDidMount() {
     try {
+      this.props.data.likeBy.map((userData) => {
+        if (userData.id === this.state.userId) {
+          this.setState({ liked: true });
+        }
+      });
+
       getUserProfile(this.state.userId).then((result) => {
         this.setState({ userData: result.data.user });
       });
@@ -78,11 +68,19 @@ export default class Post extends Component {
   };
 
   handleLike = () => {
-    likedPost().then((result) => {});
+    let body = {
+      userId: this.state.userId,
+      reviewId: this.props.data.id,
+    };
+
     if (this.state.liked === true) {
-      this.setState({ liked: false, like: this.state.like - 1 });
+      unlikePost(body).then(() => {
+        this.setState({ liked: false, like: this.state.like - 1 });
+      });
     } else {
-      this.setState({ liked: true, like: this.state.like + 1 });
+      likePost(body).then(() => {
+        this.setState({ liked: true, like: this.state.like + 1 });
+      });
     }
   };
 
@@ -279,9 +277,9 @@ export default class Post extends Component {
           ></Button>
           <Button
             title={
-              this.state.comments.length >= 1000
-                ? (this.state.comments.length / 1000).toFixed(1) + "K Com."
-                : this.state.comments.length + " Com."
+              this.state.comments >= 1000
+                ? (this.state.comments / 1000).toFixed(1) + "K Com."
+                : this.state.comments + " Com."
             }
             style={styles.footerButton}
             onPress={() => {
