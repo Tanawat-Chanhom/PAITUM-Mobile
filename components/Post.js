@@ -119,7 +119,7 @@ export default class Post extends Component {
                   fontSize={16}
                   onPress={() => {
                     this.props.navigation.navigate("RestaurantStack", {
-                      id: this.props.data.id,
+                      id: this.props.data.restaurantId,
                     });
                     this.setState({
                       modelIsShow: false,
