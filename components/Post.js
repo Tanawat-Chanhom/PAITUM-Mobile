@@ -169,7 +169,8 @@ export default class Post extends Component {
             this.setState({ isShowComments: false });
           }}
           navigation={this.props.navigation}
-          restaurantId={this.props.data.id}
+          postId={this.props.data.id}
+          userId={this.state.userId}
         />
         <View style={styles.header}>
           <View style={styles.profile}>

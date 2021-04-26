@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import Button from "./Button";
 import { Image as Loader } from "react-native-elements";
-import { getPostComments } from "../services/post.service";
+import { getPostById, sendCommentPost } from "../services/post.service";
 import { useNavigation } from "@react-navigation/native";
 
 export default class Comment extends Component {
@@ -26,6 +26,9 @@ export default class Comment extends Component {
       comments: [],
       refreshing: false,
       navigation: props.navigation,
+      postId: props.postId,
+      userId: props.userId,
+      message: "",
     };
   }
 
@@ -43,12 +46,53 @@ export default class Comment extends Component {
 
   fatchData = () => {
     this.setState({ refreshing: true });
-    getPostComments().then((result) => {
+    getPostById(this.state.postId).then((result) => {
       this.setState({
-        comments: result.data,
+        comments: result.data.review.commenBy,
         refreshing: false,
       });
     });
+  };
+
+  handleComment = () => {
+    let body = {
+      userId: this.state.userId,
+      reviewId: this.state.postId,
+      message: this.state.message,
+    };
+
+    sendCommentPost(body).then((result) => {
+      if (result.data.status === 201) {
+        let newArray = this.state.comments;
+        newArray.unshift({
+          id: 2,
+          avartar: null,
+          comments: {
+            message: body.message,
+          },
+        });
+        this.setState({
+          comments: newArray,
+        });
+      }
+    });
+
+    // {
+    //   "id": 2,
+    //   "username": "nobiaccess",
+    //   "firstname": "Tanawat",
+    //   "lastname": "Chanhom",
+    //   "avartar": null,
+    //   "comments": {
+    //     "id": 1,
+    //     "message": "I like this!!",
+    //     "deleteAt": null,
+    //     "createdAt": "2021-04-26T10:23:44.124Z",
+    //     "updatedAt": "2021-04-26T10:23:44.124Z",
+    //     "userId": 2,
+    //     "reviewId": 1
+    //   }
+    // }
   };
 
   render() {
@@ -95,17 +139,7 @@ export default class Comment extends Component {
                       if (this.state.message === "") {
                         return null;
                       }
-                      let updataArray = this.state.comments;
-                      updataArray.unshift({
-                        uid: "1234",
-                        avatar:
-                          "https://images.unsplash.com/photo-1500239524810-5a6e76344a17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
-                        message: this.state.message,
-                      });
-                      this.setState({
-                        message: "",
-                        comments: updataArray,
-                      });
+                      this.handleComment();
                     }}
                   >
                     <Image
@@ -115,7 +149,7 @@ export default class Comment extends Component {
                   </TouchableOpacity>
                 </View>
               </View>
-              <SafeAreaView style={{ height: "100%" }}>
+              <SafeAreaView>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   showsHorizontalScrollIndicator={false}
@@ -139,12 +173,18 @@ export default class Comment extends Component {
                           }}
                         >
                           <Loader
-                            source={{ uri: data.avatar }}
+                            source={{
+                              uri:
+                                data.avatar ||
+                                "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                            }}
                             PlaceholderContent={<ActivityIndicator />}
                             style={styles.avatar}
                           ></Loader>
                         </TouchableOpacity>
-                        <Text style={styles.message}>{data.message}</Text>
+                        <Text style={styles.message}>
+                          {data.comments.message}
+                        </Text>
                       </View>
                     );
                   })}
@@ -178,7 +218,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#F1F1F1",
   },
   scrollView: {
+    height: "90%",
     borderRadius: 10,
+    // borderWidth: 2,
+    // borderColor: "#111",
   },
   avatar: {
     height: 50,
@@ -236,19 +279,18 @@ const styles = StyleSheet.create({
   commentInput: {
     paddingLeft: 10,
     paddingRight: 10,
-    height: 40,
+    height: 35,
     backgroundColor: "#F1F1F1",
     borderRadius: 100,
     flex: 1,
     marginRight: 5,
   },
   commentBar: {
+    height: "10%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 10,
   },
   commentIcon: {
     width: 40,
