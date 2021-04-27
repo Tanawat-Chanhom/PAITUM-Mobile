@@ -123,7 +123,7 @@ const settingProfile = (props) => {
     getUserProfile(userId)
       .then((result) => {
         const {
-          avatar,
+          avartar,
           caption,
           firstname,
           lastname,
@@ -139,7 +139,7 @@ const settingProfile = (props) => {
           gender: gender,
           birthday: new Date(birthday),
         });
-        setProfileImage(avatar);
+        setProfileImage(avartar);
         setCoverImage(cover_image);
         setRefreshing(false);
       })
@@ -165,7 +165,6 @@ const settingProfile = (props) => {
           : coverImage,
       birthday: userProfile.birthday.toISOString(),
     };
-    console.log(body);
     await updateUserProfile(userId, body)
       .then(() => {
         props.navigation.navigate("Profile");

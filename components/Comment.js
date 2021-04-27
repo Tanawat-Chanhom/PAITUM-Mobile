@@ -196,7 +196,7 @@ export default class Comment extends Component {
                           <Loader
                             source={{
                               uri:
-                                data.avatar ||
+                                data.avartar ||
                                 "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
                             }}
                             PlaceholderContent={<ActivityIndicator />}

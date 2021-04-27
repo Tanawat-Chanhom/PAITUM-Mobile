@@ -27,7 +27,7 @@ export default class Post extends Component {
       userData: {
         firstname: "",
         lastname: "",
-        avartar: "",
+        avartar: null,
       },
       comments: 0 || props.data.commenBy.length,
       message: "",
@@ -190,7 +190,7 @@ export default class Post extends Component {
               <Loader
                 style={styles.avatar}
                 source={{
-                  uri: this.state.userData.avatar,
+                  uri: this.state.userData.avartar,
                 }}
                 PlaceholderContent={<ActivityIndicator color="#fff" />}
               />

@@ -105,7 +105,7 @@ const profile = (props) => {
                     <Image
                       style={styles.avatar}
                       source={{
-                        uri: userProfile.avatar,
+                        uri: userProfile.avartar,
                       }}
                     />
                   </View>
