@@ -51,10 +51,10 @@ export default function Register(props) {
       </View>
       <View style={styles.genderButton}>
         <Button
-          title={"Women"}
+          title={"Female"}
           color="black"
           onPress={() => {
-            setGender("women");
+            setGender("female");
             isShowGender(false);
           }}
         ></Button>
@@ -175,7 +175,7 @@ export default function Register(props) {
                   isShowGender(true);
                 }}
               >
-                {gender === "male" ? "Male" : "Women"}
+                {gender === "male" ? "Male" : "Female"}
               </Text>
             </View>
           </View>

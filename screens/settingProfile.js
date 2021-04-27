@@ -35,7 +35,7 @@ const settingProfile = (props) => {
     image: null,
     caption: "",
     name: "",
-    gender: "",
+    gender: "male",
     birthday: new Date(),
     email: "",
   });
@@ -63,20 +63,20 @@ const settingProfile = (props) => {
     <View style={styles.genderContainer}>
       <View style={styles.genderButton}>
         <Button
-          title={"Men"}
+          title={"Male"}
           color="black"
           onPress={() => {
-            setUserProfile({ ...userProfile, gender: "men" });
+            setUserProfile({ ...userProfile, gender: "male" });
             isShowGender(false);
           }}
         ></Button>
       </View>
       <View style={styles.genderButton}>
         <Button
-          title={"Women"}
+          title={"Female"}
           color="black"
           onPress={() => {
-            setUserProfile({ ...userProfile, gender: "women" });
+            setUserProfile({ ...userProfile, gender: "female" });
             isShowGender(false);
           }}
         ></Button>
@@ -261,7 +261,7 @@ const settingProfile = (props) => {
                   isShowGender(true);
                 }}
               >
-                {userProfile.gender === "men" ? "Men" : "Women"}
+                {userProfile.gender === "male" ? "Male" : "Female"}
               </Text>
             </View>
           </View>

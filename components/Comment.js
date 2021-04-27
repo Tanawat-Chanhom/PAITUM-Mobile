@@ -16,7 +16,6 @@ import Button from "./Button";
 import { Image as Loader } from "react-native-elements";
 import { getPostById, sendCommentPost } from "../services/post.service";
 import { getUserProfile } from "../services/user.service";
-import { useNavigation } from "@react-navigation/native";
 
 export default class Comment extends Component {
   constructor(props) {
