@@ -15,6 +15,7 @@ import {
 import Button from "./Button";
 import { Image as Loader } from "react-native-elements";
 import { getPostById, sendCommentPost } from "../services/post.service";
+import { getUserProfile } from "../services/user.service";
 import { useNavigation } from "@react-navigation/native";
 
 export default class Comment extends Component {
@@ -30,7 +31,14 @@ export default class Comment extends Component {
       userId: props.userId,
       message: "",
       isPendding: false,
+      userData: {},
     };
+  }
+
+  componentDidMount() {
+    getUserProfile(this.state.userId).then((result) => {
+      this.setState({ userData: result.data.user });
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -68,8 +76,8 @@ export default class Comment extends Component {
         if (result.data.status === 201) {
           let newArray = this.state.comments;
           newArray.unshift({
-            id: 2,
-            avartar: null,
+            id: this.state.userId,
+            avartar: this.state.userData.avartar,
             comments: {
               message: body.message,
             },
