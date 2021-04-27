@@ -14,17 +14,20 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { useSelector } from "react-redux";
-import { getUserProfile } from "../services/user.service";
+import { getUserProfile, updateUserProfile } from "../services/user.service";
 import BackPage from "../components/BackPage";
 import * as ImagePicker from "expo-image-picker";
 import Alert from "../components/MyAlert";
 import Button from "../components/Button";
 import Model from "../components/Model";
+import { Image as Loader } from "react-native-elements";
+import { uploadImageToS3 } from "../util/aws";
 
 const settingProfile = (props) => {
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
-  const [base64, setBase64] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // Sending Data
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,12 +35,11 @@ const settingProfile = (props) => {
   const [stateGenderModel, setStateGenderModel] = useState(false);
   const [stateDateModel, setStateDateModel] = useState(false);
   const [userProfile, setUserProfile] = useState({
-    image: null,
     caption: "",
-    name: "",
+    firstname: "",
+    lastname: "",
     gender: "male",
     birthday: new Date(),
-    email: "",
   });
 
   const isShowGender = (state) => {
@@ -95,31 +97,10 @@ const settingProfile = (props) => {
         }
       }
     };
-    getUserProfile(userId)
-      .then((result) => {
-        const {
-          avatar,
-          caption,
-          name,
-          gender,
-          birthday,
-          email,
-        } = result.data.user;
-        setUserProfile({
-          ...userProfile,
-          image: avatar,
-          caption: caption,
-          name: name,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-        setAlert(true);
-        setErrorMessage("Server error.");
-      });
+    handleFatchData();
   }, []);
 
-  const pickImage = async () => {
+  const pickImage = async (setState) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -129,29 +110,37 @@ const settingProfile = (props) => {
     });
 
     if (!result.cancelled) {
-      setBase64(result.base64);
-      setUserProfile({ ...userProfile, image: result.uri });
+      setState(result.uri);
     }
   };
 
   const handleRefresh = async () => {
+    handleFatchData();
+  };
+
+  const handleFatchData = () => {
     setRefreshing(true);
     getUserProfile(userId)
       .then((result) => {
         const {
           avatar,
           caption,
-          name,
+          firstname,
+          lastname,
           gender,
           birthday,
-          email,
+          cover_image,
         } = result.data.user;
         setUserProfile({
           ...userProfile,
-          image: avatar,
           caption: caption,
-          name: name,
+          firstname: firstname,
+          lastname: lastname,
+          gender: gender,
+          birthday: new Date(birthday),
         });
+        setProfileImage(avatar);
+        setCoverImage(cover_image);
         setRefreshing(false);
       })
       .catch((error) => {
@@ -162,14 +151,30 @@ const settingProfile = (props) => {
       });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setIsLoading(true);
     let body = {
       ...userProfile,
-      base64: base64,
+      avartar:
+        profileImage.split(":")[0] === "file"
+          ? await uploadImageToS3("profile-image/", profileImage)
+          : profileImage,
+      cover_image:
+        coverImage.split(":")[0] === "file"
+          ? await uploadImageToS3("profile-image/", coverImage)
+          : coverImage,
+      birthday: userProfile.birthday.toISOString(),
     };
-    setIsLoading(true);
-
-    // props.navigation.navigate("Profile");
+    console.log(body);
+    await updateUserProfile(userId, body)
+      .then(() => {
+        props.navigation.navigate("Profile");
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error(error);
+      });
   };
 
   return (
@@ -206,13 +211,37 @@ const settingProfile = (props) => {
         >
           <View style={styles.profileImg}>
             <View style={[styles.ImgContainer]}>
-              <TouchableOpacity onPress={pickImage}>
-                {userProfile.image === null ? (
+              <TouchableOpacity
+                onPress={() => {
+                  pickImage(setProfileImage);
+                }}
+              >
+                {profileImage === null ? (
                   <Image source={require("../assets/camera.png")} />
                 ) : (
-                  <Image
-                    source={{ uri: userProfile.image }}
-                    style={styles.image}
+                  <Loader
+                    source={{ uri: profileImage }}
+                    style={styles.profileImage}
+                    PlaceholderContent={<ActivityIndicator />}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.profileImg}>
+            <View style={[styles.coverImgContainer]}>
+              <TouchableOpacity
+                onPress={() => {
+                  pickImage(setCoverImage);
+                }}
+              >
+                {coverImage === null ? (
+                  <Image source={require("../assets/camera.png")} />
+                ) : (
+                  <Loader
+                    source={{ uri: coverImage }}
+                    style={styles.coverImage}
+                    PlaceholderContent={<ActivityIndicator />}
                   />
                 )}
               </TouchableOpacity>
@@ -230,17 +259,28 @@ const settingProfile = (props) => {
             ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
-            <Text style={styles.text}>Name</Text>
+            <Text style={styles.text}>Firstname</Text>
             <TextInput
               style={styles.textInput_nobd}
-              value={userProfile.name}
-              placeholder="Your Name"
+              value={userProfile.firstname}
+              placeholder="Your Firstname"
               onChangeText={(x) => {
-                setUserProfile({ ...userProfile, name: x });
+                setUserProfile({ ...userProfile, firstname: x });
               }}
             ></TextInput>
           </View>
           <View style={styles.textInputContainer}>
+            <Text style={styles.text}>Lastname</Text>
+            <TextInput
+              style={styles.textInput_nobd}
+              value={userProfile.lastname}
+              placeholder="Your Lastname"
+              onChangeText={(x) => {
+                setUserProfile({ ...userProfile, lastname: x });
+              }}
+            ></TextInput>
+          </View>
+          {/* <View style={styles.textInputContainer}>
             <Text style={styles.text}>E-mail</Text>
             <TextInput
               style={styles.textInput_nobd}
@@ -251,7 +291,7 @@ const settingProfile = (props) => {
                 setUserProfile({ ...userProfile, email: x });
               }}
             ></TextInput>
-          </View>
+          </View> */}
           <View style={styles.textInputContainer}>
             <Text style={styles.text}>Gender</Text>
             <View style={styles.selecterContainer}>
@@ -337,12 +377,31 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  image: {
+  coverImgContainer: {
+    height: 145,
+    width: 300,
+    borderWidth: 2,
+    borderRadius: 10,
+    alignSelf: "center",
+    borderColor: "#707070",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    overflow: "hidden",
+  },
+  profileImage: {
     borderColor: "#707070",
     height: 175,
     width: 175,
     borderWidth: 2,
     borderRadius: 100,
+  },
+  coverImage: {
+    borderColor: "#707070",
+    height: 145,
+    width: 300,
+    borderWidth: 2,
   },
   text: {
     color: "#E29821",

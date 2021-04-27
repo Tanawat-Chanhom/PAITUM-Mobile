@@ -132,7 +132,7 @@ export default function Register(props) {
               }}
             ></TextInput>
           </View>
-          <View style={styles.textInputContainer}>
+          {/* <View style={styles.textInputContainer}>
             <Text style={styles.text}>E-Mail</Text>
             <TextInput
               style={styles.textInput}
@@ -143,7 +143,7 @@ export default function Register(props) {
                 setData({ ...data, eMail: x });
               }}
             ></TextInput>
-          </View>
+          </View> */}
           <View style={styles.textInputContainer}>
             <Text style={styles.text}>First Name</Text>
             <TextInput

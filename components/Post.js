@@ -190,12 +190,10 @@ export default class Post extends Component {
               <Loader
                 style={styles.avatar}
                 source={{
-                  uri:
-                    this.state.userData.avatar ||
-                    "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                  uri: this.state.userData.avatar,
                 }}
-                PlaceholderContent={<ActivityIndicator />}
-              ></Loader>
+                PlaceholderContent={<ActivityIndicator color="#fff" />}
+              />
             </TouchableOpacity>
             <View style={styles.profileDetail}>
               <Text

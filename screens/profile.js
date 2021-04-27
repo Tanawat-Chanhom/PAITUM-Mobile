@@ -101,13 +101,13 @@ const profile = (props) => {
                         uri:
                           "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
                       }}
-                    ></Image>
+                    />
                     <Image
                       style={styles.avatar}
                       source={{
                         uri: userProfile.avatar,
                       }}
-                    ></Image>
+                    />
                   </View>
                   <View style={styles.followContainer}>
                     <Text style={{ color: "#E29821" }}>

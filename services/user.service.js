@@ -5,6 +5,10 @@ export const getUserProfile = async (userId) => {
   return await axios.get(env.SERVER + "/user/profile?userId=" + userId);
 };
 
+export const updateUserProfile = async (userId, body) => {
+  return await axios.put(env.SERVER + "/user/profile/" + userId, body);
+};
+
 export const userFollowBetweenUser = async (body) => {
   return await axios.put(env.SERVER + "/user/follow", body);
 };
