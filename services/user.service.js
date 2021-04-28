@@ -9,6 +9,10 @@ export const updateUserProfile = async (userId, body) => {
   return await axios.put(env.SERVER + "/user/profile/" + userId, body);
 };
 
+export const resetUserPassword = async (userId, body) => {
+  return await axios.patch(env.SERVER + "/user/reset/" + userId, body);
+};
+
 export const userFollowBetweenUser = async (body) => {
   return await axios.put(env.SERVER + "/user/follow", body);
 };

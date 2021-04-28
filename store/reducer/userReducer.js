@@ -16,6 +16,9 @@ export default authenReducer = (state = initialState, action) => {
       let coin = action.coin;
       return { ...state, coin: coin };
 
+    case ACTION_NAME_LIST.logout:
+      return { ...state, userId: null };
+
     default:
       return state;
   }
