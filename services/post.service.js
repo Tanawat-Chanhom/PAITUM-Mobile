@@ -13,8 +13,8 @@ export const createPost = async (body) => {
   return await axios.post(env.SERVER + "/restaurant/review", body);
 };
 
-export const deletePost = async (body) => {
-  return;
+export const deletePost = async (reviewId) => {
+  return await axios.delete(env.SERVER + "/restaurant/reviews/" + reviewId);
 };
 
 export const likePost = async (body) => {

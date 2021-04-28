@@ -24,3 +24,7 @@ export const userUnfollowBetweenUser = async (body) => {
 export const register = async (body) => {
   return await axios.post(env.SERVER + "/user/register", body);
 };
+
+export const removeUser = async (userId) => {
+  return await axios.delete(env.SERVER + "/user/delete/" + userId)
+}

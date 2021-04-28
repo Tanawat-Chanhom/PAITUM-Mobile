@@ -84,16 +84,15 @@ export default class Post extends Component {
     }
   };
 
-  handleRemovePost = (postId) => {
+  handleRemovePost = () => {
     this.setState({ isDeleted: { status: false, isInProgress: true } });
-    deletePost()
-      .then((result) => {
-        setTimeout(() => {
-          this.setState({ isDeleted: { status: true, isInProgress: false } });
-        }, 2000);
+    deletePost(this.props.data.id)
+      .then(() => {
+        this.setState({ isDeleted: { status: true, isInProgress: false } });
       })
       .catch((error) => {
         console.error(error);
+        this.setState({ isDeleted: { status: false, isInProgress: false } });
       });
   };
 
@@ -135,7 +134,7 @@ export default class Post extends Component {
                       />
                     ) : (
                       <Button
-                        title={"Delet Post"}
+                        title={"Delete Post"}
                         style={styles.deleteButton}
                         color="#FFF"
                         fontSize={16}
