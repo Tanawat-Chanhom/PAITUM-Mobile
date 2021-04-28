@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -6,13 +6,39 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import { useDispatch } from "react-redux";
-import { logout as Logout } from "../store/action/authenAction";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../store/action/userAction";
 import { AntDesign } from "@expo/vector-icons";
 import BackPage from "../components/BackPage";
+import Alert from "../components/MyAlert";
+import { removeUser } from "../services/user.service";
 
 const settingAccount = (props) => {
+  const dispatch = useDispatch();
+  const { userReducer } = useSelector((state) => state);
+  const userId = userReducer.userId;
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isAlert, setIsAlert] = useState(false);
+  const [removeUserIdPending, setRemoveUserIdPending] = useState(false);
+
+  const handleRemoveUser = () => {
+    setRemoveUserIdPending(true);
+    removeUser(userId)
+      .then((result) => {
+        setRemoveUserIdPending(false);
+        dispatch(logout());
+        props.navigation.navigate("Login");
+      })
+      .catch((error) => {
+        console.error(error);
+        setRemoveUserIdPending(false);
+        setIsAlert(true);
+        setErrorMessage(error.data.message);
+      });
+  };
+
   return (
     <View style={styles.Container}>
       <BackPage
@@ -21,6 +47,13 @@ const settingAccount = (props) => {
         isFlow={true}
         magin={10}
       ></BackPage>
+      <Alert
+        open={isAlert}
+        value={errorMessage}
+        close={() => {
+          setIsAlert(false);
+        }}
+      ></Alert>
       <SafeAreaView style={styles.safeAreaView}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -38,13 +71,17 @@ const settingAccount = (props) => {
           <TouchableOpacity
             style={styles.settingContainer}
             onPress={() => {
-              props.navigation.navigate("Login");
+              handleRemoveUser();
             }}
           >
             <Text style={[styles.settingText, { color: "#c98f22" }]}>
               Delete Account
             </Text>
-            <AntDesign name="arrowright" size={24} color="#c98f22" />
+            {removeUserIdPending === true ? (
+              <ActivityIndicator color="#c98f22" />
+            ) : (
+              <AntDesign name="arrowright" size={24} color="#c98f22" />
+            )}
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
