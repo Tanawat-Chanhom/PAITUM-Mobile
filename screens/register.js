@@ -20,12 +20,12 @@ export default function Register(props) {
   const [gender, setGender] = useState("male");
   const [chosenDate, setChosenDate] = useState(new Date());
   const [data, setData] = useState({
-    username: "nobiaccess",
-    password: "12345678",
-    eMail: "tae_chanhom@hotmail.com",
-    name: "Tanawat",
-    lastName: "Chanhom",
-    confirm: "12345678",
+    username: "",
+    password: "",
+    eMail: "",
+    name: "",
+    lastName: "",
+    confirm: "",
   });
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");

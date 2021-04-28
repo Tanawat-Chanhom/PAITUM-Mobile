@@ -22,7 +22,7 @@ export default function register2(props) {
   const data = props.navigation.getParam("data");
   const [image, setImage] = useState(null);
   const [cover, setCoverImage] = useState(null);
-  const [caption, setCaption] = useState("Test user");
+  const [caption, setCaption] = useState("");
   const [alert, setAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [registerInProgress, setRegisterInProgress] = useState(false);
