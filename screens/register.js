@@ -22,7 +22,7 @@ export default function Register(props) {
   const [data, setData] = useState({
     username: "",
     password: "",
-    eMail: "",
+    // eMail: "",
     name: "",
     lastName: "",
     confirm: "",
@@ -207,7 +207,7 @@ export default function Register(props) {
               name: data.name,
               lastName: data.lastName,
               gender: gender,
-              birthday: chosenDate,
+              birthday: chosenDate.toISOString(),
             };
             let pass = 0;
             Object.keys(body).map((key) => {

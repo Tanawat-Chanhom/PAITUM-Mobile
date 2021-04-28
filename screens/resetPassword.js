@@ -36,7 +36,7 @@ const resetPassword = (props) => {
 
     if (resetForm.newPassword !== resetForm.confirmPassword) {
       setIsAlert(true);
-      setErrorMessage("New Pass and Confirm Pass is not the same.");
+      setErrorMessage("Password and Confirm Password is incorrect.");
       return;
     }
 

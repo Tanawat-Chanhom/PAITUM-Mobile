@@ -69,11 +69,8 @@ export default function register2(props) {
       cover_image: await uploadImageToS3("profile-image/", cover),
     };
 
-    console.log(body);
-
     await registerService(body)
       .then((result) => {
-        console.log(result);
         props.navigation.navigate("Login");
         setRegisterInProgress(false);
       })
