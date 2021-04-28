@@ -18,9 +18,9 @@ const resetPassword = (props) => {
   const { userReducer } = useSelector((state) => state);
   const userId = userReducer.userId;
   const [resetForm, setResetForm] = useState({
-    oldPassword: "12345678",
-    newPassword: "12345678",
-    confirmPassword: "12345678",
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [isPending, setIsPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");

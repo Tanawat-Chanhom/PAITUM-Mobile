@@ -7,9 +7,8 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import settingAccount from "./settingAccount";
-import { useSelector, useDispatch } from "react-redux";
-import { setToken } from "../store/action/userAction";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/action/userAction";
 import { AntDesign } from "@expo/vector-icons";
 import Backpage from "../components/BackPage";
 
@@ -17,7 +16,7 @@ const setting = (props) => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(setToken(null));
+    dispatch(logout());
   };
 
   return (
