@@ -12,7 +12,6 @@ import Carousel from "react-native-snap-carousel";
 import Comment from "./Comment";
 import { Image as Loader } from "react-native-elements";
 import { likePost, deletePost, unlikePost } from "../services/post.service";
-import { getUserProfile } from "../services/user.service";
 
 export default class Post extends Component {
   constructor(props) {
@@ -47,9 +46,7 @@ export default class Post extends Component {
         }
       });
 
-      getUserProfile(this.state.userId).then((result) => {
-        this.setState({ userData: result.data.user });
-      });
+      this.setState({ userData: this.props.data.reviewBy });
     } catch (error) {
       console.error(error);
     }
