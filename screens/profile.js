@@ -39,6 +39,7 @@ const profile = (props) => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
+    setUserProfile({ ...userProfile, myReviews: [] });
     await getUserProfile(userId).then((result) => {
       setUserProfile(result.data.user);
     });
