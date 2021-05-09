@@ -65,7 +65,7 @@ export default function register2(props) {
       birthday: data.birthday,
       gender: data.gender,
       caption: caption,
-      avatar: await uploadImageToS3("profile-image/", image),
+      avartar: await uploadImageToS3("profile-image/", image),
       cover_image: await uploadImageToS3("profile-image/", cover),
     };
 
