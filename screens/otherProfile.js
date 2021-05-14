@@ -187,9 +187,13 @@ const profile = (props) => {
                     <Image
                       style={styles.avatar}
                       source={{
-                        uri:
-                          userData.avatar ||
-                          "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                        uri: "https://www.pinclipart.com/picdir/big/133-1331433_free-user-avatar-icons-happy-flat-design-png.png",
+                      }}
+                    ></Image>
+                    <Image
+                      style={styles.avatar}
+                      source={{
+                        uri: userData.avartar,
                       }}
                     ></Image>
                   </View>
